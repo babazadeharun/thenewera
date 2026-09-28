@@ -1,0 +1,9 @@
+'use client';
+import {FormEvent, useState} from 'react';
+import Link from 'next/link';
+
+export default function StartProject(){
+ const [sent,setSent]=useState(false);
+ function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setSent(true)}
+ return <main className="innerPage"><div className="container formPage"><Link className="back" href="/">← New Era</Link><div className="eyebrow">START A PROJECT</div><h1>Tell us what you want<br/><span>to create.</span></h1><p>We keep the conversation, files and payment inside New Era. Your chosen specialist will never need to publish personal contact details.</p>{sent?<div className="successBox"><div className="successIcon">✓</div><h2>Brief received.</h2><p>Your New Era project request is ready for review. Next, we will match the brief with the right specialist.</p><Link className="primary" href="/creators">Explore creators</Link></div>:<form onSubmit={submit} className="projectForm"><label>What service do you need?<select required defaultValue=""><option value="" disabled>Select a service</option><option>Graphic Design</option><option>Branding</option><option>Video & Motion</option><option>Photography</option><option>Social Media</option><option>Web Design</option><option>Development</option><option>Marketing & SEO</option></select></label><label>Project title<input required placeholder="e.g. Instagram campaign for a new product"/></label><label>Brief<textarea required rows={6} placeholder="Tell us about the project, style, deliverables and deadline."/></label><div className="formSplit"><label>Budget<select defaultValue="Flexible"><option>Flexible</option><option>300–700 AZN</option><option>700–1,500 AZN</option><option>1,500–3,000 AZN</option><option>3,000+ AZN</option></select></label><label>Deadline<input type="date"/></label></div><button className="primary" type="submit">Send project brief →</button></form>}</div></main>
+}

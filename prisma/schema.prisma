@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  ADMIN
+  CREATOR
+}
+
+enum ProjectStatus {
+  BRIEF_SUBMITTED
+  REVIEWING
+  APPROVED
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  role         UserRole  @default(CLIENT)
+  clientId     String?   @unique
+  client       Client?   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Client {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  firstName   String
+  lastName    String
+  phone       String?
+  company     String?
+  jobTitle    String?
+  industry    String?
+  companySize String?
+  country     String?
+  website     String?
+  createdAt   DateTime  @default(now())
+  projects    Project[]
+  user        User?
+}
+
+model Creator {
+  id        String    @id @default(cuid())
+  name      String
+  role      String
+  bio       String?
+  image     String?
+  createdAt DateTime  @default(now())
+  projects  Project[]
+}
+
+model Service {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  createdAt DateTime        @default(now())
+  projects  Project[]
+}
+
+model Project {
+  id               String          @id @default(cuid())
+  title            String
+  brief            String
+  goal             String?
+  audience         String?
+  deliverables     String?
+  references       String?
+  deadline         DateTime?
+  budget           String?
+  status           ProjectStatus   @default(BRIEF_SUBMITTED)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  clientId         String
+  creatorId        String?
+  serviceId        String
+  client           Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  creator          Creator?        @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  service          Service         @relation(fields: [serviceId], references: [id])
+  messages         ProjectMessage[]
+  activities       ProjectActivity[]
+  deliveries       Delivery[]
+  revisions        RevisionRequest[]
+  review           ProjectReview?
+}
+
+model ProjectMessage {
+  id        String   @id @default(cuid())
+  fromRole  String
+  text      String
+  createdAt DateTime @default(now())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectActivity {
+  id        String   @id @default(cuid())
+  type      String
+  text      String
+  createdAt DateTime @default(now())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Delivery {
+  id          String   @id @default(cuid())
+  version     Int
+  notes       String
+  link        String?
+  submittedAt DateTime @default(now())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  @@unique([projectId, version])
+}
+
+model RevisionRequest {
+  id        String   @id @default(cuid())
+  text      String
+  createdAt DateTime @default(now())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model ProjectReview {
+  id        String   @id @default(cuid())
+  rating    Int
+  text      String
+  createdAt DateTime @default(now())
+  projectId String   @unique
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}

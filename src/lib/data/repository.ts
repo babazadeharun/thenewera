@@ -15,7 +15,7 @@ const statusFromDb: Record<string, ProjectStatus> = { BRIEF_SUBMITTED:'Brief Sub
 
 function toRecord(p: any): ProjectRecord {
   return {
-    id: p.id, clientEmail: p.client.email, clientName: `${p.client.firstName} ${p.client.lastName}`.trim(), company: p.client.company ?? undefined,
+    id: p.id, clientEmail: p.client.email ?? p.client.phone ?? '', clientName: `${p.client.firstName} ${p.client.lastName}`.trim(), company: p.client.company ?? undefined,
     service: p.service.name, title: p.title, brief: p.brief, goal: p.goal ?? undefined, audience: p.audience ?? undefined,
     deliverables: p.deliverables ?? undefined, references: p.references ?? undefined, deadline: p.deadline?.toISOString(), budget: p.budget ?? undefined,
     creator: p.creator?.name ?? undefined, status: statusFromDb[p.status], createdAt: p.createdAt.toISOString(),
@@ -33,7 +33,7 @@ class PrismaProjectRepository implements ProjectRepository {
   async list(){ const rows=await prisma.project.findMany({include,orderBy:{createdAt:'desc'}}); return rows.map(toRecord) }
   async get(id:string){ const row=await prisma.project.findUnique({where:{id},include}); return row?toRecord(row):null }
   async create(input: Omit<ProjectRecord,'id'|'createdAt'|'messages'|'activity'|'revisionRequests'>){
-    const client=await prisma.client.findUnique({where:{email:input.clientEmail}}); if(!client) throw new Error('Client not found')
+    const client=await prisma.client.findFirst({where:{OR:[{email:input.clientEmail},{phone:input.clientEmail}]}}); if(!client) throw new Error('Client not found')
     const service=await prisma.service.upsert({where:{name:input.service},update:{},create:{name:input.service}})
     const creator=input.creator && input.creator!=='No preference' ? await prisma.creator.findFirst({where:{name:input.creator}}) : null
     const row=await prisma.project.create({data:{title:input.title,brief:input.brief,goal:input.goal,audience:input.audience,deliverables:input.deliverables,references:input.references,deadline:input.deadline?new Date(input.deadline):undefined,budget:(input as any).budget,status:statusToDb[input.status],clientId:client.id,serviceId:service.id,creatorId:creator?.id,activities:{create:{type:'created',text:'Project created through the New Era platform'}}},include})

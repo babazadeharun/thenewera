@@ -1,4 +1,7 @@
 import { ArrowRight, Camera, Code2, Layers3, Megaphone, Palette, Play, Search, Sparkles, Star, Video, Zap } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
 
 const services = [
   ['Graphic Design','Logos, social media, print and more',Palette],
@@ -12,14 +15,16 @@ const services = [
 ] as const;
 
 const creators = [
-  {name:'Aysel M.',role:'Graphic Designer',meta:'4.9 (28 reviews)',projects:'12 projects',image:'/creator-presets/graphic-designer.jpg'},
-  {name:'Rashad A.',role:'Video Editor',meta:'4.8 (24 reviews)',projects:'18 projects',image:'/creator-presets/videographer.jpg'},
-  {name:'Leyla Q.',role:'SMM Specialist',meta:'4.9 (32 reviews)',projects:'21 projects',image:'/creator-presets/smm-specialist.jpg'},
-  {name:'Tural S.',role:'Web Developer',meta:'4.7 (19 reviews)',projects:'14 projects',image:'/creator-presets/web-developer.jpg'},
-  {name:'Nigar R.',role:'Branding Specialist',meta:'4.8 (26 reviews)',projects:'16 projects',image:'/creator-presets/branding-specialist.jpg'},
+  {name:'Aysel M.',role:'Graphic Designer',meta:'4.9 (28 reviews)',projects:'12 projects',image:'/creator-icons/graphic-designer.jpg'},
+  {name:'Rashad A.',role:'Video Editor',meta:'4.8 (24 reviews)',projects:'18 projects',image:'/creator-icons/content-creator.jpg'},
+  {name:'Leyla Q.',role:'SMM Specialist',meta:'4.9 (32 reviews)',projects:'21 projects',image:'/creator-icons/social-media-specialist.jpg'},
+  {name:'Tural S.',role:'Web Developer',meta:'4.7 (19 reviews)',projects:'14 projects',image:'/creator-icons/web-designer.jpg'},
+  {name:'Nigar R.',role:'Branding Specialist',meta:'4.8 (26 reviews)',projects:'16 projects',image:'/creator-icons/brand-strategist.jpg'},
 ];
 
-export default function Home() {
+export default async function Home() {
+  const heroSetting = await prisma.siteSetting.findUnique({ where: { id: 'homepage' } }).catch(() => null);
+  const heroImage = heroSetting?.heroImage || '/hero-space-4k.png';
   return (
     <main>
       <nav className="nav container">
@@ -31,7 +36,7 @@ export default function Home() {
       </nav>
 
       <section id="top" className="hero screenshotHero">
-        <div className="heroArt" aria-hidden="true" />
+        <div className="heroArt" aria-hidden="true" style={{ backgroundImage: `url(${heroImage})` }} />
         <div className="stars" />
         <div className="container heroInner">
           <div className="eyebrow">CREATIVE TALENT MARKETPLACE</div>

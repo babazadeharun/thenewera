@@ -1,21 +1,10 @@
-'use client';
-import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import CreatorsClient from './CreatorsClient';
 
-const creators = [
-  {slug:'aysel-m',name:'Aysel M.',role:'Visual Designer',meta:'4.9 · 28 reviews · 32 projects',style:'violet',initials:'AM',preset:'graphic-designer',skills:['Social Design','Campaigns','Packaging'],services:['graphic-design','branding','social-media']},
-  {slug:'rashad-a',name:'Rashad A.',role:'Filmmaker / Videographer',meta:'4.8 · 24 reviews · 18 projects',style:'blue',initials:'RA',preset:'videographer',skills:['Commercial','Reels','Editing'],services:['video-motion']},
-  {slug:'leyla-q',name:'Leyla Q.',role:'Brand Designer',meta:'4.9 · 32 reviews · 21 projects',style:'pink',initials:'LQ',preset:'branding-specialist',skills:['Branding','Identity','Art Direction'],services:['branding','graphic-design']},
-  {slug:'tural-s',name:'Tural S.',role:'Web Developer',meta:'4.7 · 19 reviews · 14 projects',style:'cyan',initials:'TS',preset:'web-developer',skills:['Next.js','E-commerce','Web Apps'],services:['web-design','development']},
-  {slug:'nigar-r',name:'Nigar R.',role:'Social Media Strategist',meta:'4.9 · 21 reviews · 26 projects',style:'gold',initials:'NR',preset:'marketing-specialist',skills:['Strategy','Content','Campaigns'],services:['social-media','marketing-seo']},
-  {slug:'kamran-h',name:'Kamran H.',role:'Performance Marketer',meta:'4.8 · 17 reviews · 22 projects',style:'green',initials:'KH',preset:'marketing-specialist',skills:['Meta Ads','Google Ads','Analytics'],services:['marketing-seo','social-media']},
-];
-
-export default function CreatorsPage(){
- const params=useSearchParams();
- const service=params.get('service') || '';
- const serviceLabels:Record<string,string>={'graphic-design':'Graphic Design','branding':'Branding','video-motion':'Video Production','photography':'Photography','social-media':'Social Media','web-design':'Web Design & Development','development':'Web Design & Development','marketing-seo':'Marketing & SEO'};
- const serviceLabel=serviceLabels[service] || (service ? service.replaceAll('-',' ').replace(/\b\w/g,m=>m.toUpperCase()) : '');
- const filtered=service ? creators.filter(c=>c.services.includes(service)) : creators;
- return <main className="innerPage"><div className="container innerHero"><Link className="back" href="/">← New Era</Link><div className="eyebrow">CURATED CREATOR NETWORK</div><h1>{service ? <>Creators for<br/><span>{serviceLabel}.</span></> : <>Find your<br/><span>creative match.</span></>}</h1><p>{service ? `Explore specialists matched to ${serviceLabel}. Each profile is selected around relevant skills, portfolio work and availability.` : 'Every specialist is presented through their work. Personal contact details stay private; projects start inside New Era.'}</p><div className="filterBar"><Link className={!service?'active':''} href="/creators">All</Link><Link className={service==='graphic-design'||service==='branding'?'active':''} href="/creators?service=graphic-design">Design</Link><Link className={service==='video-motion'?'active':''} href="/creators?service=video-motion">Video</Link><Link className={service==='social-media'||service==='marketing-seo'?'active':''} href="/creators?service=social-media">Marketing</Link><Link className={service==='web-design'||service==='development'?'active':''} href="/creators?service=development">Development</Link></div></div><div className="container creatorMatchNote"><span>{filtered.length} matched specialist{filtered.length===1?'':'s'}</span>{service&&<Link href={`/start-project?service=${encodeURIComponent(serviceLabel)}`}>Start with this service →</Link>}</div><div className="container creatorGrid large">{filtered.map(c=><article className="creatorCard" key={c.slug}><div className={`portrait ${c.style}`}><img src={`/creator-presets/${c.preset}.jpg`} alt=""/><span className="available">Available</span></div><div className="creatorBody"><h3>{c.name}</h3><p>{c.role}</p><div className="rating">★ {c.meta}</div><div className="creatorTags">{c.skills.map(s=><span key={s}>{s}</span>)}</div><Link className="profileBtn" href={`/creators/${c.slug}?service=${service}`}>View Portfolio <span>→</span></Link></div></article>)}</div>{filtered.length===0&&<div className="container emptyMatch"><h2>No exact specialist match yet.</h2><p>New Era can review the brief and assign the closest available specialist.</p><Link className="primary" href="/start-project">Send a Brief →</Link></div>}</main>
+export default function CreatorsPage() {
+  return (
+    <Suspense fallback={<main className="innerPage" />}>
+      <CreatorsClient />
+    </Suspense>
+  );
 }

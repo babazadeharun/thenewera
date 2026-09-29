@@ -1,9 +1,122 @@
 'use client';
+
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-export default function Login(){
- const [email,setEmail]=useState(''); const [password,setPassword]=useState(''); const [error,setError]=useState(''); const [loading,setLoading]=useState(false);
- async function submit(e:FormEvent){e.preventDefault();setError('');setLoading(true);try{const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});const data=await res.json();if(!res.ok){setError(data.error||'Email or password is incorrect.');return;}if(data.user?.client)localStorage.setItem('new-era-client-session',JSON.stringify(data.user.client));window.location.href='/account';}catch{setError('Unable to connect to New Era right now.');}finally{setLoading(false);}}
- return <main className="authPage"><div className="authGlow"/><div className="authCard"><Link className="authBrand" href="/"><img src="/new-era-logo.svg" alt="New Era"/></Link><div className="eyebrow">CLIENT PORTAL</div><h1>Welcome <span>back.</span></h1><p className="authIntro">Sign in to manage your company, briefs and New Era projects.</p><form onSubmit={submit} className="authForm"><label>Work email<input required type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="name@company.com"/></label><label>Password<input required type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Your password"/></label>{error&&<div className="authError">{error}</div>}<button disabled={loading} className="primary authSubmit" type="submit">{loading?'Signing in…':'Log in'} {!loading&&<ArrowRight size={16}/>}</button><div className="authFoot">New to New Era? <Link href="/register">Create a client account</Link></div></form><div className="authPrivacy">Your session is secured with an HTTP-only server cookie. Your password is never stored in the browser.</div></div></main>;
+
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Email or password is incorrect.');
+        return;
+      }
+
+      if (data.user?.client) {
+        localStorage.setItem(
+          'new-era-client-session',
+          JSON.stringify(data.user.client)
+        );
+      }
+
+      if (data.user?.role === 'ADMIN') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/account';
+      }
+    } catch {
+      setError('Unable to connect to New Era right now.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="authPage">
+      <div className="authGlow" />
+
+      <div className="authCard">
+        <Link className="authBrand" href="/">
+          <img src="/new-era-logo.svg" alt="New Era" />
+        </Link>
+
+        <div className="eyebrow">CLIENT PORTAL</div>
+
+        <h1>
+          Welcome <span>back.</span>
+        </h1>
+
+        <p className="authIntro">
+          Sign in to manage your company, briefs and New Era projects.
+        </p>
+
+        <form onSubmit={submit} className="authForm">
+          <label>
+            Work email
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@company.com"
+            />
+          </label>
+
+          <label>
+            Password
+            <input
+              required
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+            />
+          </label>
+
+          {error && <div className="authError">{error}</div>}
+
+          <button
+            disabled={loading}
+            className="primary authSubmit"
+            type="submit"
+          >
+            {loading ? 'Signing in…' : 'Log in'}
+            {!loading && <ArrowRight size={16} />}
+          </button>
+
+          <div className="authFoot">
+            New to New Era?{' '}
+            <Link href="/register">Create a client account</Link>
+          </div>
+        </form>
+
+        <div className="authPrivacy">
+          Your session is secured with an HTTP-only server cookie. Your
+          password is never stored in the browser.
+        </div>
+      </div>
+    </main>
+  );
 }

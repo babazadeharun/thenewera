@@ -111,3 +111,290 @@
 .backendFoundationCard{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:0 0 18px;padding:18px 20px;border:1px solid rgba(157,124,255,.22);border-radius:18px;background:linear-gradient(120deg,rgba(75,45,130,.18),rgba(16,18,34,.72));box-shadow:0 18px 50px rgba(0,0,0,.18)}
 .backendFoundationCard>div{display:flex;flex-direction:column;gap:4px}.backendFoundationCard small{font-size:10px;letter-spacing:.16em;opacity:.6}.backendFoundationCard strong{font-size:15px}.backendFoundationCard span{font-size:12px;opacity:.62;max-width:760px}.backendFoundationCard a{white-space:nowrap;border:1px solid rgba(255,255,255,.12);padding:9px 12px;border-radius:10px;font-size:12px}
 @media(max-width:700px){.backendFoundationCard{align-items:flex-start;flex-direction:column}.backendFoundationCard a{width:100%;text-align:center}}
+
+/* V23 — readability and mobile-first refinements */
+/* Keep the premium visual system, but raise small UI text to a comfortable reading size. */
+.eyebrow{font-size:10px}
+.navLinks{font-size:12px}
+.navActions{font-size:12px}
+.hero p,.sectionIntro>p{font-size:14px}
+.serviceCard p{font-size:13px}
+.filters{font-size:12px}
+.creatorHead p{font-size:12px}
+.creatorMeta{font-size:11px}
+.profileBtn{font-size:11px}
+.back{font-size:12px}
+.innerHero>p,.formPage>p{font-size:13px}
+.serviceNumber{font-size:11px}
+.serviceRow p{font-size:12px}
+.tagLine span,.filterBar span{font-size:10px}
+.projectForm label{font-size:12px}
+.projectForm input,.projectForm select,.projectForm textarea{font-size:14px}
+.privateNote{font-size:11px}
+.adminLead{font-size:14px}
+.adminTabs button{font-size:13px}
+.adminToolbar small,.panelHead small,.adminToolbar small{font-size:10px}
+.adminPanel label{font-size:12px}
+.creatorAdminRow strong{font-size:13px}
+.creatorAdminRow small{font-size:11px}
+.creatorAdminRow em{font-size:10px}
+.fieldGrid small{font-size:9px}
+.fieldGrid b{font-size:12px}
+.wideField{font-size:12px}
+.clientsAdminToolbar p{font-size:12px}
+.clientDirectoryRow strong{font-size:11px}
+.clientDirectoryRow small,.clientDirectoryRow em{font-size:9px}
+.clientInfoGrid span{font-size:9px}
+.clientInfoGrid strong{font-size:10px}
+.crmHeader small,.crmHeader p{font-size:10px}
+.crmSearch input,.crmActions select{font-size:12px}
+.crmKpis span{font-size:10px}
+.crmPipelineRows span{font-size:10px}
+.crmCompanyRow strong{font-size:11px}
+.crmCompanyRow small{font-size:9px}
+.crmProjectRow small,.crmProjectRow span,.crmProjectRow em{font-size:9px}
+.crmActivityRow strong{font-size:10px}
+.crmActivityRow small{font-size:9px}
+.crmLoadGrid strong{font-size:10px}
+.crmLoadGrid small{font-size:9px}
+.qcLead{font-size:11px}
+.deliverySummary span{font-size:9px}
+.deliverySummary small,.deliverySummary a,.deliveryLink{font-size:9px}
+.deliverySummary p{font-size:11px}
+.qcActions label{font-size:10px}
+.adminSave,.secondaryAction{font-size:11px}
+.revisionHistory>small{font-size:9px}
+.revisionHistory b{font-size:10px}
+.revisionHistory span{font-size:9px}
+
+@media (max-width: 700px){
+  html,body{overflow-x:hidden}
+  .container{width:calc(100% - 28px)}
+
+  /* Mobile header: keep Log In visible instead of hiding it. */
+  .nav{height:62px;gap:10px}
+  .brand{min-width:0;flex:1}
+  .brand img{width:132px}
+  .navLinks{display:none}
+  .navActions{display:flex;gap:8px;flex:none;font-size:12px}
+  .navActions .iconBtn{display:none}
+  .navActions .login{display:inline-flex!important;align-items:center;justify-content:center;padding:8px 5px;color:#dfe1ea;white-space:nowrap}
+  .navActions .pill{padding:9px 12px;font-size:11px;white-space:nowrap}
+
+  /* Public pages */
+  .hero{min-height:650px}
+  .heroInner{padding-top:70px}
+  .hero h1{font-size:43px;max-width:340px}
+  .hero p{font-size:14px;line-height:1.65;max-width:330px}
+  .heroCtas{align-items:stretch;flex-direction:column;width:min(100%,330px)}
+  .heroCtas .primary,.heroCtas .secondary{justify-content:center;text-align:center;font-size:13px}
+  .proof strong{font-size:12px}
+  .proof small{font-size:10px}
+  .section{padding:58px 0}
+  .sectionIntro h2,.finalCta h2{font-size:31px}
+  .sectionIntro>p{font-size:14px}
+  .serviceGrid{grid-template-columns:1fr}
+  .serviceCard{min-height:126px;padding:18px}
+  .serviceCard h3{font-size:16px}
+  .serviceCard p{font-size:13px;max-width:none}
+  .filters{gap:7px;overflow-x:auto;padding-bottom:4px}
+  .filters span{font-size:11px}
+  .creatorGrid{grid-template-columns:1fr 1fr}
+  .creatorBody{padding:13px}
+  .creatorHead h3{font-size:14px}
+  .creatorHead p{font-size:11px}
+  .creatorMeta{font-size:10px}
+  .profileBtn{font-size:11px;padding:9px 7px}
+  .howVisual h2{font-size:24px}
+  .howVisual p{font-size:11px}
+  .steps span{font-size:12px}
+  .steps small{font-size:10px}
+  .footer{font-size:10px}
+
+  /* Inner pages and project forms */
+  .innerHero{padding:38px 0 32px}
+  .innerHero h1,.formPage h1{font-size:39px;line-height:1.04}
+  .innerHero>p,.formPage>p{font-size:14px;line-height:1.65}
+  .serviceRow{grid-template-columns:38px 1fr 24px;gap:12px;padding:20px 3px}
+  .serviceRow h2{font-size:19px}
+  .serviceRow p{font-size:12px;line-height:1.5}
+  .tagLine span,.filterBar span{font-size:10px}
+  .formPage{padding:32px 0 55px}
+  .projectForm{gap:15px}
+  .projectForm label{font-size:13px;gap:7px}
+  .projectForm input,.projectForm select,.projectForm textarea{font-size:16px;padding:13px}
+  .formSplit{grid-template-columns:1fr}
+  .creatorChoices{grid-template-columns:1fr}
+  .creatorChoices button{font-size:11px;min-height:58px}
+  .creatorChoices button span{font-size:10px}
+  .successBox{padding:28px 18px}
+  .successBox h2{font-size:28px}
+
+  /* Creator profiles */
+  .creatorGrid.large{grid-template-columns:1fr}
+  .creatorGrid.large .portrait{height:260px}
+  .cleanIdentityCopy h1,.v10IdentityCopy h1{font-size:40px}
+  .cleanRole{font-size:13px}
+  .cleanIdentityCopy p{font-size:13px}
+  .cleanTags span{font-size:11px}
+  .cleanStats small{font-size:10px}
+  .portfolioHeading h2,.cleanPortfolio .portfolioHeading h2{font-size:32px}
+  .portfolioHeading p{font-size:12px}
+  .portfolioFilters span{font-size:10px}
+  .portfolioCardBody strong{font-size:14px}
+  .portfolioCardBody small,.portfolioCardBody p{font-size:10px}
+
+  /* Client login/register */
+  .authPage{padding:20px 14px;place-items:center}
+  .authCard{width:100%;padding:24px 18px;border-radius:18px}
+  .authBrand{margin-bottom:24px}
+  .authBrand img{width:135px}
+  .authCard h1{font-size:36px;line-height:1.02}
+  .authIntro{font-size:14px;line-height:1.6;margin:12px 0 24px}
+  .authForm{gap:15px}
+  .authForm label{font-size:13px;gap:8px}
+  .authForm input,.authForm select{font-size:16px;padding:13px 14px;min-height:48px}
+  .authSubmit{font-size:14px;min-height:48px}
+  .authFoot{font-size:12px;line-height:1.5}
+  .authPrivacy{font-size:10px;line-height:1.6}
+  .authError{font-size:12px}
+  .authSectionTitle{font-size:14px}
+  .optional{font-size:10px}
+
+  /* Client account / project workspace */
+  .accountPage{padding:32px 0 60px}
+  .accountTop h1{font-size:40px}
+  .accountTop p{font-size:13px;line-height:1.6}
+  .accountWelcome{padding:18px}
+  .accountWelcome h2{font-size:24px}
+  .accountWelcome p{font-size:12px}
+  .accountWelcome small,.accountSectionHead small,.accountCard>small{font-size:9px}
+  .accountAction{padding:15px}
+  .accountAction b{font-size:12px}
+  .accountAction span{font-size:10px}
+  .accountSection{padding:18px}
+  .accountSectionHead h3{font-size:19px}
+  .accountSectionHead>a{font-size:11px}
+  .accountProject small{font-size:9px}
+  .accountProject b{font-size:12px}
+  .accountProject>span{font-size:9px}
+
+  /* Admin mobile layout: controls remain reachable without horizontal overflow. */
+  .adminTop{height:62px}
+  .adminBack{font-size:12px}
+  .adminTitle{font-size:12px}
+  .adminContent{padding:32px 0 60px}
+  .adminContent h1{font-size:39px;line-height:1.05}
+  .adminEyebrow{font-size:10px}
+  .adminLead{font-size:13px;line-height:1.65}
+  .adminHeadingRow{display:block}
+  .adminTabs{display:flex!important;width:100%;overflow-x:auto;gap:7px;padding:4px 1px 8px;scrollbar-width:none}
+  .adminTabs::-webkit-scrollbar{display:none}
+  .adminTabs button{flex:0 0 auto!important;font-size:12px;padding:9px 12px;white-space:nowrap}
+  .adminToolbar{display:flex;align-items:flex-start;flex-direction:column;gap:12px;margin:28px 0 13px}
+  .adminToolbar small,.panelHead small{font-size:10px}
+  .adminToolbar h2{font-size:23px}
+  .adminAction{font-size:12px;padding:10px 14px}
+  .adminFormGrid,.creatorAdminLayout,.portfolioAdminGrid,.projectsLayout,.projectsAdminGrid{grid-template-columns:1fr}
+  .adminPanel{padding:18px;border-radius:14px}
+  .panelHead{margin-bottom:17px}
+  .panelHead h2{font-size:21px}
+  .panelHead h3{font-size:18px}
+  .adminPanel label{font-size:12px}
+  .adminPanel input,.adminPanel select,.adminPanel textarea{font-size:15px;padding:12px}
+  .adminSave,.secondaryAction{min-height:44px;font-size:12px}
+  .presetGrid{grid-template-columns:repeat(3,1fr);max-height:none}
+  .preset span{font-size:10px}
+  .creatorListPanel{display:grid;grid-template-columns:1fr!important}
+  .creatorAdminRow{min-height:68px;padding:9px}
+  .creatorAdminRow strong{font-size:13px}
+  .creatorAdminRow small{font-size:11px}
+  .creatorAdminRow em{font-size:10px}
+  .editorProfile{align-items:flex-start;flex-direction:column;padding:16px}
+  .editorProfile strong{font-size:21px}
+  .editorProfile span,.editorProfile button{font-size:11px}
+  .fieldGrid{grid-template-columns:1fr}
+  .fieldGrid small{font-size:9px}
+  .fieldGrid b{font-size:12px}
+  .wideField{font-size:12px}
+
+  /* Admin projects / clients / CRM */
+  .projectList{grid-template-columns:1fr}
+  .projectsTop h1{font-size:39px}
+  .projectsTop p{font-size:13px;line-height:1.6}
+  .projectDetail,.adminProjectDetail{padding:16px}
+  .adminProjectInfoGrid,.detailGrid,.adminProjectModules{grid-template-columns:1fr}
+  .adminStatusFlow,.timeline{grid-template-columns:1fr 1fr}
+  .adminStatusFlow button span{font-size:10px}
+  .adminBriefFacts,.briefFacts{grid-template-columns:1fr}
+  .adminBriefFacts span,.briefFacts span{font-size:10px}
+  .adminBriefFacts strong,.briefFacts strong{font-size:12px}
+  .clientsAdminToolbar{display:block}
+  .clientsAdminToolbar h2{font-size:26px}
+  .clientsAdminToolbar p{font-size:12px}
+  .clientsAdminLayout{grid-template-columns:1fr}
+  .clientsDirectory,.clientDetailPanel{min-height:auto;padding:15px}
+  .directoryHead{display:block}
+  .directoryHead h3{font-size:20px}
+  .clientSearch{width:100%;margin-top:10px}
+  .clientSearch input{font-size:14px}
+  .clientDirectoryRow strong{font-size:12px}
+  .clientDirectoryRow small,.clientDirectoryRow em{font-size:10px}
+  .clientInfoGrid{grid-template-columns:1fr}
+  .clientInfoGrid span{font-size:9px}
+  .clientInfoGrid strong{font-size:10px}
+  .companyRows{grid-template-columns:1fr}
+  .crmHeader h2{font-size:25px}
+  .crmHeader p{font-size:11px;line-height:1.6}
+  .crmActions{display:grid;grid-template-columns:1fr;width:100%}
+  .crmSearch{width:100%}
+  .crmSearch input,.crmActions select{font-size:14px}
+  .crmKpis{grid-template-columns:1fr 1fr}
+  .crmKpis>div{padding:13px}
+  .crmKpis span{font-size:10px}
+  .crmKpis strong{font-size:20px}
+  .crmPipelineRows{grid-template-columns:1fr}
+  .crmPipelineRows span{font-size:11px}
+  .crmProjectRow{grid-template-columns:1fr auto;gap:7px}
+  .crmProjectRow>svg{display:none}
+  .crmProjectRow small,.crmProjectRow span,.crmProjectRow em{font-size:9px}
+  .crmLoadGrid{grid-template-columns:1fr}
+  .qualityControlCard,.clientDeliveryCard{padding:15px}
+  .qcLead,.deliverySummary p{font-size:11px}
+  .qcActions,.clientReviewGate{grid-template-columns:1fr}
+  .qcActions textarea,.qcActions input,.revisionComposer textarea{font-size:15px}
+  .deliveryLink,.deliverySummary a{font-size:10px}
+  .adminComposer input,.messageComposer input{font-size:15px;min-height:44px}
+  .messageComposer button,.adminComposer button{min-height:44px;width:44px}
+}
+
+@media (max-width: 430px){
+  .container{width:calc(100% - 22px)}
+  .brand img{width:118px}
+  .navActions{gap:5px}
+  .navActions .login{font-size:11px;padding:8px 3px}
+  .navActions .pill{font-size:10px;padding:8px 9px}
+  .hero h1{font-size:38px}
+  .hero p{font-size:13px}
+  .creatorGrid{grid-template-columns:1fr}
+  .portrait{height:220px}
+  .adminTabs button{font-size:11px;padding:8px 10px}
+  .crmKpis{grid-template-columns:1fr}
+  .authCard{padding:22px 16px}
+  .authCard h1{font-size:33px}
+}
+
+/* Business operations: sales CRM + finance */
+.creatorEditorActions{display:flex;align-items:center;gap:10px}
+.dangerAction{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,90,120,.28);background:rgba(255,70,110,.07);color:#ff9ab0;border-radius:10px;padding:9px 12px;font-size:13px;cursor:pointer}
+.dangerAction:hover{background:rgba(255,70,110,.14);border-color:rgba(255,90,120,.45)}
+.salesHeader,.financeHeader{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin:42px 0 22px}
+.salesHeader h2,.financeHeader h2{font-size:32px;margin:7px 0 8px}.salesHeader p,.financeHeader p{max-width:760px;color:#8290b0;font-size:15px;line-height:1.65;margin:0}
+.salesTargetCard{padding:22px;display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:center;margin-bottom:18px}.salesTargetCard h3{font-size:22px;margin:5px 0}.salesTargetCard p{font-size:13px;color:#8290b0;margin:0}.targetControl{display:flex;align-items:center;gap:10px;justify-content:flex-end}.targetControl label{display:flex;align-items:center;gap:9px;color:#8997b7;font-size:12px}.targetControl input{width:82px;background:#080b14;border:1px solid #20273a;color:#f4f6ff;border-radius:9px;padding:10px 11px;font-size:14px}.targetBar{grid-column:1/-1;height:7px;border-radius:999px;background:#111728;overflow:hidden}.targetBar span{display:block;height:100%;background:linear-gradient(90deg,#7546ff,#5b91ff);border-radius:inherit}
+.salesKpis,.financeKpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.salesKpis>div,.financeKpis>div{border:1px solid #1b2233;background:rgba(8,11,20,.76);border-radius:14px;padding:17px}.salesKpis svg,.financeKpis svg{width:18px;height:18px;color:#9b7bff}.salesKpis span,.financeKpis span{display:block;color:#7d89a6;font-size:12px;margin-top:12px}.salesKpis strong,.financeKpis strong{display:block;font-size:22px;margin-top:5px}
+.salesToolbar,.financeToolbar{display:flex;gap:10px;align-items:center;margin:14px 0}.salesToolbar .clientSearch,.financeToolbar .clientSearch{flex:1}.salesToolbar select,.financeToolbar select{background:#080b14;border:1px solid #20273a;color:#e9edfa;border-radius:10px;padding:11px 13px;font-size:14px}.salesLayout{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1.7fr);gap:14px}.salesList{padding:8px;min-height:480px}.salesLeadRow{width:100%;display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:10px;text-align:left;padding:14px;border:1px solid transparent;border-radius:11px;background:transparent;color:#dfe5f5;cursor:pointer}.salesLeadRow:hover,.salesLeadRow.active{background:rgba(112,76,255,.08);border-color:rgba(122,88,255,.25)}.salesLeadRow span{min-width:0}.salesLeadRow strong,.salesLeadRow small,.salesLeadRow em{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.salesLeadRow strong{font-size:14px}.salesLeadRow small{font-size:12px;color:#8c98b2;margin-top:4px}.salesLeadRow em{font-size:11px;color:#67738e;font-style:normal;margin-top:4px}.salesLeadRow b{font-size:11px;color:#a98eff;font-weight:600;white-space:nowrap}.salesDetail{padding:22px}.salesDetailHead{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;border-bottom:1px solid #1b2233;padding-bottom:18px;margin-bottom:18px}.salesDetailHead h2{font-size:26px;margin:5px 0}.salesDetailHead p{color:#8490aa;font-size:13px;margin:0}.salesFields{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:10px;margin-bottom:15px}.salesFields label{font-size:12px;color:#8996b2}.salesFields input,.salesFields select{display:block;width:100%;margin-top:7px;background:#080b14;border:1px solid #20273a;color:#f2f5ff;border-radius:9px;padding:11px;font-size:14px}.salesContactGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.salesContactGrid>div{display:flex;gap:9px;align-items:flex-start;border:1px solid #1b2233;padding:13px;border-radius:11px}.salesContactGrid svg{color:#8d6cff;flex:none}.salesContactGrid span{font-size:11px;color:#6f7b96}.salesContactGrid strong{display:block;color:#e5e9f5;font-size:13px;margin-top:4px;overflow-wrap:anywhere}.salesActions{display:flex;gap:9px;margin-top:14px}.salesActions button:disabled{opacity:.45;cursor:not-allowed}
+.financeSummary{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-bottom:18px}.financeSummary>div{border:1px solid #1b2233;background:rgba(8,11,20,.76);border-radius:14px;padding:19px}.financeSummary h3{margin:6px 0 17px;font-size:20px}.financeBars{display:grid;gap:12px}.financeBars span{display:block}.financeBars span>i{display:block;height:7px;border-radius:99px;background:linear-gradient(90deg,#7650ff,#638fff);margin-bottom:6px}.financeBars span:last-child>i{background:linear-gradient(90deg,#45516a,#69748b)}.financeBars b{font-size:12px;color:#a2abc0}.financeMini{display:grid;align-content:center;gap:16px}.financeMini span{color:#7c89a5;font-size:12px}.financeMini strong{display:block;color:#eef1f9;font-size:18px;margin-top:4px}.financeTable{overflow:hidden}.financeRow{display:grid;grid-template-columns:34px minmax(0,1fr) auto auto 34px;gap:12px;align-items:center;padding:13px 16px;border-top:1px solid #171e2e}.financeRow:first-of-type{border-top:0}.financeType{width:30px;height:30px;display:grid;place-items:center;border-radius:9px}.financeType.income{background:rgba(90,220,150,.08);color:#77e3ae}.financeType.expense{background:rgba(255,100,130,.08);color:#ff9ab0}.financeRow div{min-width:0}.financeRow strong,.financeRow small{display:block}.financeRow strong{font-size:14px}.financeRow small{font-size:11px;color:#737f9b;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.financeRow b{font-size:14px;white-space:nowrap}.financeRow b.income{color:#7ce2ad}.financeRow b.expense{color:#ff9caf}.financeRow em{font-size:11px;color:#8b96ae;border:1px solid #232b3d;border-radius:999px;padding:5px 8px;font-style:normal;white-space:nowrap}.financeRow>button{border:0;background:transparent;color:#6f7b94;cursor:pointer}.financeRow>button:hover{color:#ff8da4}.wideModal{max-width:720px}
+@media(max-width:760px){
+ .creatorEditorActions{width:100%;justify-content:space-between}.salesHeader,.financeHeader{display:block;margin:28px 0 18px}.salesHeader .adminAction,.financeHeader .adminAction{margin-top:14px}.salesHeader h2,.financeHeader h2{font-size:27px}.salesHeader p,.financeHeader p{font-size:14px}.salesTargetCard{grid-template-columns:1fr}.targetControl{justify-content:flex-start}.targetBar{grid-column:auto}.salesKpis,.financeKpis{grid-template-columns:1fr 1fr}.salesToolbar,.financeToolbar{display:grid;grid-template-columns:1fr}.salesToolbar select{width:100%}.salesLayout{grid-template-columns:1fr}.salesList{min-height:auto}.salesLeadRow{grid-template-columns:1fr auto}.salesLeadRow>svg{display:none}.salesLeadRow b{grid-column:2;grid-row:1/3}.salesDetail{padding:15px}.salesFields{grid-template-columns:1fr}.salesContactGrid{grid-template-columns:1fr}.salesActions{display:grid;grid-template-columns:1fr}.financeSummary{grid-template-columns:1fr}.financeRow{grid-template-columns:30px minmax(0,1fr) auto 30px}.financeRow em{display:none}.financeRow b{font-size:12px}.financeRow small{font-size:10px}.financeRow>button{width:30px}.wideModal{max-height:90vh;overflow:auto}
+}
+@media(max-width:430px){.salesKpis,.financeKpis{grid-template-columns:1fr}.salesLeadRow strong{font-size:13px}.salesLeadRow small{font-size:11px}.financeRow{padding:11px 10px;gap:8px}.financeRow strong{font-size:12px}}

@@ -27,6 +27,16 @@ enum ProjectStatus {
   COMPLETED
 }
 
+enum MediaCategory {
+  HERO
+  CREATORS
+  PORTFOLIO
+  CLIENTS
+  SERVICES
+  BLOG
+  GENERAL
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String?   @unique
@@ -88,7 +98,83 @@ model VerificationCode {
 model SiteSetting {
   id        String   @id
   heroImage String?  @db.Text
+  siteName             String?  @db.Text
+  logoMediaId          String?
+  faviconMediaId       String?
+  seoTitle             String?  @db.Text
+  seoDescription       String?  @db.Text
+  socialImageMediaId   String?
+  contactEmail         String?
+  contactPhone         String?
+  address              String?  @db.Text
+  socialLinks          String?  @db.Text
+  maintenanceMode      Boolean  @default(false)
+  logoMedia            Media?   @relation("SiteLogoMedia", fields: [logoMediaId], references: [id], onDelete: SetNull)
+  faviconMedia         Media?   @relation("SiteFaviconMedia", fields: [faviconMediaId], references: [id], onDelete: SetNull)
+  socialImageMedia     Media?   @relation("SiteSocialImageMedia", fields: [socialImageMediaId], references: [id], onDelete: SetNull)
   updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id           String        @id @default(cuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  width        Int?
+  height       Int?
+  url          String        @db.Text
+  storageKey   String?
+  category     MediaCategory @default(GENERAL)
+  alt          String?       @db.Text
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  desktopHeros Hero[]        @relation("HeroDesktopMedia")
+  mobileHeros  Hero[]        @relation("HeroMobileMedia")
+  videoHeros   Hero[]        @relation("HeroVideoMedia")
+  homepageSections HomepageSection[]
+  siteLogos       SiteSetting[] @relation("SiteLogoMedia")
+  siteFavicons    SiteSetting[] @relation("SiteFaviconMedia")
+  siteSocialImages SiteSetting[] @relation("SiteSocialImageMedia")
+
+  @@index([category])
+  @@index([createdAt])
+}
+
+model Hero {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?  @db.Text
+  ctaText       String?
+  ctaUrl        String?
+  overlay       String?
+  desktopMediaId String?
+  mobileMediaId  String?
+  videoMediaId   String?
+  active        Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  desktopMedia Media?   @relation("HeroDesktopMedia", fields: [desktopMediaId], references: [id], onDelete: SetNull)
+  mobileMedia  Media?   @relation("HeroMobileMedia", fields: [mobileMediaId], references: [id], onDelete: SetNull)
+  videoMedia   Media?   @relation("HeroVideoMedia", fields: [videoMediaId], references: [id], onDelete: SetNull)
+
+  @@index([active, displayOrder])
+}
+
+model HomepageSection {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  title       String
+  description String?  @db.Text
+  imageId     String?
+  enabled     Boolean  @default(true)
+  displayOrder Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  image       Media?   @relation(fields: [imageId], references: [id], onDelete: SetNull)
+
+  @@index([enabled, displayOrder])
 }
 
 model Creator {

@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma';
-import { hashPassword } from '../lib/auth';
+import { prisma } from '../src/lib/prisma';
+import { hashPassword } from '../src/lib/auth';
 
 async function main() {
   const email = 'admin@thenewera.space';

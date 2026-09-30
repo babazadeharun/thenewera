@@ -1,10 +1,5 @@
-import { Suspense } from 'react';
-import CreatorsClient from './CreatorsClient';
+import { redirect } from 'next/navigation';
 
 export default function CreatorsPage() {
-  return (
-    <Suspense fallback={<main className="innerPage" />}>
-      <CreatorsClient />
-    </Suspense>
-  );
+  redirect('/portfolio');
 }

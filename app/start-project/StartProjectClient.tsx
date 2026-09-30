@@ -1,67 +1,29 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 const services = [
-  'Qrafik dizayn',
   'Brendinq',
-  'Video istehsalı',
+  'Kreativ dizayn',
+  'Video və Motion',
   'Fotoqrafiya',
   'Sosial media',
-  'Veb dizayn və proqramlaşdırma',
-  'Marketinq və SEO',
+  'Rəqəmsal marketinq',
+  'Veb və rəqəmsal',
+  'Marketinq strategiyası',
 ];
 const serviceQueryLabels: Record<string,string> = {
-  'graphic-design':'Qrafik dizayn',
   branding:'Brendinq',
-  'video-motion':'Video istehsalı',
+  'creative-design':'Kreativ dizayn',
+  'video-motion':'Video və Motion',
   photography:'Fotoqrafiya',
   'social-media':'Sosial media',
-  'web-design':'Veb dizayn və proqramlaşdırma',
-  development:'Veb dizayn və proqramlaşdırma',
-  'marketing-seo':'Marketinq və SEO',
+  'digital-marketing':'Rəqəmsal marketinq',
+  'web-design':'Veb və rəqəmsal',
+  'marketing-strategy':'Marketinq strategiyası',
 };
-
-const creatorCatalog = [
-  {
-    slug: 'aysel-m',
-    name: 'Aysel M.',
-    role: 'Qrafik dizayner',
-    services: ['Qrafik dizayn', 'Brendinq', 'Sosial media'],
-  },
-  {
-    slug: 'rashad-a',
-    name: 'Rashad A.',
-    role: 'Videoqraf',
-    services: ['Video istehsalı'],
-  },
-  {
-    slug: 'leyla-q',
-    name: 'Leyla Q.',
-    role: 'Brend dizayneri',
-    services: ['Brendinq', 'Qrafik dizayn'],
-  },
-  {
-    slug: 'tural-s',
-    name: 'Tural S.',
-    role: 'Veb proqramçı',
-    services: ['Veb dizayn və proqramlaşdırma'],
-  },
-  {
-    slug: 'nigar-r',
-    name: 'Nigar R.',
-    role: 'Sosial media strateqi',
-    services: ['Sosial media', 'Marketinq və SEO'],
-  },
-  {
-    slug: 'kamran-h',
-    name: 'Kamran H.',
-    role: 'Performance marketoloq',
-    services: ['Marketinq və SEO', 'Sosial media'],
-  },
-];
 
 export default function StartProjectClient() {
   const params = useSearchParams();
@@ -82,21 +44,9 @@ export default function StartProjectClient() {
     references: '',
     budget: 'Çevik',
     deadline: '',
-    creator: 'Fərq etmir',
   });
 
-  const matchingCreators = useMemo(
-    () =>
-      form.service
-        ? creatorCatalog.filter((creator) =>
-            creator.services.includes(form.service)
-          )
-        : creatorCatalog,
-    [form.service]
-  );
-
   useEffect(() => {
-    const requestedCreator = params.get('creator');
     const requestedXidmət = params.get('service');
     const requestedServiceLabel = requestedXidmət ? (serviceQueryLabels[requestedXidmət] || requestedXidmət) : '';
 
@@ -107,19 +57,6 @@ export default function StartProjectClient() {
           ? requestedServiceLabel
           : current.service,
       }));
-    }
-
-    if (requestedCreator) {
-      const found = creatorCatalog.find(
-        (creator) => creator.slug === requestedCreator
-      );
-
-      if (found) {
-        setForm((current) => ({
-          ...current,
-          creator: `${found.name} — ${found.role}`,
-        }));
-      }
     }
 
     const session = localStorage.getItem('new-era-client-session');
@@ -194,8 +131,7 @@ export default function StartProjectClient() {
         </h1>
 
         <p>
-          Brief-i bir dəfə göndərin. New Era mütəxəssisi,
-          ünsiyyəti və təhvili platforma daxilində idarə edir.
+          Brief-i bir dəfə göndərin. New Era strategiyanı, kreativ prosesi və icranı vahid komanda kimi idarə edir.
         </p>
 
         {sent ? (
@@ -214,8 +150,8 @@ export default function StartProjectClient() {
                 Layihələrimi aç
               </Link>
 
-              <Link className="secondary" href="/creators">
-                Mütəxəssisləri kəşf et
+              <Link className="secondary" href="/portfolio">
+                İşlərimizə bax
               </Link>
             </div>
           </div>
@@ -249,10 +185,7 @@ export default function StartProjectClient() {
                   <select
                     required
                     value={form.service}
-                    onChange={(e) => {
-                      update('service', e.target.value);
-                      update('creator', 'Fərq etmir');
-                    }}
+                    onChange={(e) => update('service', e.target.value)}
                   >
                     <option value="" disabled>
                       Xidmət seçin
@@ -265,70 +198,6 @@ export default function StartProjectClient() {
                     ))}
                   </select>
                 </label>
-
-                <label>
-                  Üstünlük verilən mütəxəssis
-
-                  <select
-                    value={form.creator}
-                    onChange={(e) => update('creator', e.target.value)}
-                  >
-                    <option value="Fərq etmir">Fərq etmir</option>
-
-                    {matchingCreators.map((creator) => (
-                      <option key={creator.slug}>
-                        {creator.name} — {creator.role}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <div className="creatorPick">
-                <small>
-                  {form.service
-                    ? 'UYĞUN MÜTƏXƏSSİSLƏR'
-                    : 'MÜTƏXƏSSİS SEÇİMİ'}
-                </small>
-
-                <p>
-                  {form.service
-                    ? `${matchingCreators.length} mütəxəssis${
-                        matchingCreators.length === 1 ? '' : 's'
-                      } bu xidmətə uyğundur.`
-                    : 'Əvvəlcə xidmət seçin ki, uyğun mütəxəssisləri görün və ya uyğun şəxsi New Era-nın tövsiyə etməsinə icazə verin.'}
-                </p>
-
-                <div className="creatorChoices">
-                  {(form.service
-                    ? matchingCreators
-                    : creatorCatalog.slice(0, 3)
-                  ).map((creator) => {
-                    const creatorValue = `${creator.name} — ${creator.role}`;
-
-                    return (
-                      <button
-                        type="button"
-                        key={creator.slug}
-                        className={
-                          form.creator === creatorValue ? 'selected' : ''
-                        }
-                        onClick={() =>
-                          update('creator', creatorValue)
-                        }
-                      >
-                        <strong>{creator.name}</strong>
-
-                        <span>
-                          {creator.role} ·{' '}
-                          {form.creator === creatorValue
-                            ? 'Seçildi'
-                            : 'Seç'}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
 
               <label>

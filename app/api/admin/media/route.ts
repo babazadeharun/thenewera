@@ -7,6 +7,7 @@ import { deleteMedia } from '@/lib/storage';
 
 function fail(error: unknown) {
   const message = error instanceof Error ? error.message : 'Request failed';
+  if (message === 'BLOB_READ_WRITE_TOKEN is not configured') return NextResponse.json({ error: 'Media storage is not configured. Add BLOB_READ_WRITE_TOKEN to the deployment environment, then try again.' }, { status: 503 });
   if (message === 'UNAUTHORIZED') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   if (message === 'FORBIDDEN') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   return NextResponse.json({ error: message }, { status: 400 });

@@ -5,22 +5,23 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 const services = [
-  'Graphic Design',
-  'Branding',
-  'Video Production',
-  'Photography',
-  'Social Media',
-  'Web Design & Development',
-  'Marketing & SEO',
+  'Qrafik dizayn',
+  'Brendinq',
+  'Video istehsalı',
+  'Fotoqrafiya',
+  'Sosial media',
+  'Veb dizayn və proqramlaşdırma',
+  'Marketinq və SEO',
 ];
-const serviceLabels: Record<string,string> = {
-  'Graphic Design':'Qrafik dizayn',
-  'Branding':'Brendinq',
-  'Video Production':'Video istehsalı',
-  'Photography':'Fotoqrafiya',
-  'Social Media':'Sosial media',
-  'Web Design & Development':'Veb dizayn və proqramlaşdırma',
-  'Marketing & SEO':'Marketinq və SEO',
+const serviceQueryLabels: Record<string,string> = {
+  'graphic-design':'Qrafik dizayn',
+  branding:'Brendinq',
+  'video-motion':'Video istehsalı',
+  photography:'Fotoqrafiya',
+  'social-media':'Sosial media',
+  'web-design':'Veb dizayn və proqramlaşdırma',
+  development:'Veb dizayn və proqramlaşdırma',
+  'marketing-seo':'Marketinq və SEO',
 };
 
 const creatorCatalog = [
@@ -28,37 +29,37 @@ const creatorCatalog = [
     slug: 'aysel-m',
     name: 'Aysel M.',
     role: 'Qrafik dizayner',
-    services: ['Graphic Design', 'Branding', 'Social Media'],
+    services: ['Qrafik dizayn', 'Brendinq', 'Sosial media'],
   },
   {
     slug: 'rashad-a',
     name: 'Rashad A.',
     role: 'Videoqraf',
-    services: ['Video Production'],
+    services: ['Video istehsalı'],
   },
   {
     slug: 'leyla-q',
     name: 'Leyla Q.',
     role: 'Brend dizayneri',
-    services: ['Branding', 'Graphic Design'],
+    services: ['Brendinq', 'Qrafik dizayn'],
   },
   {
     slug: 'tural-s',
     name: 'Tural S.',
     role: 'Veb proqramçı',
-    services: ['Web Design & Development'],
+    services: ['Veb dizayn və proqramlaşdırma'],
   },
   {
     slug: 'nigar-r',
     name: 'Nigar R.',
     role: 'Sosial media strateqi',
-    services: ['Social Media', 'Marketing & SEO'],
+    services: ['Sosial media', 'Marketinq və SEO'],
   },
   {
     slug: 'kamran-h',
     name: 'Kamran H.',
     role: 'Performance marketoloq',
-    services: ['Marketing & SEO', 'Social Media'],
+    services: ['Marketinq və SEO', 'Sosial media'],
   },
 ];
 
@@ -79,7 +80,7 @@ export default function StartProjectClient() {
     audience: '',
     deliverables: '',
     references: '',
-    budget: 'Flexible',
+    budget: 'Çevik',
     deadline: '',
     creator: 'Fərq etmir',
   });
@@ -97,12 +98,13 @@ export default function StartProjectClient() {
   useEffect(() => {
     const requestedCreator = params.get('creator');
     const requestedXidmət = params.get('service');
+    const requestedServiceLabel = requestedXidmət ? (serviceQueryLabels[requestedXidmət] || requestedXidmət) : '';
 
     if (requestedXidmət) {
       setForm((current) => ({
         ...current,
-        service: services.includes(requestedXidmət)
-          ? requestedXidmət
+        service: services.includes(requestedServiceLabel)
+          ? requestedServiceLabel
           : current.service,
       }));
     }
@@ -203,8 +205,7 @@ export default function StartProjectClient() {
             <h2>Brief qəbul edildi.</h2>
 
             <p>
-              Layihəniz <strong>{projectId}</strong> is now in{' '}
-              <strong>Brief göndərildi</strong>. New Era brief-i nəzərdən keçirəcək
+              Layihəniz <strong>{projectId}</strong> artıq <strong>Brief göndərildi</strong> mərhələsindədir. New Era brief-i nəzərdən keçirəcək
               və onu layihə mərhələləri üzrə irəlilədəcək.
             </p>
 
@@ -295,7 +296,7 @@ export default function StartProjectClient() {
                     ? `${matchingCreators.length} mütəxəssis${
                         matchingCreators.length === 1 ? '' : 's'
                       } bu xidmətə uyğundur.`
-                    : 'Seç a service first to see the relevant mütəxəssiss, or let New Era recommend the right fit.'}
+                    : 'Əvvəlcə xidmət seçin ki, uyğun mütəxəssisləri görün və ya uyğun şəxsi New Era-nın tövsiyə etməsinə icazə verin.'}
                 </p>
 
                 <div className="creatorChoices">
@@ -411,7 +412,7 @@ export default function StartProjectClient() {
                       update('budget', e.target.value)
                     }
                   >
-                    <option value="Flexible">Çevik</option>
+                    <option value="Çevik">Çevik</option>
                     <option>300–700 AZN</option>
                     <option>700–1,500 AZN</option>
                     <option>1,500–3,000 AZN</option>

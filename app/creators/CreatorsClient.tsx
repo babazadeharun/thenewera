@@ -8,7 +8,7 @@ const creators = [
     slug: 'aysel-m',
     name: 'Aysel M.',
     role: 'Vizual dizayner',
-    meta: '4.9 · 28 reviews · 32 projects',
+    meta: '4.9 · 28 rəy · 32 layihə',
     style: 'violet',
     initials: 'AM',
     preset: 'graphic-designer',
@@ -19,7 +19,7 @@ const creators = [
     slug: 'rashad-a',
     name: 'Rashad A.',
     role: 'Rejissor / Videoqraf',
-    meta: '4.8 · 24 reviews · 18 projects',
+    meta: '4.8 · 24 rəy · 18 layihə',
     style: 'blue',
     initials: 'RA',
     preset: 'videographer',
@@ -30,7 +30,7 @@ const creators = [
     slug: 'leyla-q',
     name: 'Leyla Q.',
     role: 'Brend dizayneri',
-    meta: '4.9 · 32 reviews · 21 projects',
+    meta: '4.9 · 32 rəy · 21 layihə',
     style: 'pink',
     initials: 'LQ',
     preset: 'branding-specialist',
@@ -41,7 +41,7 @@ const creators = [
     slug: 'tural-s',
     name: 'Tural S.',
     role: 'Veb proqramçı',
-    meta: '4.7 · 19 reviews · 14 projects',
+    meta: '4.7 · 19 rəy · 14 layihə',
     style: 'cyan',
     initials: 'TS',
     preset: 'web-developer',
@@ -52,7 +52,7 @@ const creators = [
     slug: 'nigar-r',
     name: 'Nigar R.',
     role: 'Sosial media strateqi',
-    meta: '4.9 · 21 reviews · 26 projects',
+    meta: '4.9 · 21 rəy · 26 layihə',
     style: 'gold',
     initials: 'NR',
     preset: 'marketing-specialist',
@@ -63,7 +63,7 @@ const creators = [
     slug: 'kamran-h',
     name: 'Kamran H.',
     role: 'Performance marketoloq',
-    meta: '4.8 · 17 reviews · 22 projects',
+    meta: '4.8 · 17 rəy · 22 layihə',
     style: 'green',
     initials: 'KH',
     preset: 'marketing-specialist',
@@ -229,7 +229,7 @@ export default function CreatorsClient() {
                 className="profileBtn"
                 href={`/creators/${creator.slug}?service=${service}`}
               >
-                Portfolioya bax <span>→</span>
+                Portfelə bax <span>→</span>
               </Link>
             </div>
           </article>

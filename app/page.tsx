@@ -30,19 +30,24 @@ export default async function Home() {
   const sectionCopy = (key: string, fallbackTitle: React.ReactNode, fallbackDescription: string) => {
     const item = section(key);
     const englishTitles: Record<string,string[]> = {
-      services: ['Services', 'Everything You Need, Under One Universe.'],
-      creators: ['Creators', 'The Best Talent. Real Results.'],
-      how: ['How It Works', 'From Brief to Result'],
-      about: ['About', 'The Right Talent for Your Idea.'],
+      services: ['Services', 'Everything You Need, Under One Universe.', 'Everything You Need, Under One Universe'],
+      creators: ['Creators', 'The Best Talent. Real Results.', 'The Best Talent'],
+      how: ['How It Works', 'From Brief to Result', 'From Brief to Result.'],
+      about: ['About', 'The Right Talent for Your Idea.', 'The Right Talent for Your Idea'],
     };
     const englishDescriptions: Record<string,string[]> = {
-      services: ['From creative design to digital growth, we bring together the best specialists for your project.'],
-      creators: ['Meet our selected specialists and find the right fit for your project.'],
-      how: ['Complete your project in a few simple steps.'],
-      about: ['Choose your specialist, manage the project inside New Era and turn your idea into reality.'],
+      services: ['From creative design to digital growth, we bring together the best specialists for your project.', 'From creative design to digital growth, we bring together the best specialists for your project'],
+      creators: ['Meet our selected specialists and find the right fit for your project.', 'Meet our selected specialists and find the right fit for your project'],
+      how: ['Complete your project in a few simple steps.', 'Complete your project in a few simple steps'],
+      about: ['Choose your specialist, manage the project inside New Era and turn your idea into reality.', 'Choose your specialist, manage the project inside New Era and turn your idea into reality'],
     };
-    const title = item?.title && !englishTitles[key]?.includes(item.title) ? item.title : fallbackTitle;
-    const description = item?.description && !englishDescriptions[key]?.includes(item.description) ? item.description : fallbackDescription;
+    const isEnglishCmsText = (value: string | null | undefined, values: string[]) => {
+      if (!value) return false;
+      const normalized = value.trim().toLowerCase();
+      return values.some((candidate) => normalized === candidate.trim().toLowerCase());
+    };
+    const title = item?.title && !isEnglishCmsText(item.title, englishTitles[key] || []) ? item.title : fallbackTitle;
+    const description = item?.description && !isEnglishCmsText(item.description, englishDescriptions[key] || []) ? item.description : fallbackDescription;
     return { title, description };
   };
   const servicesCopy = sectionCopy('services', <>Lazım olan hər şey,<br/><span>bir platformada.</span></>, 'Kreativ dizayndan rəqəmsal inkişafadək layihəniz üçün ən yaxşı mütəxəssisləri bir araya gətiririk.');
@@ -52,10 +57,10 @@ export default async function Home() {
   const heroes = await prisma.hero.findMany({ where: { active: true }, include: { desktopMedia: true, mobileMedia: true, videoMedia: true }, orderBy: { displayOrder: 'asc' }, take: 10 }).catch(() => []);
   const hero = heroes[0];
   const heroImage = hero?.desktopMedia?.url || cms?.heroImage || '/hero-space-4k.png';
-  const heroTitle = hero?.title === 'New Era Hero' ? 'Növbəti Era Buradan Başlayır.' : (hero?.title || 'Növbəti Era Buradan Başlayır.');
-  const heroDescription = hero?.description === 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.'
-    ? 'Növbəti böyük ideyanız üçün doğru kreativ mütəxəssisi tapın. Dizayndan proqramlaşdırmaya qədər Azərbaycanın ən yaxşı istedadları ilə əlaqə qurun.'
-    : (hero?.description || 'Növbəti böyük ideyanız üçün doğru kreativ mütəxəssisi tapın. Dizayndan proqramlaşdırmaya qədər Azərbaycanın ən yaxşı istedadları ilə əlaqə qurun.');
+  const heroTitle = hero?.title && !['New Era Hero', 'New Era', 'Növbəti Era Buradan Başlayır.'].includes(hero.title) ? hero.title : 'Növbəti Era Buradan Başlayır.';
+  const heroDescription = hero?.description && !['Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.', 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan'].includes(hero.description.trim())
+    ? hero.description
+    : 'Növbəti böyük ideyanız üçün doğru kreativ mütəxəssisi tapın. Dizayndan proqramlaşdırmaya qədər Azərbaycanın ən yaxşı istedadları ilə əlaqə qurun.';
   const heroCtaText = hero?.ctaText === 'Create Client Account' ? 'Müştəri hesabı yarat' : (hero?.ctaText || 'Müştəri hesabı yarat');
   return (
     <main>
@@ -76,6 +81,7 @@ export default async function Home() {
           <h1>{hero ? (heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br/><span>Buradan Başlayır.</span></> : heroTitle) : <>Növbəti Era<br/><span>Buradan Başlayır.</span></>}</h1>
           <p>{heroDescription}</p>
           <div className="heroCtas"><a className="primary" href={hero?.ctaUrl || "/register"}>{heroCtaText} <ArrowRight size={17}/></a><a className="secondary" href="#creators">Mütəxəssislərlə tanış olun</a></div>
+          <a className="auditCta" href="/start-project?type=business-audit" aria-label="Biznes auditinə başla"><span className="auditCtaIcon">✦</span><span><strong>Biznes audit</strong><small>Biznesiniz üçün ilkin analizə başlayın</small></span><ArrowRight size={18}/></a>
           <div className="proof"><div className="avatars">{creators.slice(0,4).map((c,i)=><img key={c.name} src={c.image} alt="" style={{zIndex:10-i}}/>)}</div><div><strong>500+ məmnun müştəri</strong><small>Azərbaycan üzrə</small></div></div>
         </div>
         <div className="scrollHint">Aşağı sürüşdür <span>↓</span></div>

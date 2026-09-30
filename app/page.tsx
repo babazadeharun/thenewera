@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { ArrowRight, Camera, Code2, Layers3, Megaphone, Palette, Play, Search, Sparkles, Star, Video, Zap } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 const services = [
   ['Graphic Design','Logos, social media, print and more',Palette],
   ['Video Editing','Engaging videos for your brand',Play],
@@ -32,15 +34,14 @@ export default async function Home() {
   const heroDescription = hero?.description || 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.';
   return (
     <main>
-      <nav className="nav container">
+      <section id="top" className="hero screenshotHero">
+        <nav className="nav container">
         <a className="brand" href="#top"><img src={cms?.logoMedia?.url || "/new-era-logo.svg"} alt={cms?.siteName || "New Era"} /></a>
         <div className="navLinks">
           <a className="active" href="#top">Home</a><a href="#services">Services</a><a href="#creators">Creators</a><a href="#portfolio">Portfolio</a><a href="#about">About</a><a href="#how">How It Works</a><a href="#pricing">Pricing</a>
         </div>
         <div className="navActions"><button className="iconBtn" aria-label="Search"><Search size={19}/></button><a href="/login" className="login">Log In</a><a href="/register" className="pill">Create Account</a></div>
       </nav>
-
-      <section id="top" className="hero screenshotHero">
         <div className="heroArt" aria-hidden="true" style={{ ["--hero-desktop" as string]: `url(${heroImage})`, ["--hero-mobile" as string]: `url(${hero?.mobileMedia?.url || heroImage})` } as React.CSSProperties}>
           {hero?.videoMedia?.url && <video className="heroVideo" src={hero.videoMedia.url} autoPlay muted loop playsInline aria-hidden="true" />}
         </div>

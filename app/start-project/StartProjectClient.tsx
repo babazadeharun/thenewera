@@ -13,42 +13,51 @@ const services = [
   'Web Design & Development',
   'Marketing & SEO',
 ];
+const serviceLabels: Record<string,string> = {
+  'Graphic Design':'Qrafik dizayn',
+  'Branding':'Brendinq',
+  'Video Production':'Video istehsalı',
+  'Photography':'Fotoqrafiya',
+  'Social Media':'Sosial media',
+  'Web Design & Development':'Veb dizayn və proqramlaşdırma',
+  'Marketing & SEO':'Marketinq və SEO',
+};
 
 const creatorCatalog = [
   {
     slug: 'aysel-m',
     name: 'Aysel M.',
-    role: 'Graphic Designer',
+    role: 'Qrafik dizayner',
     services: ['Graphic Design', 'Branding', 'Social Media'],
   },
   {
     slug: 'rashad-a',
     name: 'Rashad A.',
-    role: 'Videographer',
+    role: 'Videoqraf',
     services: ['Video Production'],
   },
   {
     slug: 'leyla-q',
     name: 'Leyla Q.',
-    role: 'Brand Designer',
+    role: 'Brend dizayneri',
     services: ['Branding', 'Graphic Design'],
   },
   {
     slug: 'tural-s',
     name: 'Tural S.',
-    role: 'Web Developer',
+    role: 'Veb proqramçı',
     services: ['Web Design & Development'],
   },
   {
     slug: 'nigar-r',
     name: 'Nigar R.',
-    role: 'Social Media Strategist',
+    role: 'Sosial media strateqi',
     services: ['Social Media', 'Marketing & SEO'],
   },
   {
     slug: 'kamran-h',
     name: 'Kamran H.',
-    role: 'Performance Marketer',
+    role: 'Performance marketoloq',
     services: ['Marketing & SEO', 'Social Media'],
   },
 ];
@@ -72,7 +81,7 @@ export default function StartProjectClient() {
     references: '',
     budget: 'Flexible',
     deadline: '',
-    creator: 'No preference',
+    creator: 'Fərq etmir',
   });
 
   const matchingCreators = useMemo(
@@ -87,13 +96,13 @@ export default function StartProjectClient() {
 
   useEffect(() => {
     const requestedCreator = params.get('creator');
-    const requestedService = params.get('service');
+    const requestedXidmət = params.get('service');
 
-    if (requestedService) {
+    if (requestedXidmət) {
       setForm((current) => ({
         ...current,
-        service: services.includes(requestedService)
-          ? requestedService
+        service: services.includes(requestedXidmət)
+          ? requestedXidmət
           : current.service,
       }));
     }
@@ -154,14 +163,14 @@ export default function StartProjectClient() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.error || 'Unable to submit the brief.');
+        alert(data.error || 'Brief göndərmək mümkün olmadı.');
         return;
       }
 
       setProjectId(data.project.id);
       setSent(true);
     } catch {
-      alert('Unable to connect to New Era right now.');
+      alert('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     }
   }
 
@@ -173,48 +182,48 @@ export default function StartProjectClient() {
         </Link>
 
         <div className="eyebrow">
-          START A PROJECT · CLIENT WORKSPACE
+          LAYİHƏYƏ BAŞLAYIN · MÜŞTƏRİ İŞ MƏKANI
         </div>
 
         <h1>
-          Tell us what you want
+          Nə yaratmaq istədiyinizi
           <br />
-          <span>to create.</span>
+          <span>deyin.</span>
         </h1>
 
         <p>
-          Submit your brief once. New Era coordinates the specialist,
-          communication and delivery inside the platform.
+          Brief-i bir dəfə göndərin. New Era mütəxəssisi,
+          ünsiyyəti və təhvili platforma daxilində idarə edir.
         </p>
 
         {sent ? (
           <div className="successBox">
             <div className="successIcon">✓</div>
 
-            <h2>Brief received.</h2>
+            <h2>Brief qəbul edildi.</h2>
 
             <p>
-              Your project <strong>{projectId}</strong> is now in{' '}
-              <strong>Brief Submitted</strong>. New Era will review the brief
-              and move it through the project workflow.
+              Layihəniz <strong>{projectId}</strong> is now in{' '}
+              <strong>Brief göndərildi</strong>. New Era brief-i nəzərdən keçirəcək
+              və onu layihə mərhələləri üzrə irəlilədəcək.
             </p>
 
             <div className="successActions">
               <Link className="primary" href="/projects">
-                Open my projects
+                Layihələrimi aç
               </Link>
 
               <Link className="secondary" href="/creators">
-                Explore creators
+                Mütəxəssisləri kəşf et
               </Link>
             </div>
           </div>
         ) : (
           <form onSubmit={submit} className="projectForm">
             <div className="formSection">
-              <small>CLIENT ACCOUNT</small>
+              <small>MÜŞTƏRİ HESABI</small>
 
-              <h3>Your company workspace</h3>
+              <h3>Şirkətinizin iş məkanı</h3>
 
               <div className="accountBrief">
                 <strong>{form.name}</strong>
@@ -223,29 +232,29 @@ export default function StartProjectClient() {
 
                 <small>{form.email}</small>
 
-                <a href="/account">Manage account →</a>
+                <a href="/account">Hesabı idarə et →</a>
               </div>
             </div>
 
             <div className="formSection">
-              <small>PROJECT BRIEF</small>
+              <small>LAYİHƏ BRİFİ</small>
 
-              <h3>What are we creating?</h3>
+              <h3>Nə yaradırıq?</h3>
 
               <div className="formSplit">
                 <label>
-                  Service
+                  Xidmət
 
                   <select
                     required
                     value={form.service}
                     onChange={(e) => {
                       update('service', e.target.value);
-                      update('creator', 'No preference');
+                      update('creator', 'Fərq etmir');
                     }}
                   >
                     <option value="" disabled>
-                      Select a service
+                      Xidmət seçin
                     </option>
 
                     {services.map((service) => (
@@ -257,13 +266,13 @@ export default function StartProjectClient() {
                 </label>
 
                 <label>
-                  Preferred specialist
+                  Üstünlük verilən mütəxəssis
 
                   <select
                     value={form.creator}
                     onChange={(e) => update('creator', e.target.value)}
                   >
-                    <option value="No preference">No preference</option>
+                    <option value="Fərq etmir">Fərq etmir</option>
 
                     {matchingCreators.map((creator) => (
                       <option key={creator.slug}>
@@ -277,16 +286,16 @@ export default function StartProjectClient() {
               <div className="creatorPick">
                 <small>
                   {form.service
-                    ? 'MATCHED SPECIALISTS'
-                    : 'CREATOR SELECTION'}
+                    ? 'UYĞUN MÜTƏXƏSSİSLƏR'
+                    : 'MÜTƏXƏSSİS SEÇİMİ'}
                 </small>
 
                 <p>
                   {form.service
-                    ? `${matchingCreators.length} specialist${
+                    ? `${matchingCreators.length} mütəxəssis${
                         matchingCreators.length === 1 ? '' : 's'
-                      } match this service.`
-                    : 'Choose a service first to see the relevant specialists, or let New Era recommend the right fit.'}
+                      } bu xidmətə uyğundur.`
+                    : 'Seç a service first to see the relevant mütəxəssiss, or let New Era recommend the right fit.'}
                 </p>
 
                 <div className="creatorChoices">
@@ -312,8 +321,8 @@ export default function StartProjectClient() {
                         <span>
                           {creator.role} ·{' '}
                           {form.creator === creatorValue
-                            ? 'Selected'
-                            : 'Choose'}
+                            ? 'Seçildi'
+                            : 'Seç'}
                         </span>
                       </button>
                     );
@@ -322,13 +331,13 @@ export default function StartProjectClient() {
               </div>
 
               <label>
-                Project title
+                Layihə adı
 
                 <input
                   required
                   value={form.title}
                   onChange={(e) => update('title', e.target.value)}
-                  placeholder="e.g. Instagram campaign for a new product"
+                  placeholder="məs. yeni məhsul üçün Instagram kampaniyası"
                 />
               </label>
 
@@ -340,35 +349,35 @@ export default function StartProjectClient() {
                   rows={5}
                   value={form.brief}
                   onChange={(e) => update('brief', e.target.value)}
-                  placeholder="Give New Era the full context, style direction and important references."
+                  placeholder="New Era-ya tam konteksti, üslub istiqamətini və vacib istinadları yazın."
                 />
               </label>
 
               <div className="formSplit">
                 <label>
-                  Project goal
+                  Layihənin məqsədi
 
                   <input
                     required
                     value={form.goal}
                     onChange={(e) => update('goal', e.target.value)}
-                    placeholder="What should this project achieve?"
+                    placeholder="Bu layihə nə əldə etməlidir?"
                   />
                 </label>
 
                 <label>
-                  Target audience
+                  Hədəf auditoriya
 
                   <input
                     value={form.audience}
                     onChange={(e) => update('audience', e.target.value)}
-                    placeholder="Who is it for?"
+                    placeholder="Kimlər üçündür?"
                   />
                 </label>
               </div>
 
               <label>
-                Expected deliverables
+                Gözlənilən təhvil işləri
 
                 <input
                   required
@@ -376,25 +385,25 @@ export default function StartProjectClient() {
                   onChange={(e) =>
                     update('deliverables', e.target.value)
                   }
-                  placeholder="e.g. logo, 12 posts, 3 story templates"
+                  placeholder="məs. loqo, 12 paylaşım, 3 story şablonu"
                 />
               </label>
 
               <label>
-                References / links
+                İstinadlar / linklər
 
                 <input
                   value={form.references}
                   onChange={(e) =>
                     update('references', e.target.value)
                   }
-                  placeholder="Paste links to references, folders or inspiration"
+                  placeholder="İstinad, qovluq və ya ilham linklərini əlavə edin"
                 />
               </label>
 
               <div className="formSplit">
                 <label>
-                  Budget
+                  Büdcə
 
                   <select
                     value={form.budget}
@@ -402,7 +411,7 @@ export default function StartProjectClient() {
                       update('budget', e.target.value)
                     }
                   >
-                    <option>Flexible</option>
+                    <option value="Flexible">Çevik</option>
                     <option>300–700 AZN</option>
                     <option>700–1,500 AZN</option>
                     <option>1,500–3,000 AZN</option>
@@ -411,7 +420,7 @@ export default function StartProjectClient() {
                 </label>
 
                 <label>
-                  Deadline
+                  Son tarix
 
                   <input
                     type="date"
@@ -425,7 +434,7 @@ export default function StartProjectClient() {
             </div>
 
             <button className="primary" type="submit">
-              Send project brief →
+              Layihə brief-ini göndərin →
             </button>
 
             <div className="privateNote">

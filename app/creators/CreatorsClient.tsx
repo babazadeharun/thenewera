@@ -7,67 +7,67 @@ const creators = [
   {
     slug: 'aysel-m',
     name: 'Aysel M.',
-    role: 'Visual Designer',
+    role: 'Vizual dizayner',
     meta: '4.9 · 28 reviews · 32 projects',
     style: 'violet',
     initials: 'AM',
     preset: 'graphic-designer',
-    skills: ['Social Design', 'Campaigns', 'Packaging'],
+    skills: ['Sosial dizayn', 'Kampaniyalar', 'Qablaşdırma'],
     services: ['graphic-design', 'branding', 'social-media'],
   },
   {
     slug: 'rashad-a',
     name: 'Rashad A.',
-    role: 'Filmmaker / Videographer',
+    role: 'Rejissor / Videoqraf',
     meta: '4.8 · 24 reviews · 18 projects',
     style: 'blue',
     initials: 'RA',
     preset: 'videographer',
-    skills: ['Commercial', 'Reels', 'Editing'],
+    skills: ['Reklam', 'Reels', 'Montaj'],
     services: ['video-motion'],
   },
   {
     slug: 'leyla-q',
     name: 'Leyla Q.',
-    role: 'Brand Designer',
+    role: 'Brend dizayneri',
     meta: '4.9 · 32 reviews · 21 projects',
     style: 'pink',
     initials: 'LQ',
     preset: 'branding-specialist',
-    skills: ['Branding', 'Identity', 'Art Direction'],
+    skills: ['Brendinq', 'Kimlik', 'Art-direksiya'],
     services: ['branding', 'graphic-design'],
   },
   {
     slug: 'tural-s',
     name: 'Tural S.',
-    role: 'Web Developer',
+    role: 'Veb proqramçı',
     meta: '4.7 · 19 reviews · 14 projects',
     style: 'cyan',
     initials: 'TS',
     preset: 'web-developer',
-    skills: ['Next.js', 'E-commerce', 'Web Apps'],
+    skills: ['Next.js', 'E-ticarət', 'Veb tətbiqlər'],
     services: ['web-design', 'development'],
   },
   {
     slug: 'nigar-r',
     name: 'Nigar R.',
-    role: 'Social Media Strategist',
+    role: 'Sosial media strateqi',
     meta: '4.9 · 21 reviews · 26 projects',
     style: 'gold',
     initials: 'NR',
     preset: 'marketing-specialist',
-    skills: ['Strategy', 'Content', 'Campaigns'],
+    skills: ['Strategiya', 'Məzmun', 'Kampaniyalar'],
     services: ['social-media', 'marketing-seo'],
   },
   {
     slug: 'kamran-h',
     name: 'Kamran H.',
-    role: 'Performance Marketer',
+    role: 'Performance marketoloq',
     meta: '4.8 · 17 reviews · 22 projects',
     style: 'green',
     initials: 'KH',
     preset: 'marketing-specialist',
-    skills: ['Meta Ads', 'Google Ads', 'Analytics'],
+    skills: ['Meta reklamları', 'Google reklamları', 'Analitika'],
     services: ['marketing-seo', 'social-media'],
   },
 ];
@@ -78,14 +78,14 @@ export default function CreatorsClient() {
   const service = params.get('service') || '';
 
   const serviceLabels: Record<string, string> = {
-    'graphic-design': 'Graphic Design',
-    branding: 'Branding',
-    'video-motion': 'Video Production',
-    photography: 'Photography',
-    'social-media': 'Social Media',
-    'web-design': 'Web Design & Development',
-    development: 'Web Design & Development',
-    'marketing-seo': 'Marketing & SEO',
+    'graphic-design': 'Qrafik dizayn',
+    branding: 'Brendinq',
+    'video-motion': 'Video istehsalı',
+    photography: 'Fotoqrafiya',
+    'social-media': 'Sosial media',
+    'web-design': 'Veb dizayn və proqramlaşdırma',
+    development: 'Veb dizayn və proqramlaşdırma',
+    'marketing-seo': 'Marketinq və SEO',
   };
 
   const serviceLabel =
@@ -107,28 +107,28 @@ export default function CreatorsClient() {
           ← New Era
         </Link>
 
-        <div className="eyebrow">CURATED CREATOR NETWORK</div>
+        <div className="eyebrow">SEÇİLMİŞ MÜTƏXƏSSİS ŞƏBƏKƏSİ</div>
 
         <h1>
           {service ? (
             <>
-              Creators for
+              Bu xidmət üzrə
               <br />
               <span>{serviceLabel}.</span>
             </>
           ) : (
             <>
-              Find your
+              Özünüzə uyğun
               <br />
-              <span>creative match.</span>
+              <span>kreativ mütəxəssisi tapın.</span>
             </>
           )}
         </h1>
 
         <p>
           {service
-            ? `Explore specialists matched to ${serviceLabel}. Each profile is selected around relevant skills, portfolio work and availability.`
-            : 'Every specialist is presented through their work. Personal contact details stay private; projects start inside New Era.'}
+            ? `${serviceLabel} üzrə uyğunlaşdırılmış mütəxəssisləri kəşf edin. Hər profil bacarıqlar, portfolio işləri və əlçatanlıq əsasında seçilib.`
+            : 'Hər mütəxəssis gördüyü işlərlə təqdim olunur. Şəxsi əlaqə məlumatları gizli saxlanılır; layihələr New Era daxilində başlayır.'}
         </p>
 
         <div className="filterBar">
@@ -136,7 +136,7 @@ export default function CreatorsClient() {
             className={!service ? 'active' : ''}
             href="/creators"
           >
-            All
+            Hamısı
           </Link>
 
           <Link
@@ -147,7 +147,7 @@ export default function CreatorsClient() {
             }
             href="/creators?service=graphic-design"
           >
-            Design
+            Dizayn
           </Link>
 
           <Link
@@ -165,7 +165,7 @@ export default function CreatorsClient() {
             }
             href="/creators?service=social-media"
           >
-            Marketing
+            Marketinq
           </Link>
 
           <Link
@@ -176,24 +176,24 @@ export default function CreatorsClient() {
             }
             href="/creators?service=development"
           >
-            Development
+            Proqramlaşdırma
           </Link>
         </div>
       </div>
 
       <div className="container creatorMatchNote">
         <span>
-          {filtered.length} matched specialist
+          {filtered.length} uyğun mütəxəssis
           {filtered.length === 1 ? '' : 's'}
         </span>
 
         {service && (
           <Link
             href={`/start-project?service=${encodeURIComponent(
-              serviceLabel
+              service
             )}`}
           >
-            Start with this service →
+            Bu xidmətlə başlayın →
           </Link>
         )}
       </div>
@@ -207,7 +207,7 @@ export default function CreatorsClient() {
                 alt=""
               />
 
-              <span className="available">Available</span>
+              <span className="available">Mövcuddur</span>
             </div>
 
             <div className="creatorBody">
@@ -229,7 +229,7 @@ export default function CreatorsClient() {
                 className="profileBtn"
                 href={`/creators/${creator.slug}?service=${service}`}
               >
-                View Portfolio <span>→</span>
+                Portfolioya bax <span>→</span>
               </Link>
             </div>
           </article>
@@ -238,15 +238,15 @@ export default function CreatorsClient() {
 
       {filtered.length === 0 && (
         <div className="container emptyMatch">
-          <h2>No exact specialist match yet.</h2>
+          <h2>Hələ dəqiq uyğun mütəxəssis tapılmadı.</h2>
 
           <p>
-            New Era can review the brief and assign the closest
-            available specialist.
+            New Era brief-i nəzərdən keçirib ən uyğun
+            mövcud mütəxəssisi təyin edə bilər.
           </p>
 
           <Link className="primary" href="/start-project">
-            Send a Brief →
+            Brief göndərin →
           </Link>
         </div>
       )}

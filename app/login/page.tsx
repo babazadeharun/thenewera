@@ -30,7 +30,7 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Email or password is incorrect.');
+        setError(data.error || 'E-poçt və ya şifrə yanlışdır.');
         return;
       }
 
@@ -47,7 +47,7 @@ export default function Login() {
         window.location.href = '/account';
       }
     } catch {
-      setError('Unable to connect to New Era right now.');
+      setError('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     } finally {
       setLoading(false);
     }
@@ -59,22 +59,22 @@ export default function Login() {
 
       <div className="authCard">
         <Link className="authBrand" href="/">
-          <img src="/new-era-logo.svg" alt="New Era" />
+          <img src="/new-era-logo-header.png" alt="New Era" />
         </Link>
 
-        <div className="eyebrow">CLIENT PORTAL</div>
+        <div className="eyebrow">MÜŞTƏRİ PORTALI</div>
 
         <h1>
-          Welcome <span>back.</span>
+          Xoş gəlmisiniz <span>geri.</span>
         </h1>
 
         <p className="authIntro">
-          Sign in to manage your company, briefs and New Era projects.
+          Şirkətinizi, brief-ləri və New Era layihələrinizi idarə etmək üçün daxil olun.
         </p>
 
         <form onSubmit={submit} className="authForm">
           <label>
-            Work email
+            İş e-poçtu
             <input
               required
               type="email"
@@ -85,13 +85,13 @@ export default function Login() {
           </label>
 
           <label>
-            Password
+            Şifrə
             <input
               required
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
+              placeholder="Şifrəniz"
             />
           </label>
 
@@ -102,19 +102,18 @@ export default function Login() {
             className="primary authSubmit"
             type="submit"
           >
-            {loading ? 'Signing in…' : 'Log in'}
+            {loading ? 'Daxil olunur…' : 'Daxil ol'}
             {!loading && <ArrowRight size={16} />}
           </button>
 
           <div className="authFoot">
-            New to New Era?{' '}
-            <Link href="/register">Create a client account</Link>
+            New Era-da yenisiniz?{' '}
+            <Link href="/register">Müştəri hesabı yaradın</Link>
           </div>
         </form>
 
         <div className="authPrivacy">
-          Your session is secured with an HTTP-only server cookie. Your
-          password is never stored in the browser.
+          Sessiyanız HTTP-only server cookie-si ilə qorunur. Şifrəniz brauzerdə saxlanılmır.
         </div>
       </div>
     </main>

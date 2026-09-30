@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { ArrowRight, BarChart3, Camera, Code2, Layers3, Megaphone, Palette, Play, Search, Sparkles, Target, Video, Zap } from 'lucide-react';
+import { ArrowRight, BarChart3, Code2, Layers3, Megaphone, Palette, Search, Sparkles, Target, Video } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,8 +47,8 @@ export default async function Home() {
             <a href="#services">Xidmətlər</a>
             <a href="#portfolio">İşlərimiz</a>
             <a href="#about">Haqqımızda</a>
-            <a href="#analysis">Analiz</a>
-            <a href="/start-project">Layihəyə başla</a>
+            <a href="/analysis">Analiz</a>
+            <a className="navProjectCta" href="/start-project">Layihəyə başla</a>
           </div>
           <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></div>
         </nav>
@@ -61,7 +61,7 @@ export default async function Home() {
           <h1>{hero ? (heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br/><span>Buradan Başlayır.</span></> : heroTitle) : <>Növbəti Era<br/><span>Buradan Başlayır.</span></>}</h1>
           <p>{heroDescription}</p>
           <div className="heroCtas"><a className="primary" href="/start-project">{heroCtaText} <ArrowRight size={17}/></a><a className="secondary" href="#portfolio">İşlərimizə baxın</a></div>
-          <div className="proof proofStatement"><div className="proofIcon"><Zap size={16}/></div><div><strong>Strategiya · Kreativ · Rəqəmsal</strong><small>Biznesiniz üçün vahid marketinq tərəfdaşı</small></div></div>
+          <a className="auditCta auditCtaHero" href="/analysis"><span><strong>Biznes Audit</strong><small>Biznesiniz üçün real ekspert analizi və təkliflər</small></span><ArrowRight size={18}/></a>
         </div>
         <div className="scrollHint">Aşağı sürüşdür <span>↓</span></div>
       </section>
@@ -82,9 +82,9 @@ export default async function Home() {
 
       {showSection('how') && <section id="how" className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt" style={section('how')?.image?.url ? ({ backgroundImage: `url(${section('how')?.image?.url})` } as React.CSSProperties) : undefined}/><div className="eyebrow">NECƏ İŞLƏYİR</div><h2>Biznesiniz üçün <span>vahid komanda.</span></h2><p>Brief-dən strategiyaya, kreativdən icraya qədər layihəni New Era idarə edir.</p></div><div className="steps"><div><b>01</b><span>Məqsədi paylaşın</span><small>Biznesinizi, hədəfinizi və ehtiyacınızı bizə danışın.</small></div><div><b>02</b><span>Strategiya quraq</span><small>Uyğun istiqaməti və kreativ həlli birlikdə müəyyənləşdirək.</small></div><div><b>03</b><span>İcra edək</span><small>New Era komandası işi həyata keçirir və nəticəni təqdim edir.</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>}
 
-      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>Creator axtarmayın.<br/><span>New Era ilə işləyin.</span></h2><p>Layihəniz üçün müxtəlif peşəkarları ayrı-ayrılıqda idarə etmək əvəzinə, strategiyadan kreativ istehsala qədər bütün prosesi vahid tərəfdaş kimi bizə həvalə edin.</p><a className="primary" href="/start-project">Layihəyə başlayın <ArrowRight size={17}/></a></section>}
+      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>Creator axtarmayın.<br/><span>New Era ilə işləyin.</span></h2><p>Layihəniz üçün müxtəlif peşəkarları ayrı-ayrılıqda idarə etmək əvəzinə, strategiyadan kreativ istehsala qədər bütün prosesi vahid tərəfdaş kimi bizə həvalə edin.</p></section>}
 
-      <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">ANALİZ</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Gələcəkdə bu bölmədə biznesinizə dair məlumatları toplamaq və ekspert baxışı üçün strukturlaşdırılmış analiz prosesi yerləşəcək.</p></div><span className="analysisStatus">Hazırlanır</span></div></section>
+      <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 
       <footer className="footer container"><a className="brand" href="#top"><img src="/new-era-logo-header.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><span>© 2026 New Era</span></footer>
     </main>

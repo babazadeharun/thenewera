@@ -203,13 +203,11 @@ export default function AdminPage(){
      </>}
 
      {tab==='portfolio' && <>
-       <div className="adminToolbar"><div><small>PORTFOLIO MANAGEMENT</small><h2>{currentCreator?.name ?? 'Creator'} Â· Portfolio</h2></div><button className="adminAction" onClick={()=>setShowPortfolioForm(true)}><Plus size={15}/> Add Portfolio Item</button></div>
-       <div className="portfolioAdminGrid">
-         <div className="adminPanel creatorSelector"><small>SELECT CREATOR</small>{creators.map(c=><button key={c.id} className={selectedCreator===c.id?'active':''} onClick={()=>setSelectedCreator(c.id)}><img src={'/creator-presets/'+c.preset+'.jpg'} alt=""/><span>{c.name}<small>{c.role}</small></span></button>)}</div>
-         <div className="adminPanel portfolioManager">
-           <div className="portfolioManagerHead"><div><small>PUBLIC PORTFOLIO</small><h2>{currentPortfolio.length} items published</h2></div><span className="verified"><Check size={12}/> Admin controlled</span></div>
-           {currentPortfolio.length===0 ? <div className="emptyPortfolio"><LayoutGrid size={30}/><h3>No portfolio items yet</h3><p>Add the creator's work here. Nothing is published until you add it from Admin.</p><button className="adminAction" onClick={()=>setShowPortfolioForm(true)}><Plus size={15}/> Add First Project</button></div> : <div className="portfolioAdminItems">{currentPortfolio.map(p=><article key={p.id}><div className="portfolioVisual"><span>{p.category}</span><strong>{p.title}</strong></div><div className="portfolioInfo"><div><strong>{p.title}</strong><small>{p.category} Â· {p.year}</small><p>{p.description}</p></div><button title="Delete" onClick={()=>setPortfolio(v=>v.filter(x=>x.id!==p.id))}><Trash2 size={15}/></button></div></article>)}</div>}
-         </div>
+       <div className="adminToolbar"><div><small>PORTFOLİO VƏ ƏMƏKDAŞLIQLAR</small><h2>Public Portfolio idarəsi</h2><p>New Era-nın portfolio işləri, çəkiliş videoları, dizayn posterləri və əməkdaşlıq etdiyi şirkətlərin loqoları artıq CMS Media Library üzərindən idarə olunur.</p></div><button className="adminAction" onClick={()=>setTab('cms')}><Settings2 size={15}/> Portfolio məzmununu idarə et</button></div>
+       <div className="adminPanel portfolioCmsGuide">
+         <div><LayoutGrid size={28}/><div><small>NECƏ İŞLƏYİR</small><h2>Bir dəfə əlavə et, saytda avtomatik göstər</h2><p>CMS → Media Library bölməsindən faylı yükləyin və kateqoriyanı seçin:</p></div></div>
+         <div className="portfolioGuideGrid"><div><strong>Portfolio işi</strong><span>Brendinq, marketinq və digər layihə vizualları</span></div><div><strong>Portfolio video</strong><span>Çəkdiyiniz reklam və kampaniya videoları</span></div><div><strong>Dizayn / poster</strong><span>Poster və kreativ dizayn işləri</span></div><div><strong>Əməkdaş şirkət loqosu</strong><span>Aşağıdakı hərəkətli loqo hissəsində görünəcək</span></div></div>
+         <button className="adminSave" onClick={()=>setTab('cms')}>CMS-də portfolio və loqoları əlavə et <ArrowRight size={15}/></button>
        </div>
      </>}
 

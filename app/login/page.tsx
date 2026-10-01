@@ -41,8 +41,10 @@ export default function Login() {
         );
       }
 
-      if (data.user?.role === 'ADMIN') {
-        window.location.href = '/admin';
+      if (['ADMIN', 'SUPER_ADMIN', 'EVENTS_ADMIN', 'EVENTS_FINANCE'].includes(data.user?.role)) {
+        window.location.href = data.user?.role === 'EVENTS_FINANCE' ? '/admin/events' : '/admin';
+      } else if (data.user?.role === 'PROMOTER') {
+        window.location.href = '/promoter';
       } else {
         window.location.href = '/account';
       }

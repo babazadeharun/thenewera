@@ -187,6 +187,7 @@ model Media {
   siteFavicons    SiteSetting[] @relation("SiteFaviconMedia")
   siteSocialImages SiteSetting[] @relation("SiteSocialImageMedia")
   eventCoverMedia Event[] @relation("EventCoverMedia")
+  eventGalleryMedia EventGalleryMedia[] @relation("EventGalleryMedia")
 
   @@index([category])
   @@index([createdAt])
@@ -353,10 +354,26 @@ model Event {
   organizer              EventOrganizer? @relation(fields: [organizerId], references: [id], onDelete: SetNull)
   applications           PromoterApplication[]
   promoterEvents         PromoterEvent[]
+  gallery                 EventGalleryMedia[]
 
   @@index([status, startsAt])
   @@index([organizerId])
   @@index([city])
+}
+
+model EventGalleryMedia {
+  id        String   @id @default(cuid())
+  eventId   String
+  mediaId   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  media Media @relation("EventGalleryMedia", fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, mediaId])
+  @@index([eventId, sortOrder])
+  @@index([mediaId])
 }
 
 model Promoter {

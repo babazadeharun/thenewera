@@ -9,7 +9,7 @@ function formatPrice(value: unknown) { return `${new Intl.NumberFormat('az-AZ', 
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const event = await prisma.event.findUnique({ where: { slug }, include: { coverMedia: true, organizer: true } });
+  const event = await prisma.event.findUnique({ where: { slug }, include: { coverMedia: true, organizer: true, gallery: { include: { media: true }, orderBy: { sortOrder: 'asc' } } } });
   if (!event || event.status === 'DRAFT' || event.status === 'CANCELLED') notFound();
   const applicationOpen = event.status === 'APPLICATION_OPEN';
 
@@ -38,6 +38,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             )}
           </div>
         </section>
+        {event.gallery.length > 0 && <section className="eventGallery">{event.gallery.map((item) => <img key={item.id} src={item.media.url} alt={item.media.alt || event.name} />)}</section>}
         {event.organizer?.name && <div className="eventOrganizerNote">Təşkilatçı: <strong>{event.organizer.name}</strong></div>}
       </div>
     </main>

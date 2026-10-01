@@ -70,6 +70,20 @@ export default async function PromoterDashboardPage() {
         ticket: { select: { id: true, ticketNumber: true, status: true, event: { select: { id: true, name: true, slug: true, startsAt: true, city: true, venue: true } } } },
       },
     }),
+    prisma.ticketSale.findMany({
+      where: { promoterId: promoter.id },
+      orderBy: { soldAt: 'desc' },
+      select: {
+        id: true,
+        soldAt: true,
+        promoterPrice: true,
+        actualSalePrice: true,
+        margin: true,
+        customerName: true,
+        ticket: { select: { ticketNumber: true, status: true } },
+        event: { select: { id: true, name: true, slug: true, startsAt: true, city: true, venue: true } },
+      },
+    }),
   ]);
 
   const serialize = (value: unknown) => JSON.parse(JSON.stringify(value));
@@ -80,6 +94,7 @@ export default async function PromoterDashboardPage() {
       events={serialize(events)}
       applications={serialize(applications)}
       tickets={serialize(tickets)}
+      sales={serialize(sales)}
     />
   );
 }

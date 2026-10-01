@@ -17,6 +17,17 @@ type EventRow = {
   event: { id: string; name: string; slug: string; artist: string | null; venue: string | null; city: string | null; startsAt: string; status: string; coverMedia: { url: string; alt: string | null } | null };
 };
 
+type SaleRow = {
+  id: string;
+  soldAt: string;
+  promoterPrice: string;
+  actualSalePrice: string;
+  margin: string;
+  customerName: string | null;
+  ticket: { ticketNumber: string; status: string };
+  event: { id: string; name: string; slug: string; startsAt: string; city: string | null; venue: string | null };
+};
+
 type TicketRow = {
   id: string;
   allocatedAt: string;
@@ -58,8 +69,8 @@ function dateTime(value: string) {
   return new Intl.DateTimeFormat('az-AZ', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
 }
 
-export default function PromoterDashboardClient({ promoter, events, applications, tickets }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[]; tickets: TicketRow[] }) {
-  const [activeTab, setActiveTab] = useState<'events' | 'tickets' | 'applications'>('events');
+export default function PromoterDashboardClient({ promoter, events, applications, tickets, sales }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[]; tickets: TicketRow[]; sales: SaleRow[] }) {
+  const [activeTab, setActiveTab] = useState<'events' | 'tickets' | 'sales' | 'applications'>('events');
   const totalAllocation = events.reduce((sum, item) => sum + item.allocation, 0);
   const totalSold = events.reduce((sum, item) => sum + item.soldQuantity, 0);
   const totalRemaining = events.reduce((sum, item) => sum + item.remainingQuantity, 0);
@@ -96,6 +107,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
             <div className="promoterTabs">
               <button className={activeTab === 'events' ? 'active' : ''} onClick={() => setActiveTab('events')}>Tədbirlərim</button>
               <button className={activeTab === 'tickets' ? 'active' : ''} onClick={() => setActiveTab('tickets')}>Biletlərim <b>{tickets.length}</b></button>
+              <button className={activeTab === 'sales' ? 'active' : ''} onClick={() => setActiveTab('sales')}>Satışlarım <b>{sales.length}</b></button>
               <button className={activeTab === 'applications' ? 'active' : ''} onClick={() => setActiveTab('applications')}>Müraciətlərim {pendingApplications > 0 && <b>{pendingApplications}</b>}</button>
             </div>
 
@@ -131,10 +143,21 @@ export default function PromoterDashboardClient({ promoter, events, applications
                   {tickets.map((item) => (
                     <article className="promoterTicketCard" key={item.id}>
                       <div><small>{item.ticket.status === 'ALLOCATED' ? 'Ayrılıb' : item.ticket.status}</small><h3>{item.ticket.ticketNumber}</h3><p>{item.ticket.event.name}</p><span>{dateTime(item.ticket.event.startsAt)} · {[item.ticket.event.city, item.ticket.event.venue].filter(Boolean).join(' · ')}</span></div>
-                      <div className="promoterTicketPrice"><small>Promoter qiyməti</small><strong>{money(item.promoterPrice)}</strong><span>{Number(item.promoterDiscountPercent).toFixed(2)}% endirim snapshot</span></div>
+                      <div className="promoterTicketPrice"><small>Promoter qiyməti</small><strong>{money(item.promoterPrice)}</strong><span>{Number(item.promoterDiscountPercent).toFixed(2)}% endirim snapshot</span>{item.ticket.status === 'ALLOCATED' && <button className="promoterSellButton" onClick={async () => { const value = window.prompt(`Müştəriyə faktiki satış qiyməti (AZN). Promoter qiyməti: ${money(item.promoterPrice)}`); if (value === null) return; const salePrice = Number(value); if (!Number.isFinite(salePrice) || salePrice < 0) { alert('Düzgün satış qiyməti daxil edin.'); return; } const customerName = window.prompt('Müştəri adı (istəyə bağlı):') || ''; const r = await fetch('/api/promoter/sales', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ticketId: item.ticket.id, actualSalePrice: salePrice, customerName }) }); const d = await r.json(); if (!r.ok) { alert(d.error); return; } window.location.reload(); }}>Satış kimi qeyd et</button>}</div>
                     </article>
                   ))}
                 </div>
+              )
+            ) : activeTab === 'sales' ? (
+              sales.length === 0 ? (
+                <div className="promoterEmpty"><TrendingUp size={26} /><h3>Hələ satış yoxdur</h3><p>Satış etdikdə faktiki müştəri qiyməti və margin burada görünəcək.</p></div>
+              ) : (
+                <div className="promoterTicketList">{sales.map((sale) => (
+                  <article className="promoterTicketCard" key={sale.id}>
+                    <div><small>Satılıb · {dateTime(sale.soldAt)}</small><h3>{sale.ticket.ticketNumber}</h3><p>{sale.event.name}</p><span>{sale.customerName || 'Müştəri adı qeyd edilməyib'}</span></div>
+                    <div className="promoterTicketPrice"><small>Promoter qiyməti</small><strong>{money(sale.promoterPrice)}</strong><span>Satış: {money(sale.actualSalePrice)} · Margin: <b>{money(sale.margin)}</b></span></div>
+                  </article>
+                ))}</div>
               )
             ) : (
               applications.length === 0 ? (
@@ -154,7 +177,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
 
           <aside className="promoterSidePanel">
             <div className="promoterProfileCard"><div className="promoterProfileAvatar">{promoter.firstName.slice(0, 1)}{promoter.lastName.slice(0, 1)}</div><small>PROMOTER</small><h2>{promoter.firstName} {promoter.lastName}</h2><p>{promoter.city || 'Şəhər qeyd edilməyib'}</p><div className="promoterProfileRows">{promoter.email && <div><span>E-poçt</span><b>{promoter.email}</b></div>}{promoter.phone && <div><span>Telefon</span><b>{promoter.phone}</b></div>}<div><span>Status</span><b className="profileActive">Aktiv</b></div></div></div>
-            <div className="promoterRuleCard"><small>NEW ERA QAYDASI</small><h3>Qiymət necə işləyir?</h3><p>Paneldə göstərilən promoter qiyməti New Era-nın həmin tədbir üçün sənə verdiyi tarixi qiymətdir.</p><p>Müştəriyə faktiki satış qiymətini sən müəyyən edirsən. Satış və margin məlumatları növbəti mərhələdə ayrıca qeyd olunacaq.</p></div>
+            <div className="promoterRuleCard"><small>NEW ERA QAYDASI</small><h3>Qiymət necə işləyir?</h3><p>Paneldə göstərilən promoter qiyməti New Era-nın həmin tədbir üçün sənə verdiyi tarixi qiymətdir.</p><p>Müştəriyə faktiki satış qiymətini sən müəyyən edirsən. Faktiki satış qiyməti satış zamanı qeyd olunur; margin avtomatik olaraq promoter qiymətindən hesablanır.</p></div>
             <Link href="/events" className="promoterBrowseLink">Yeni tədbir tap <ArrowRight size={16} /></Link>
           </aside>
         </div>

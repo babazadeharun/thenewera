@@ -48,6 +48,7 @@ export default async function Home() {
             <a href="#portfolio">İşlərimiz</a>
             <a href="#about">Haqqımızda</a>
             <a href="/analysis">Analiz</a>
+            <a href="/events">Tədbirlər</a>
             <a href="/start-project">Layihəyə başla</a>
           </div>
           <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></div>

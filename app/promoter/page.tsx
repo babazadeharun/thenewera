@@ -15,7 +15,7 @@ export default async function PromoterDashboardPage() {
 
   if (!promoter || promoter.status !== 'ACTIVE') redirect('/login');
 
-  const [events, applications, tickets] = await Promise.all([
+  const [events, applications, tickets, sales, debitSummary, creditSummary] = await Promise.all([
     prisma.promoterEvent.findMany({
       where: { promoterId: promoter.id },
       orderBy: { event: { startsAt: 'asc' } },
@@ -84,10 +84,13 @@ export default async function PromoterDashboardPage() {
         event: { select: { id: true, name: true, slug: true, startsAt: true, city: true, venue: true } },
       },
     }),
+    prisma.promoterLedgerEntry.aggregate({ where: { promoterId: promoter.id, type: 'DEBIT' }, _sum: { amount: true } }),
+    prisma.promoterLedgerEntry.aggregate({ where: { promoterId: promoter.id, type: 'CREDIT' }, _sum: { amount: true } }),
   ]);
 
   const serialize = (value: unknown) => JSON.parse(JSON.stringify(value));
 
+  const finance = { debit: Number(debitSummary._sum.amount || 0), credit: Number(creditSummary._sum.amount || 0), debt: Number(debitSummary._sum.amount || 0) - Number(creditSummary._sum.amount || 0) };
   return (
     <PromoterDashboardClient
       promoter={serialize(promoter)}
@@ -95,6 +98,7 @@ export default async function PromoterDashboardPage() {
       applications={serialize(applications)}
       tickets={serialize(tickets)}
       sales={serialize(sales)}
+      finance={serialize(finance)}
     />
   );
 }

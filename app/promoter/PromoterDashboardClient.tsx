@@ -36,6 +36,8 @@ type TicketRow = {
   ticket: { id: string; ticketNumber: string; status: string; event: { id: string; name: string; slug: string; startsAt: string; city: string | null; venue: string | null } };
 };
 
+type FinanceSummary = { debit: number; credit: number; debt: number };
+
 type ApplicationRow = {
   id: string;
   status: string;
@@ -69,8 +71,8 @@ function dateTime(value: string) {
   return new Intl.DateTimeFormat('az-AZ', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
 }
 
-export default function PromoterDashboardClient({ promoter, events, applications, tickets, sales }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[]; tickets: TicketRow[]; sales: SaleRow[] }) {
-  const [activeTab, setActiveTab] = useState<'events' | 'tickets' | 'sales' | 'applications'>('events');
+export default function PromoterDashboardClient({ promoter, events, applications, tickets, sales, finance }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[]; tickets: TicketRow[]; sales: SaleRow[]; finance: FinanceSummary }) {
+  const [activeTab, setActiveTab] = useState<'events' | 'tickets' | 'sales' | 'finance' | 'applications'>('events');
   const totalAllocation = events.reduce((sum, item) => sum + item.allocation, 0);
   const totalSold = events.reduce((sum, item) => sum + item.soldQuantity, 0);
   const totalRemaining = events.reduce((sum, item) => sum + item.remainingQuantity, 0);
@@ -107,7 +109,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
             <div className="promoterTabs">
               <button className={activeTab === 'events' ? 'active' : ''} onClick={() => setActiveTab('events')}>Tədbirlərim</button>
               <button className={activeTab === 'tickets' ? 'active' : ''} onClick={() => setActiveTab('tickets')}>Biletlərim <b>{tickets.length}</b></button>
-              <button className={activeTab === 'sales' ? 'active' : ''} onClick={() => setActiveTab('sales')}>Satışlarım <b>{sales.length}</b></button>
+              <button className={activeTab === 'sales' ? 'active' : ''} onClick={() => setActiveTab('sales')}>Satışlarım <b>{sales.length}</b></button><button className={activeTab === 'finance' ? 'active' : ''} onClick={() => setActiveTab('finance')}>Maliyyə</button>
               <button className={activeTab === 'applications' ? 'active' : ''} onClick={() => setActiveTab('applications')}>Müraciətlərim {pendingApplications > 0 && <b>{pendingApplications}</b>}</button>
             </div>
 
@@ -148,6 +150,8 @@ export default function PromoterDashboardClient({ promoter, events, applications
                   ))}
                 </div>
               )
+             ) : activeTab === 'finance' ? (
+              <div className="promoterFinancePanel"><div className="promoterFinanceCard"><small>ÜMUMİ BORC</small><strong>{money(String(finance.debt))}</strong><span>Debit {money(String(finance.debit))} · Kredit {money(String(finance.credit))}</span></div><div className="promoterRuleCard"><small>MALİYYƏ</small><h3>Borc hesablanması</h3><p>Satılmış biletlərin tarixi promoter qiyməti borc kimi, qeyd edilmiş ödənişlər isə kredit kimi ledger-də saxlanılır.</p><p>Faktiki müştəri satış qiyməti promoter marginidir və promoter borcunu dəyişmir.</p></div></div>
             ) : activeTab === 'sales' ? (
               sales.length === 0 ? (
                 <div className="promoterEmpty"><TrendingUp size={26} /><h3>Hələ satış yoxdur</h3><p>Satış etdikdə faktiki müştəri qiyməti və margin burada görünəcək.</p></div>

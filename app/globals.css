@@ -268,3 +268,8 @@ html,body{margin:0;min-height:100%;}
 .eventsAdminAllocationEditor{display:flex;align-items:end;gap:8px;min-width:220px}.eventsAdminAllocationEditor label{display:grid;gap:5px}.eventsAdminAllocationEditor label span{font-size:11px;color:rgba(255,255,255,.5)}.eventsAdminAllocationEditor input{width:100px}
 @media(max-width:900px){.eventsAdminInventorySummary{grid-template-columns:repeat(2,minmax(0,1fr))}.eventsAdminSectionHead{align-items:flex-start;gap:12px;flex-wrap:wrap}}
 @media(max-width:620px){.eventsAdminInventorySummary{grid-template-columns:1fr}.eventsAdminAllocationEditor{width:100%;justify-content:space-between}.eventsAdminAllocationEditor input{width:120px}}
+
+/* NEW ERA — PHASE 7/8 FINANCE, REPORTS & AUDIT */
+.promoterFinancePanel{display:grid;gap:16px}.promoterFinanceCard{padding:24px;border:1px solid rgba(255,255,255,.09);border-radius:18px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;gap:8px}.promoterFinanceCard small{font-size:11px;letter-spacing:.16em;opacity:.55}.promoterFinanceCard strong{font-size:34px;letter-spacing:-.04em}.promoterFinanceCard span{opacity:.62;font-size:13px}
+@media (max-width:900px){.eventsAdminTabs{overflow-x:auto;justify-content:flex-start;flex-wrap:nowrap}.eventsAdminTabs button{white-space:nowrap}.eventsAdminInventorySummary{grid-template-columns:repeat(2,minmax(0,1fr))}.eventsAdminTwo{grid-template-columns:1fr}.promoterTabs{overflow-x:auto;flex-wrap:nowrap}.promoterTabs button{white-space:nowrap}}
+@media (max-width:560px){.eventsAdminInventorySummary{grid-template-columns:1fr}.eventsAdminForm{padding:16px}.eventsAdminApplication{flex-direction:column}.promoterFinanceCard strong{font-size:28px}}

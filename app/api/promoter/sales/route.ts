@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { requirePromoter } from '@/lib/events/authorization';
+import { writeEventAudit } from '@/lib/events/audit';
 
 function fail(error: unknown) {
   const message = error instanceof Error ? error.message : 'REQUEST_FAILED';
@@ -81,6 +82,8 @@ export async function POST(req: Request) {
       });
 
       await tx.ticket.update({ where: { id: ticketId }, data: { status: 'SOLD' } });
+      await tx.promoterLedgerEntry.create({ data: { promoterId: promoter.id, eventId: allocation.eventId, type: 'DEBIT', amount: promoterPrice, description: 'Ticket satışı üzrə promoter borcu', sourceType: 'SALE', sourceId: sale.id } });
+
       await tx.promoterEvent.update({
         where: { promoterId_eventId: { promoterId: promoter.id, eventId: allocation.eventId } },
         data: { soldQuantity: { increment: 1 }, remainingQuantity: { decrement: 1 } },
@@ -88,6 +91,8 @@ export async function POST(req: Request) {
 
       return sale;
     });
+
+    await writeEventAudit({ action: 'SALE', entityType: 'TicketSale', entityId: result.id, actorUserId: (await requirePromoter()).user.id, promoterId: promoter.id, eventId: result.eventId, request: req, metadata: { ticketId: result.ticketId, actualSalePrice: result.actualSalePrice.toString(), margin: result.margin.toString() } });
 
     return NextResponse.json({
       sale: {

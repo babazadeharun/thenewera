@@ -17,6 +17,14 @@ type EventRow = {
   event: { id: string; name: string; slug: string; artist: string | null; venue: string | null; city: string | null; startsAt: string; status: string; coverMedia: { url: string; alt: string | null } | null };
 };
 
+type TicketRow = {
+  id: string;
+  allocatedAt: string;
+  promoterPrice: string;
+  promoterDiscountPercent: string;
+  ticket: { id: string; ticketNumber: string; status: string; event: { id: string; name: string; slug: string; startsAt: string; city: string | null; venue: string | null } };
+};
+
 type ApplicationRow = {
   id: string;
   status: string;
@@ -50,8 +58,8 @@ function dateTime(value: string) {
   return new Intl.DateTimeFormat('az-AZ', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
 }
 
-export default function PromoterDashboardClient({ promoter, events, applications }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[] }) {
-  const [activeTab, setActiveTab] = useState<'events' | 'applications'>('events');
+export default function PromoterDashboardClient({ promoter, events, applications, tickets }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[]; tickets: TicketRow[] }) {
+  const [activeTab, setActiveTab] = useState<'events' | 'tickets' | 'applications'>('events');
   const totalAllocation = events.reduce((sum, item) => sum + item.allocation, 0);
   const totalSold = events.reduce((sum, item) => sum + item.soldQuantity, 0);
   const totalRemaining = events.reduce((sum, item) => sum + item.remainingQuantity, 0);
@@ -87,6 +95,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
           <section className="promoterMainPanel">
             <div className="promoterTabs">
               <button className={activeTab === 'events' ? 'active' : ''} onClick={() => setActiveTab('events')}>Tədbirlərim</button>
+              <button className={activeTab === 'tickets' ? 'active' : ''} onClick={() => setActiveTab('tickets')}>Biletlərim <b>{tickets.length}</b></button>
               <button className={activeTab === 'applications' ? 'active' : ''} onClick={() => setActiveTab('applications')}>Müraciətlərim {pendingApplications > 0 && <b>{pendingApplications}</b>}</button>
             </div>
 
@@ -110,6 +119,19 @@ export default function PromoterDashboardClient({ promoter, events, applications
                         </div>
                         <div className="promoterDiscountNote">Promoter endirimi: <b>{Number(item.promoterDiscountPercent).toFixed(2)}%</b> · Tarixi qiymət snapshot kimi qorunur.</div>
                       </div>
+                    </article>
+                  ))}
+                </div>
+              )
+            ) : activeTab === 'tickets' ? (
+              tickets.length === 0 ? (
+                <div className="promoterEmpty"><Ticket size={26} /><h3>Hələ ayrılmış bilet yoxdur</h3><p>Admin tərəfindən sənə bilet allocation verildikdə burada görünəcək.</p></div>
+              ) : (
+                <div className="promoterTicketList">
+                  {tickets.map((item) => (
+                    <article className="promoterTicketCard" key={item.id}>
+                      <div><small>{item.ticket.status === 'ALLOCATED' ? 'Ayrılıb' : item.ticket.status}</small><h3>{item.ticket.ticketNumber}</h3><p>{item.ticket.event.name}</p><span>{dateTime(item.ticket.event.startsAt)} · {[item.ticket.event.city, item.ticket.event.venue].filter(Boolean).join(' · ')}</span></div>
+                      <div className="promoterTicketPrice"><small>Promoter qiyməti</small><strong>{money(item.promoterPrice)}</strong><span>{Number(item.promoterDiscountPercent).toFixed(2)}% endirim snapshot</span></div>
                     </article>
                   ))}
                 </div>

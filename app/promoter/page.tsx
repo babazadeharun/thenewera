@@ -15,7 +15,7 @@ export default async function PromoterDashboardPage() {
 
   if (!promoter || promoter.status !== 'ACTIVE') redirect('/login');
 
-  const [events, applications] = await Promise.all([
+  const [events, applications, tickets] = await Promise.all([
     prisma.promoterEvent.findMany({
       where: { promoterId: promoter.id },
       orderBy: { event: { startsAt: 'asc' } },
@@ -59,6 +59,17 @@ export default async function PromoterDashboardPage() {
         },
       },
     }),
+    prisma.ticketAllocation.findMany({
+      where: { promoterId: promoter.id, releasedAt: null },
+      orderBy: { allocatedAt: 'desc' },
+      select: {
+        id: true,
+        allocatedAt: true,
+        promoterPrice: true,
+        promoterDiscountPercent: true,
+        ticket: { select: { id: true, ticketNumber: true, status: true, event: { select: { id: true, name: true, slug: true, startsAt: true, city: true, venue: true } } } },
+      },
+    }),
   ]);
 
   const serialize = (value: unknown) => JSON.parse(JSON.stringify(value));
@@ -68,6 +79,7 @@ export default async function PromoterDashboardPage() {
       promoter={serialize(promoter)}
       events={serialize(events)}
       applications={serialize(applications)}
+      tickets={serialize(tickets)}
     />
   );
 }

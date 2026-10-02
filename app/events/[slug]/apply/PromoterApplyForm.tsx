@@ -7,28 +7,39 @@ const socials = ['INSTAGRAM','TIKTOK','FACEBOOK','YOUTUBE','TELEGRAM','OTHER'];
 type Social = { platform: string; username: string; profileUrl: string; followerCount: string; notes: string };
 const blank = (): Social => ({ platform: 'INSTAGRAM', username: '', profileUrl: '', followerCount: '', notes: '' });
 
-export default function PromoterApplyForm({ eventSlug, eventName }: { eventSlug: string; eventName: string }) {
+export default function PromoterApplyForm({ eventSlug, eventName, verified = false }: { eventSlug: string; eventName: string; verified?: boolean }) {
   const router = useRouter();
   const [form, setForm] = useState({ firstName:'', lastName:'', email:'', phone:'', city:'', address:'', password:'', experience:'', previousEventPromotion:'', salesExperience:'', approximateAudience:'', notes:'' });
   const [socialAccounts, setSocialAccounts] = useState<Social[]>([blank()]);
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(verified);
   const update = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
   const updateSocial = (index: number, key: keyof Social, value: string) => setSocialAccounts((all) => all.map((s,i)=>i===index?{...s,[key]:value}:s));
 
   async function submit(e: FormEvent) {
-    e.preventDefault(); setError(''); setLoading(true);
+    e.preventDefault(); setError(''); setInfo(''); setLoading(true);
     try {
       const res = await fetch(`/api/events/${eventSlug}/apply`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...form, socialAccounts }) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Müraciət göndərilmədi.');
+      if (!res.ok) {
+        if (res.status === 409 && data.code === 'APPLICATION_EXISTS') {
+          setInfo(data.error || 'Bu tədbir üçün müraciətiniz artıq mövcuddur.');
+          return;
+        }
+        throw new Error(data.error || 'Müraciət göndərilmədi.');
+      }
+      if (data.verificationRequired) {
+        router.push(`/verify?identifier=${encodeURIComponent(data.identifier)}&target=${encodeURIComponent(data.target || '')}&flow=promoter&eventSlug=${encodeURIComponent(eventSlug)}`);
+        return;
+      }
       setSuccess(true);
     } catch (err) { setError(err instanceof Error ? err.message : 'Müraciət göndərilmədi.'); }
     finally { setLoading(false); }
   }
 
-  if (success) return <div className="promoterSuccess"><div className="promoterSuccessMark">✓</div><div className="eventsEyebrow">APPLICATION RECEIVED</div><h2>Müraciətin qəbul edildi.</h2><p><strong>{eventName}</strong> üçün müraciətin New Era komandası tərəfindən nəzərdən keçiriləcək. Təsdiqdən sonra promoter hesabın aktivləşdiriləcək.</p><button onClick={()=>router.push('/events')} className="eventPrimaryCta">Tədbirlərə qayıt <span>→</span></button></div>;
+  if (success) return <div className="promoterSuccess"><div className="promoterSuccessMark">✓</div><div className="eventsEyebrow">APPLICATION RECEIVED</div><h2>Müraciətin qəbul edildi.</h2><p><strong>{eventName}</strong> üçün müraciətin və e-poçt təsdiqin uğurla tamamlandı. New Era komandası müraciətini nəzərdən keçirəcək. Təsdiqdən sonra promoter hesabın aktivləşdiriləcək.</p><button onClick={()=>router.push('/events')} className="eventPrimaryCta">Tədbirlərə qayıt <span>→</span></button></div>;
 
   return <form className="promoterForm" onSubmit={submit}>
     <section className="promoterFormSection"><div className="promoterFormTitle"><span>01</span><div><strong>Personal information</strong><small>Əlaqə və əsas məlumatların</small></div></div><div className="promoterFormGrid">

@@ -4,8 +4,9 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import PromoterApplyForm from './PromoterApplyForm';
 
-export default async function PromoterApplyPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PromoterApplyPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ verified?: string }> }) {
   const { slug } = await params;
+  const query = await searchParams;
   const event = await prisma.event.findUnique({ where: { slug }, select: { id: true, slug: true, name: true, artist: true, status: true, startsAt: true } });
   if (!event || event.status !== 'APPLICATION_OPEN') notFound();
   return (
@@ -17,7 +18,7 @@ export default async function PromoterApplyPage({ params }: { params: Promise<{ 
           <h1>{event.name}</h1>
           <p>{event.artist ? `${event.artist} · ` : ''}Bu tədbir üçün promoter kimi əməkdaşlıq müraciəti göndər.</p>
         </div>
-        <PromoterApplyForm eventSlug={event.slug} eventName={event.name} />
+        <PromoterApplyForm eventSlug={event.slug} eventName={event.name} verified={query.verified === '1'} />
       </div>
     </main>
   );

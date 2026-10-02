@@ -29,6 +29,11 @@ export default function Login() {
 
       const data = await res.json();
 
+      if (data.verificationRequired) {
+        window.location.href = `/verify?identifier=${encodeURIComponent(data.identifier)}&target=${encodeURIComponent(data.target || '')}&flow=client`;
+        return;
+      }
+
       if (!res.ok) {
         setError(data.error || 'E-poçt və ya şifrə yanlışdır.');
         return;

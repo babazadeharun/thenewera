@@ -7,8 +7,8 @@ import PromoterApplyForm from './PromoterApplyForm';
 export default async function PromoterApplyPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ verified?: string }> }) {
   const { slug } = await params;
   const query = await searchParams;
-  const event = await prisma.event.findUnique({ where: { slug }, select: { id: true, slug: true, name: true, artist: true, status: true, startsAt: true } });
-  if (!event || event.status !== 'APPLICATION_OPEN') notFound();
+  const event = await prisma.event.findUnique({ where: { slug }, select: { id: true, slug: true, name: true, artist: true, status: true, startsAt: true, isPublic: true } });
+  if (!event || !event.isPublic || event.status !== 'APPLICATION_OPEN') notFound();
   return (
     <main className="promoterApplyPage">
       <div className="promoterApplyContainer">

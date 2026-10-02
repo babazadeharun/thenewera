@@ -12,7 +12,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     const { slug } = await params;
     const body = await request.json();
     const event = await prisma.event.findUnique({ where: { slug } });
-    if (!event || event.status !== 'APPLICATION_OPEN') {
+    if (!event || !event.isPublic || event.status !== 'APPLICATION_OPEN') {
       return NextResponse.json({ error: 'Bu tədbir üçün müraciət artıq qəbul edilmir.' }, { status: 400 });
     }
 

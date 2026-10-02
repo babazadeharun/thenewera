@@ -384,6 +384,14 @@ model Event {
   status                 EventStatus @default(DRAFT)
   internalNotes          String?     @db.Text
   organizerId            String?
+  isPublic               Boolean     @default(false)
+  externalSource         String?
+  externalId             String?
+  externalUrl            String?     @db.Text
+  externalPosterUrl      String?     @db.Text
+  externalCategory       String?
+  externalIngestedAt     DateTime?
+  lastExternalSyncAt     DateTime?
   createdAt              DateTime    @default(now())
   updatedAt              DateTime    @updatedAt
 
@@ -402,6 +410,9 @@ model Event {
   @@index([status, startsAt])
   @@index([organizerId])
   @@index([city])
+  @@index([isPublic, startsAt])
+  @@index([externalSource, externalId])
+  @@unique([externalSource, externalId])
 }
 
 model EventGalleryMedia {

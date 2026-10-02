@@ -12,17 +12,24 @@ export default function PromoterApplyForm({ eventSlug, eventName, verified = fal
   const [form, setForm] = useState({ firstName:'', lastName:'', email:'', phone:'', city:'', address:'', password:'', experience:'', previousEventPromotion:'', salesExperience:'', approximateAudience:'', notes:'' });
   const [socialAccounts, setSocialAccounts] = useState<Social[]>([blank()]);
   const [error, setError] = useState('');
+  const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(verified);
   const update = (key: string, value: string) => setForm((f) => ({ ...f, [key]: value }));
   const updateSocial = (index: number, key: keyof Social, value: string) => setSocialAccounts((all) => all.map((s,i)=>i===index?{...s,[key]:value}:s));
 
   async function submit(e: FormEvent) {
-    e.preventDefault(); setError(''); setLoading(true);
+    e.preventDefault(); setError(''); setInfo(''); setLoading(true);
     try {
       const res = await fetch(`/api/events/${eventSlug}/apply`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...form, socialAccounts }) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Müraciət göndərilmədi.');
+      if (!res.ok) {
+        if (res.status === 409 && data.code === 'APPLICATION_EXISTS') {
+          setInfo(data.error || 'Bu tədbir üçün müraciətiniz artıq mövcuddur.');
+          return;
+        }
+        throw new Error(data.error || 'Müraciət göndərilmədi.');
+      }
       if (data.verificationRequired) {
         router.push(`/verify?identifier=${encodeURIComponent(data.identifier)}&target=${encodeURIComponent(data.target || '')}&flow=promoter&eventSlug=${encodeURIComponent(eventSlug)}`);
         return;

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { looksLikeEmail, maskIdentifier, sendVerificationCode } from '@/lib/verification';
+import { looksLikeEmail, maskIdentifier, sendVerificationCode, verificationErrorMessage } from '@/lib/verification';
 
 export async function POST(request: Request) {
   try {
@@ -29,8 +29,8 @@ export async function POST(request: Request) {
         try {
           await sendVerificationCode(existing.id, email, 'EMAIL');
         } catch (error) {
-          const message = error instanceof Error ? error.message : '';
-          return NextResponse.json({ error: message || 'Təsdiq kodunu göndərmək mümkün olmadı.' }, { status: 503 });
+          const message = verificationErrorMessage(error);
+          return NextResponse.json({ error: message }, { status: 503 });
         }
         return NextResponse.json({ ok: true, verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email });
       }

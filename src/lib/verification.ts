@@ -24,6 +24,23 @@ export function looksLikeEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+export function verificationErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : '';
+  if (message === 'EMAIL_SMTP_CONFIG_MISSING' || message === 'EMAIL_SMTP_PORT_INVALID') {
+    return 'E-poçt təsdiqi hazırda əlçatan deyil. Zəhmət olmasa bir az sonra yenidən cəhd edin.';
+  }
+  if (message.includes('Please wait 60 seconds')) {
+    return 'Yeni təsdiq kodu üçün 60 saniyə gözləyin.';
+  }
+  if (message.includes('Too many verification requests')) {
+    return 'Çox sayda təsdiq sorğusu göndərildi. Zəhmət olmasa bir qədər sonra yenidən cəhd edin.';
+  }
+  if (message.includes('SMTP') || message.includes('Email provider') || message.includes('E-poçt')) {
+    return 'E-poçt təsdiq kodunu göndərmək mümkün olmadı. Zəhmət olmasa bir az sonra yenidən cəhd edin.';
+  }
+  return 'Təsdiq kodunu göndərmək mümkün olmadı. Zəhmət olmasa bir az sonra yenidən cəhd edin.';
+}
+
 export function maskIdentifier(identifier: string, channel: VerificationChannel) {
   if (channel === 'EMAIL') {
     const [local, domain] = identifier.split('@');

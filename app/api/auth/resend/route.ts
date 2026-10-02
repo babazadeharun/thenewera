@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { looksLikeEmail, maskIdentifier, sendVerificationCode } from '@/lib/verification';
+import { looksLikeEmail, maskIdentifier, sendVerificationCode, verificationErrorMessage } from '@/lib/verification';
 
 export async function POST(request: Request) {
   try {
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, target: maskIdentifier(identifier, 'EMAIL') });
   } catch (error) {
     console.error('resend verification error', error);
-    const message = error instanceof Error ? error.message : '';
-    return NextResponse.json({ error: message || 'Yeni təsdiq kodunu göndərmək mümkün olmadı.' }, { status: 429 });
+    const message = verificationErrorMessage(error);
+    return NextResponse.json({ error: message }, { status: 429 });
   }
 }

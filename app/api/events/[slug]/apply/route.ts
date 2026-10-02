@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { looksLikeEmail, maskIdentifier, sendVerificationCode } from '@/lib/verification';
+import { looksLikeEmail, maskIdentifier, sendVerificationCode, verificationErrorMessage } from '@/lib/verification';
 
 const platforms = new Set(['INSTAGRAM','TIKTOK','FACEBOOK','YOUTUBE','TELEGRAM','OTHER']);
 const text = (v: unknown) => String(v ?? '').trim();
@@ -49,7 +49,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
         where: { promoterId_eventId: { promoterId: existing.promoter.id, eventId: event.id } },
       });
       if (existingApplication) {
-        return NextResponse.json({ error: 'Bu tədbir üçün artıq müraciət etmisiniz.' }, { status: 409 });
+        return NextResponse.json({ code: 'APPLICATION_EXISTS', error: 'Bu tədbir üçün promoter müraciətiniz artıq mövcuddur. Müraciət statusunu hesabınızdan izləyə bilərsiniz.' }, { status: 409 });
       }
 
       await prisma.promoterApplication.create({ data: { promoterId: existing.promoter.id, eventId: event.id, status: 'PENDING' } });
@@ -59,8 +59,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
           await sendVerificationCode(existing.id, email, 'EMAIL');
         } catch (error) {
           await prisma.promoterApplication.deleteMany({ where: { promoterId: existing.promoter.id, eventId: event.id } }).catch(() => undefined);
-          const message = error instanceof Error ? error.message : '';
-          return NextResponse.json({ error: message || 'Təsdiq kodunu göndərmək mümkün olmadı.' }, { status: 503 });
+          const message = verificationErrorMessage(error);
+          return NextResponse.json({ error: message }, { status: 503 });
         }
         return NextResponse.json({ ok: true, verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email, eventSlug: slug }, { status: 201 });
       }
@@ -109,6 +109,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
   } catch (error) {
     console.error('promoter application error', error);
     const message = error instanceof Error ? error.message : '';
-    return NextResponse.json({ error: message || 'Müraciət hazırda göndərilə bilmir. Bir az sonra yenidən cəhd et.' }, { status: 500 });
+    const safeMessage = message === 'EMAIL_SMTP_CONFIG_MISSING' || message === 'EMAIL_SMTP_PORT_INVALID' ? verificationErrorMessage(error) : (message || 'Müraciət hazırda göndərilə bilmir. Bir az sonra yenidən cəhd et.');
+    return NextResponse.json({ error: safeMessage }, { status: 500 });
   }
 }

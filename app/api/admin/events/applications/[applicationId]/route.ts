@@ -19,9 +19,7 @@ function fail(e: unknown) {
           ? 401
           : m === 'FORBIDDEN'
             ? 403
-            : m === 'PROMOTER_EMAIL_NOT_VERIFIED'
-              ? 400
-              : 400,
+            : 400,
     }
   );
 }
@@ -48,7 +46,7 @@ export async function PATCH(
         },
         include: {
           event: true,
-          promoter: { include: { user: { select: { id: true, email: true, verifiedAt: true } } } },
+          promoter: true,
         },
       });
 
@@ -79,14 +77,9 @@ export async function PATCH(
           },
           include: {
             event: true,
-            promoter: { include: { user: { select: { id: true, email: true, verifiedAt: true } } } },
+            promoter: true,
           },
         });
-      }
-
-      // APPROVE APPLICATION
-      if (!application.promoter.user.verifiedAt) {
-        throw new Error('PROMOTER_EMAIL_NOT_VERIFIED');
       }
 
       // APPROVE APPLICATION
@@ -144,7 +137,7 @@ export async function PATCH(
         },
         include: {
           event: true,
-          promoter: { include: { user: { select: { id: true, email: true, verifiedAt: true } } } },
+          promoter: true,
         },
       });
     });

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { hashPassword } from '@/lib/auth';
+import { createSession, hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { looksLikeEmail, maskIdentifier, sendVerificationCode, verificationErrorMessage } from '@/lib/verification';
 
 export async function POST(request: Request) {
   try {
@@ -18,24 +17,12 @@ export async function POST(request: Request) {
     const country = String(body.country ?? '').trim();
     const website = String(body.website ?? '').trim();
 
-    if (!firstName || !lastName || !email || password.length < 8 || !phone || !company || !jobTitle || !industry || !companySize) {
-      return NextResponse.json({ error: 'Bütün tələb olunan sahələri doldurun.' }, { status: 400 });
+    if (!firstName || !lastName || !email || password.length < 6 || !phone || !company || !jobTitle || !industry || !companySize) {
+      return NextResponse.json({ error: 'Please complete all required fields.' }, { status: 400 });
     }
-    if (!looksLikeEmail(email)) return NextResponse.json({ error: 'Düzgün e-poçt ünvanı daxil edin.' }, { status: 400 });
 
     const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      if (!existing.verifiedAt) {
-        try {
-          await sendVerificationCode(existing.id, email, 'EMAIL');
-        } catch (error) {
-          const message = verificationErrorMessage(error);
-          return NextResponse.json({ error: message }, { status: 503 });
-        }
-        return NextResponse.json({ ok: true, verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email });
-      }
-      return NextResponse.json({ error: 'Bu e-poçt ilə artıq hesab mövcuddur.' }, { status: 409 });
-    }
+    if (existing) return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 409 });
 
     const user = await prisma.user.create({
       data: {
@@ -49,18 +36,10 @@ export async function POST(request: Request) {
       include: { client: true },
     });
 
-    try {
-      await sendVerificationCode(user.id, email, 'EMAIL');
-    } catch (sendError) {
-      if (user.client) await prisma.client.delete({ where: { id: user.client.id } }).catch(() => undefined);
-      await prisma.user.delete({ where: { id: user.id } }).catch(() => undefined);
-      throw sendError;
-    }
-
-    return NextResponse.json({ ok: true, verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email }, { status: 201 });
+    await createSession(user.id);
+    return NextResponse.json({ ok: true, user: { id: user.id, email: user.email, role: user.role, client: user.client } }, { status: 201 });
   } catch (error) {
     console.error('register error', error);
-    const message = error instanceof Error ? error.message : '';
-    return NextResponse.json({ error: message || 'Hesab yaratmaq mümkün olmadı.' }, { status: 500 });
+    return NextResponse.json({ error: 'Unable to create the account right now.' }, { status: 500 });
   }
 }

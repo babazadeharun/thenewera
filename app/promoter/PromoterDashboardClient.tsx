@@ -122,7 +122,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
                     <article className="promoterEventCard" key={`${item.eventId}-${item.joinedAt}`}>
                       <div className="promoterEventCover">{item.event.coverMedia ? <img src={item.event.coverMedia.url} alt={item.event.coverMedia.alt || item.event.name} /> : <div className="promoterCoverFallback">NEW ERA</div>}</div>
                       <div className="promoterEventBody">
-                        <div className="promoterEventHead"><div><span className="promoterStatus">{eventLabels[item.status] || item.status}</span><h3>{item.event.name}</h3></div><Link href={`/promoter/events/${item.eventId}`} aria-label="Tədbiri idarə et"><ArrowRight size={18} /></Link></div>
+                        <div className="promoterEventHead"><div><span className="promoterStatus">{eventLabels[item.status] || item.status}</span><h3>{item.event.name}</h3></div><Link href={`/events/${item.event.slug}`} aria-label="Tədbirə bax"><ArrowRight size={18} /></Link></div>
                         {item.event.artist && <p className="promoterArtist">{item.event.artist}</p>}
                         <div className="promoterMeta"><span><CalendarDays size={14} /> {dateTime(item.event.startsAt)}</span>{(item.event.city || item.event.venue) && <span><MapPin size={14} /> {[item.event.city, item.event.venue].filter(Boolean).join(' · ')}</span>}</div>
                         <div className="promoterEventNumbers">
@@ -131,7 +131,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
                           <div><small>Satılıb</small><strong>{item.soldQuantity}</strong></div>
                           <div><small>Qalıb</small><strong>{item.remainingQuantity}</strong></div>
                         </div>
-                        <Link href={`/promoter/events/${item.eventId}`} className="promoterEventWorkspaceLink">Tədbir workspace →</Link><div className="promoterDiscountNote">Promoter endirimi: <b>{Number(item.promoterDiscountPercent).toFixed(2)}%</b> · Tarixi qiymət snapshot kimi qorunur.</div>
+                        <div className="promoterDiscountNote">Promoter endirimi: <b>{Number(item.promoterDiscountPercent).toFixed(2)}%</b> · Tarixi qiymət snapshot kimi qorunur.</div>
                       </div>
                     </article>
                   ))}

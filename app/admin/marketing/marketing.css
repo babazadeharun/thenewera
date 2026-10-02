@@ -1,0 +1,522 @@
+﻿.marketingPage {
+  min-height: 100vh;
+  padding: 48px 24px 80px;
+  background: #f7f7f5;
+  color: #111;
+}
+
+.marketingShell {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.marketingHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.marketingKicker {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #777;
+}
+
+.marketingHeader h1 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+
+.marketingHeader p {
+  max-width: 680px;
+  margin: 14px 0 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.marketingBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  color: #222;
+  background: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.marketingBack:hover {
+  background: #f0f0ed;
+}
+
+.searchLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+  gap: 24px;
+}
+
+.searchFormCard,
+.searchStatusCard,
+.detailCard {
+  background: #fff;
+  border: 1px solid #e5e5e1;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.035);
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+
+.sectionTitle small {
+  display: block;
+  margin-bottom: 6px;
+  color: #888;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.sectionTitle h2 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -.025em;
+}
+
+.searchFormCard label {
+  display: block;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.searchFormCard input,
+.searchFormCard select,
+.searchFormCard textarea,
+.leadToolbar input,
+.leadToolbar select {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  color: #111;
+  font: inherit;
+  outline: none;
+}
+
+.searchFormCard textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.searchFormCard input:focus,
+.searchFormCard select:focus,
+.searchFormCard textarea:focus,
+.leadToolbar input:focus,
+.leadToolbar select:focus {
+  border-color: #111;
+}
+
+.checkGroup {
+  margin: 26px 0;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.checkGroup > small {
+  display: block;
+  margin-bottom: 12px;
+  color: #888;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+
+.checkRow {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0 !important;
+  font-weight: 500 !important;
+}
+
+.checkRow input {
+  width: auto !important;
+  margin: 0 !important;
+}
+
+.marketingPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.marketingPrimary:hover {
+  background: #2a2a2a;
+}
+
+.marketingPrimary:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.marketingPrimary.wide {
+  width: 100%;
+}
+
+.emptyState {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px;
+  text-align: center;
+  color: #777;
+}
+
+.emptyState strong {
+  color: #222;
+}
+
+.emptyState span {
+  max-width: 520px;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.jobRing {
+  width: 82px;
+  height: 82px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+  border: 7px solid #e8e8e5;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.progress {
+  height: 7px;
+  margin: 18px 0 24px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e8e5;
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #111;
+  transition: width .3s ease;
+}
+
+.jobStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.jobStats span {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  font-size: 11px;
+  color: #777;
+}
+
+.jobStats b {
+  display: block;
+  margin-bottom: 3px;
+  color: #111;
+  font-size: 18px;
+}
+
+.marketingError {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border: 1px solid #e6caca;
+  border-radius: 10px;
+  background: #fff5f5;
+  color: #9a2d2d;
+  font-size: 13px;
+}
+
+.leadToolbar {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.leadSearch {
+  position: relative;
+}
+
+.leadSearch svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.leadSearch input {
+  padding-left: 40px;
+}
+
+.leadTable {
+  overflow: hidden;
+  border: 1px solid #e5e5e1;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.leadTableHead,
+.leadRow {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 1fr .5fr 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.leadTableHead {
+  background: #f5f5f2;
+  color: #777;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.leadRow {
+  border-top: 1px solid #eee;
+  color: #111;
+  text-decoration: none;
+  transition: background .15s ease;
+}
+
+.leadRow:hover {
+  background: #fafaf8;
+}
+
+.leadRow strong {
+  font-size: 13px;
+}
+
+.leadRow small {
+  display: block;
+  margin-top: 4px;
+  color: #888;
+  font-size: 11px;
+}
+
+.presence {
+  display: flex;
+  gap: 5px;
+}
+
+.presence span {
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: #aaa;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.presence span.on {
+  border-color: #222;
+  color: #111;
+}
+
+.statusPill {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #eee;
+  color: #555;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.statusPill.verified {
+  background: #e8f5e9;
+  color: #28743a;
+}
+
+.statusPill.contacted {
+  background: #eaf1ff;
+  color: #315ea8;
+}
+
+.statusPill.qualified {
+  background: #f4edff;
+  color: #7040a5;
+}
+
+.statusPill.converted {
+  background: #e7f7ef;
+  color: #176b42;
+}
+
+.statusPill.disqualified,
+.statusPill.archived {
+  background: #f2f2f2;
+  color: #888;
+}
+
+.historyList {
+  overflow: hidden;
+  border: 1px solid #e5e5e1;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.historyRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.historyRow:last-child {
+  border-bottom: 0;
+}
+
+.historyRow small {
+  color: #888;
+  font-size: 11px;
+}
+
+.historyRow h3 {
+  margin: 5px 0;
+  font-size: 15px;
+}
+
+.historyRow p {
+  margin: 0;
+  color: #777;
+  font-size: 12px;
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.detailCard h3 {
+  margin: 12px 0;
+}
+
+.detailCard code {
+  display: block;
+  margin-top: 18px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: #f3f3f1;
+  font-size: 11px;
+}
+
+.detailCard p {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.spin {
+  animation: marketingSpin .8s linear infinite;
+}
+
+@keyframes marketingSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .searchLayout,
+  .settingsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .leadTable {
+    overflow-x: auto;
+  }
+
+  .leadTableHead,
+  .leadRow {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 640px) {
+  .marketingPage {
+    padding: 28px 14px 60px;
+  }
+
+  .marketingHeader {
+    flex-direction: column;
+  }
+
+  .marketingHeader h1 {
+    font-size: 36px;
+  }
+
+  .searchFormCard,
+  .searchStatusCard,
+  .detailCard {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .leadToolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .jobStats {
+    grid-template-columns: 1fr;
+  }
+
+  .historyRow {
+    grid-template-columns: 1fr;
+  }
+}

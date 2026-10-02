@@ -1,17 +1,68 @@
 import Link from 'next/link';
-import { CalendarDays, MapPin, ArrowUpRight, Ticket, Sparkles } from 'lucide-react';
+import { CalendarDays, MapPin, Ticket } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 
-const date=(v:Date)=>new Intl.DateTimeFormat('az-AZ',{day:'2-digit',month:'short',year:'numeric'}).format(v);
-const time=(v:Date)=>new Intl.DateTimeFormat('az-AZ',{hour:'2-digit',minute:'2-digit'}).format(v);
-const money=(v:unknown)=>`${new Intl.NumberFormat('az-AZ',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v))} AZN`;
-const status=(s:string)=>s==='APPLICATION_OPEN'?'Müraciət açıqdır':s==='SOLD_OUT'?'Biletlər bitib':'Aktiv';
+function formatDate(value: Date) {
+  return new Intl.DateTimeFormat('az-AZ', { day: '2-digit', month: 'long', year: 'numeric' }).format(value);
+}
+function formatTime(value: Date) {
+  return new Intl.DateTimeFormat('az-AZ', { hour: '2-digit', minute: '2-digit' }).format(value);
+}
+function formatPrice(value: unknown) {
+  return `${new Intl.NumberFormat('az-AZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(value))} AZN`;
+}
 
-export default async function EventsPage(){
- const events=await prisma.event.findMany({where:{status:{in:['APPLICATION_OPEN','ACTIVE','SOLD_OUT']}},include:{coverMedia:true},orderBy:{startsAt:'asc'}});
- return <main className="eventsPublicPage">
-  <section className="eventsPublicHero eventsPublicHeroCompact"><div className="eventsPublicHeroGlow"/><div className="eventsPublicContainer"><Link href="/" className="eventsBackLink">← New Era</Link><div className="eventsEyebrow">NEW ERA · EVENTS</div><h1>Unudulmaz gecələr.<br/><span>Güclü səhnələr.</span></h1><p>New Era tərəfindən seçilmiş tədbirləri kəşf et və uyğun tədbirlər üçün promoter kimi əməkdaşlığa müraciət et.</p><div className="eventsHeroActions"><a href="#upcoming" className="eventPrimaryCta">Tədbirlərə bax <ArrowUpRight size={15}/></a><span><Sparkles size={14}/> Yeni tədbirlər mütəmadi əlavə olunur</span></div></div></section>
-  <section id="upcoming" className="eventsPublicContainer eventsGridSection eventsCompactGridSection"><div className="eventsSectionLabel"><span>UPCOMING EVENTS</span><i/></div>{events.length===0?<div className="eventsEmptyState"><Ticket size={22}/><strong>Hazırda açıq tədbir yoxdur.</strong><span>Yeni tədbirlər əlavə edildikdə burada görünəcək.</span></div>:<div className="eventsGrid">{events.map(e=><article className="eventCard" key={e.id}><Link href={`/events/${e.slug}`} className="eventCardImage">{e.coverMedia?.url?<img src={e.coverMedia.url} alt={e.coverMedia.alt||e.name}/>:<div className="eventCardImageFallback">NEW ERA</div>}<span className={`eventStatus eventStatus-${e.status.toLowerCase()}`}>{status(e.status)}</span></Link><div className="eventCardBody"><div className="eventCardMeta">{e.artist||'EVENT'}</div><Link href={`/events/${e.slug}`} className="eventCardTitle">{e.name}</Link><div className="eventCardInfo"><CalendarDays size={14}/>{date(e.startsAt)} · {time(e.startsAt)}</div><div className="eventCardInfo"><MapPin size={14}/>{[e.venue,e.city].filter(Boolean).join(', ')||'Məkan müəyyən ediləcək'}</div><div className="eventCardFooter"><div><small>PUBLIC TICKET PRICE</small><strong>{money(e.publicTicketPrice)}</strong></div><Link href={`/events/${e.slug}`} className="eventCardArrow">Ətraflı →</Link></div></div></article>)}</div>}</section>
-  <section className="eventsPublicContainer eventsPromoterCtaSection"><div><div className="eventsEyebrow">PROMOTER PROGRAM</div><h2>Tədbirlərdə New Era ilə əməkdaşlıq et.</h2><p>Uyğun tədbiri seç, promoter müraciəti göndər və təsdiqdən sonra sənə ayrılmış biletlərlə satışa başla.</p></div><Link href={events.find(e=>e.status==='APPLICATION_OPEN')?`/events/${events.find(e=>e.status==='APPLICATION_OPEN')!.slug}/apply`:'/events'} className="eventPrimaryCta">Promoter kimi əməkdaşlıq et <ArrowUpRight size={15}/></Link></section>
- </main>;
+export default async function EventsPage() {
+  const events = await prisma.event.findMany({
+    where: { status: { in: ['APPLICATION_OPEN', 'ACTIVE', 'SOLD_OUT'] } },
+    include: { coverMedia: true },
+    orderBy: { startsAt: 'asc' },
+  });
+
+  return (
+    <main className="eventsPublicPage">
+      <section className="eventsPublicHero">
+        <div className="eventsPublicHeroGlow" />
+        <div className="eventsPublicContainer">
+          <Link href="/" className="eventsBackLink">← New Era</Link>
+          <div className="eventsEyebrow">NEW ERA · EVENTS</div>
+          <h1>Tədbirlər və<br /><span>promoter əməkdaşlığı.</span></h1>
+          <p>Seçilmiş tədbirləri kəşf et. Uyğun tədbir üçün promoter kimi əməkdaşlıq müraciəti göndər.</p>
+        </div>
+      </section>
+
+      <section className="eventsPublicContainer eventsGridSection">
+        {events.length === 0 ? (
+          <div className="eventsEmptyState">
+            <Ticket size={22} />
+            <strong>Hazırda açıq tədbir yoxdur.</strong>
+            <span>Yeni tədbirlər əlavə edildikdə burada görünəcək.</span>
+          </div>
+        ) : (
+          <div className="eventsGrid">
+            {events.map((event) => (
+              <article className="eventCard" key={event.id}>
+                <Link href={`/events/${event.slug}`} className="eventCardImage">
+                  {event.coverMedia?.url ? <img src={event.coverMedia.url} alt={event.coverMedia.alt || event.name} /> : <div className="eventCardImageFallback">NEW ERA</div>}
+                  <span className={`eventStatus eventStatus-${event.status.toLowerCase()}`}>
+                    {event.status === 'APPLICATION_OPEN' ? 'Müraciət açıqdır' : event.status === 'SOLD_OUT' ? 'Sold out' : 'Aktiv'}
+                  </span>
+                </Link>
+                <div className="eventCardBody">
+                  <div className="eventCardMeta">{event.artist || 'EVENT'}</div>
+                  <Link href={`/events/${event.slug}`} className="eventCardTitle">{event.name}</Link>
+                  <div className="eventCardInfo"><CalendarDays size={14} /> {formatDate(event.startsAt)} · {formatTime(event.startsAt)}</div>
+                  <div className="eventCardInfo"><MapPin size={14} /> {[event.venue, event.city].filter(Boolean).join(', ') || 'Məkan müəyyən ediləcək'}</div>
+                  <div className="eventCardFooter">
+                    <div><small>Public ticket price</small><strong>{formatPrice(event.publicTicketPrice)}</strong></div>
+                    <Link href={`/events/${event.slug}`} className="eventCardArrow">Ətraflı →</Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  );
 }

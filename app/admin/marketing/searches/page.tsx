@@ -1,0 +1,6 @@
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, ArrowRight, History } from 'lucide-react';
+import '../marketing.css';
+export default function SearchesPage(){const[data,setData]=useState<any[]>([]);useEffect(()=>{fetch('/api/admin/marketing/searches',{cache:'no-store'}).then(r=>r.json()).then(d=>setData(d.searches||[]))},[]);return <main className="marketingPage"><div className="marketingShell"><header className="marketingHeader"><div><span className="marketingKicker">RESEARCH HISTORY</span><h1>Searches</h1><p>Every research brief, provider run and deduplication result stays auditable.</p></div><Link href="/admin/marketing" className="marketingBack"><ArrowLeft size={14}/> Marketing</Link></header><div className="historyList">{data.length===0?<div className="emptyState"><History size={28}/><strong>No searches yet.</strong></div>:data.map(s=><div className="historyRow" key={s.id}><div><small>{new Date(s.createdAt).toLocaleString('az-AZ')}</small><h3>{s.targetType} · {s.location}</h3><p>{s.description}</p></div><div><strong>{s.progress}%</strong><span>{s.status} · {s._count?.researchItems||0} leads</span></div><ArrowRight size={15}/></div>)}</div></div></main>}

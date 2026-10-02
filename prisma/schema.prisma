@@ -382,16 +382,16 @@ model Event {
   promoterDiscountPercent Decimal     @db.Decimal(5, 2)
   totalInventory         Int         @default(0)
   status                 EventStatus @default(DRAFT)
-  internalNotes          String?     @db.Text
-  organizerId            String?
   isPublic               Boolean     @default(false)
   externalSource         String?
   externalId             String?
-  externalUrl            String?     @db.Text
-  externalPosterUrl      String?     @db.Text
+  externalUrl            String?
+  externalPosterUrl      String?
   externalCategory       String?
-  externalIngestedAt     DateTime?
-  lastExternalSyncAt     DateTime?
+  externalIngestedAt      DateTime?
+  lastExternalSyncAt      DateTime?
+  internalNotes          String?     @db.Text
+  organizerId            String?
   createdAt              DateTime    @default(now())
   updatedAt              DateTime    @updatedAt
 
@@ -651,3 +651,4 @@ model PromoterEvent {
   @@index([eventId, status])
   @@index([promoterId, status])
 }
+

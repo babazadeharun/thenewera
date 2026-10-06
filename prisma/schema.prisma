@@ -215,6 +215,7 @@ model Client {
   companySize String?
   country     String?
   website     String?
+  instagram   String?
   createdAt   DateTime  @default(now())
   projects    Project[]
   user        User?

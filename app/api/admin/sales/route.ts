@@ -31,7 +31,7 @@ export async function GET() {
   try {
     const [deals, clients, services, users, projects]: any = await Promise.all([
       (prisma as any).salesDeal.findMany({ orderBy: { updatedAt: 'desc' }, include: { client: true, service: true, project: true, assignedUser: { select: { id:true, email:true, role:true } }, activities: { orderBy: { createdAt: 'desc' }, take: 30 } } }),
-      prisma.client.findMany({ orderBy: { company: 'asc' }, select: { id:true, firstName:true, lastName:true, company:true, email:true, phone:true } }),
+      prisma.client.findMany({ orderBy: { company: 'asc' }, select: { id:true, firstName:true, lastName:true, company:true, email:true, phone:true, website:true, instagram:true } }),
       prisma.service.findMany({ orderBy: { name: 'asc' }, select: { id:true, name:true } }),
       prisma.user.findMany({ where: { role: { in: ['ADMIN','SUPER_ADMIN'] } }, orderBy: { email: 'asc' }, select: { id:true, email:true, role:true } }),
       prisma.project.findMany({ orderBy: { updatedAt: 'desc' }, select: { id:true, title:true, clientId:true, serviceId:true } }),

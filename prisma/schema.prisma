@@ -63,38 +63,6 @@ enum VerificationChannel {
   PHONE
 }
 
-enum LeadSearchStatus {
-  QUEUED
-  RUNNING
-  COMPLETED
-  FAILED
-  CANCELLED
-}
-
-enum LeadStatus {
-  NEW
-  VERIFIED
-  CONTACTED
-  QUALIFIED
-  CONVERTED
-  DISQUALIFIED
-  ARCHIVED
-}
-
-enum LeadTargetType {
-  COMPANY
-  DOCTOR
-  CLINIC
-  BEAUTY_SALON
-  BEAUTY_CENTER
-  RESTAURANT
-  HOTEL
-  FASHION_BRAND
-  RETAIL
-  EVENT_COMPANY
-  MARKETING_AGENCY
-  OTHER
-}
 
 enum SalesDealStage {
   NEW
@@ -144,6 +112,60 @@ enum MediaCategory {
   GENERAL
 }
 
+enum FinanceTransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+enum FinanceTransactionStatus {
+  POSTED
+  VOID
+  REVERSED
+}
+
+enum FinanceAccountType {
+  BANK
+  CASH
+  CARD
+  OTHER
+}
+
+enum FinanceAccountStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH
+  CARD
+  ONLINE_PAYMENT
+  OTHER
+}
+
+enum PayableStatus {
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum VendorStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id                           String                @id @default(cuid())
   email                        String?               @unique
@@ -160,9 +182,11 @@ model User {
   eventAuditLogs               EventAuditLog[]       @relation("EventAuditActor")
   promoterPayments             PromoterPayment[]     @relation("PromoterPaymentRecorder")
   ledgerEntries                PromoterLedgerEntry[] @relation("LedgerEntryActor")
-  leadSearches                 LeadSearch[]          @relation("LeadSearchCreator")
   assignedSalesDeals           SalesDeal[]           @relation("SalesDealAssignee")
   salesActivities              SalesActivity[]       @relation("SalesActivityCreator")
+  financeTransactions          FinanceTransaction[]  @relation("FinanceTransactionCreator")
+  financeInvoices              Invoice[]             @relation("InvoiceCreator")
+  financePayments              FinancePayment[]      @relation("FinancePaymentCreator")
   createdAt                    DateTime              @default(now())
   updatedAt                    DateTime              @updatedAt
 }
@@ -196,6 +220,10 @@ model Client {
   user        User?
   salesDeals  SalesDeal[]
   salesActivities SalesActivity[]
+  financeInvoices Invoice[]
+  financeTransactions FinanceTransaction[]
+  financePayments FinancePayment[]
+
 }
 
 model VerificationCode {
@@ -342,6 +370,10 @@ model Project {
   review       ProjectReview?
   salesDeals   SalesDeal[]
   salesActivities SalesActivity[]
+  financeInvoices Invoice[]
+  financeTransactions FinanceTransaction[]
+  financePayables FinancePayable[]
+
 }
 
 model ProjectMessage {
@@ -780,87 +812,162 @@ model SalesActivity {
   @@index([clientId])
 }
 
-model LeadSearch {
-  id                String           @id @default(cuid())
-  targetType        LeadTargetType
-  location          String
-  description       String           @db.Text
-  requestedCount    Int              @default(25)
-  requiredFields    String?          @db.Text
-  filters           String?          @db.Text
-  status            LeadSearchStatus @default(QUEUED)
-  progress          Int              @default(0)
-  sourcesScanned    Int              @default(0)
-  businessesFound   Int              @default(0)
-  potentialLeads    Int              @default(0)
-  duplicatesRemoved Int              @default(0)
-  verifiedLeads     Int              @default(0)
-  provider          String?
-  error             String?          @db.Text
-  startedAt         DateTime?
-  completedAt       DateTime?
-  createdByUserId   String
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-
-  createdBy     User               @relation("LeadSearchCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
-  researchItems LeadResearchItem[]
-
-  @@index([status, createdAt])
-  @@index([createdByUserId, createdAt])
-}
-
-model Lead {
-  id             String     @id @default(cuid())
-  dedupeKey      String     @unique
+model FinanceAccount {
+  id             String                 @id @default(cuid())
   name           String
-  contactName    String?
-  category       String?
-  website        String?    @db.Text
-  email          String?
-  phone          String?
-  instagram      String?    @db.Text
-  facebook       String?    @db.Text
-  linkedin       String?    @db.Text
-  address        String?    @db.Text
-  city           String?
-  country        String?
-  source         String?
-  sourceUrl      String?    @db.Text
-  status         LeadStatus @default(NEW)
-  score          Int?
-  aiSummary      String?    @db.Text
-  aiSignals      String?    @db.Text
-  rawData        String?    @db.Text
-  firstSeenAt    DateTime   @default(now())
-  lastVerifiedAt DateTime?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  type           FinanceAccountType     @default(BANK)
+  openingBalance Decimal                @default(0) @db.Decimal(14, 2)
+  currency       String                 @default("AZN")
+  status         FinanceAccountStatus   @default(ACTIVE)
+  notes          String?                @db.Text
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  transactions   FinanceTransaction[] @relation("FinanceTransactionAccount")
+  incomingTransfers FinanceTransaction[] @relation("FinanceTransactionToAccount")
 
-  researchItems LeadResearchItem[]
-
-  @@index([status, updatedAt])
-  @@index([email])
-  @@index([phone])
-  @@index([category, city])
+  @@index([status])
 }
 
-model LeadResearchItem {
+model Vendor {
+  id           String       @id @default(cuid())
+  name         String
+  company      String?
+  phone        String?
+  email        String?
+  taxId        String?
+  address      String?      @db.Text
+  notes        String?      @db.Text
+  status       VendorStatus @default(ACTIVE)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  transactions FinanceTransaction[]
+  payables     FinancePayable[]
+
+  @@index([name])
+  @@index([status])
+}
+
+model FinanceTransaction {
+  id              String                    @id @default(cuid())
+  date            DateTime
+  amount          Decimal                   @db.Decimal(14, 2)
+  type            FinanceTransactionType
+  status          FinanceTransactionStatus  @default(POSTED)
+  category        String
+  description     String                    @db.Text
+  accountId       String?
+  toAccountId     String?
+  clientId        String?
+  vendorId        String?
+  projectId       String?
+  invoiceId       String?
+  paymentMethod   PaymentMethod?
+  reference       String?
+  notes           String?                   @db.Text
+  createdById     String?
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+  account         FinanceAccount?           @relation("FinanceTransactionAccount", fields: [accountId], references: [id], onDelete: SetNull)
+  toAccount       FinanceAccount?           @relation("FinanceTransactionToAccount", fields: [toAccountId], references: [id], onDelete: SetNull)
+  client          Client?                   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  vendor          Vendor?                   @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  project         Project?                  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  invoice         Invoice?                  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  createdBy       User?                     @relation("FinanceTransactionCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([date, type, status])
+  @@index([accountId, date])
+  @@index([toAccountId, date])
+  @@index([clientId])
+  @@index([vendorId])
+  @@index([projectId])
+  @@index([invoiceId])
+}
+
+model Invoice {
+  id              String          @id @default(cuid())
+  number          String          @unique
+  clientId        String
+  projectId       String?
+  issueDate       DateTime
+  dueDate         DateTime
+  subtotal        Decimal         @db.Decimal(14, 2)
+  tax             Decimal         @default(0) @db.Decimal(14, 2)
+  discount        Decimal         @default(0) @db.Decimal(14, 2)
+  total           Decimal         @db.Decimal(14, 2)
+  paidAmount      Decimal         @default(0) @db.Decimal(14, 2)
+  currency        String          @default("AZN")
+  status          InvoiceStatus   @default(DRAFT)
+  notes           String?         @db.Text
+  createdById     String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  client          Client          @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  project         Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  createdBy       User?           @relation("InvoiceCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  items           InvoiceItem[]
+  payments        FinancePayment[]
+  transactions    FinanceTransaction[]
+
+  @@index([clientId, dueDate])
+  @@index([projectId])
+  @@index([status, dueDate])
+}
+
+model InvoiceItem {
   id          String   @id @default(cuid())
-  searchId    String
-  leadId      String?
-  provider    String
-  externalId  String?
-  title       String?
-  sourceUrl   String?  @db.Text
-  rawData     String   @db.Text
-  fingerprint String
-  createdAt   DateTime @default(now())
+  invoiceId   String
+  serviceName String?
+  description String
+  quantity    Decimal  @default(1) @db.Decimal(12, 2)
+  unitPrice   Decimal  @db.Decimal(14, 2)
+  discount    Decimal  @default(0) @db.Decimal(14, 2)
+  total       Decimal  @db.Decimal(14, 2)
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
-  search LeadSearch @relation(fields: [searchId], references: [id], onDelete: Cascade)
-  lead   Lead?      @relation(fields: [leadId], references: [id], onDelete: SetNull)
-
-  @@unique([searchId, fingerprint])
-  @@index([leadId])
-  @@index([provider, createdAt])
+  @@index([invoiceId])
 }
+
+model FinancePayment {
+  id             String          @id @default(cuid())
+  invoiceId      String
+  amount         Decimal         @db.Decimal(14, 2)
+  date           DateTime
+  method         PaymentMethod
+  accountId      String?
+  reference      String?
+  notes          String?         @db.Text
+  createdById    String?
+  createdAt      DateTime        @default(now())
+  invoice        Invoice         @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  clientId       String?
+  client         Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  createdBy      User?           @relation("FinancePaymentCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId, date])
+  @@index([clientId])
+}
+
+model FinancePayable {
+  id           String        @id @default(cuid())
+  vendorId     String
+  description  String
+  amount       Decimal       @db.Decimal(14, 2)
+  dueDate      DateTime
+  paidAmount   Decimal       @default(0) @db.Decimal(14, 2)
+  status       PayableStatus @default(OPEN)
+  projectId    String?
+  category     String
+  notes        String?       @db.Text
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  vendor       Vendor        @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+  project      Project?      @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@index([vendorId, dueDate])
+  @@index([status, dueDate])
+  @@index([projectId])
+}
+
+
+

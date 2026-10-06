@@ -3,13 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 import CmsMüştəri from './cms/CmsClient';
 import PortfolioManager from './PortfolioManager';
 import SalesCrm from './SalesCrm';
+import FinanceManager from './FinanceManager';
 import { BarChart3, Check, ChevronLeft, Clock3, Image as ImageIcon, LayoutGrid, Plus, Search, Settings2, ShieldCheck, Sparkles, Trash2, Upload, Users, X, BriefcaseBusiness, Layers3, MessageCircle, ArrowRight, Send, Building2, Mail, Phone, Globe2, MapPin, UserRound, Activity, Filter, UserCheck, CalendarDays, TrendingUp, WalletCards, Target, FileText, CircleDollarSign, ArrowDownRight, ArrowUpRight, Pencil, Copy, ExternalLink } from 'lucide-react';
 
 type Activity={type:string;text:string;at:string};
 type Project = {id:string;name:string;email:string;company:string;service:string;title:string;brief:string;goal?:string;audience?:string;deliverables?:string;references?:string;budget:string;deadline:string;creator:string;status:string;createdAt:string;quote?:string|null;messages?:{from:string;text:string;at:string}[];activity?:Activity[];delivery?:{notes:string;link?:string;submittedAt:string;version:number};revisionRequests?:{text:string;at:string}[];review?:{rating:number;text:string;at:string}};
 type Müştəri = {id:string;firstName:string;lastName:string;email:string;phone:string;company:string;website:string;jobTitle:string;industry:string;size:string;country:string;createdAt:string};
-type FinanceEntry = {id:string;type:'income'|'expense';date:string;category:string;description:string;amount:number;currency:string;clientOrVendor:string;status:'Planned'|'Paid'|'Received'|'Cancelled';notes:string;createdAt:string};
-const financeCategories=['Sales income','Project income','Mütəxəssis ödənişi','Marketing','Software','Office','Transport','Taxes','Bank fees','Other'];
 
 const projectStatuses=['Brief Submitted','Reviewing','Approved','In Progress','Review','Completed'];
 const specialistCatalog=[
@@ -45,17 +44,6 @@ export default function AdminPage(){
  const [crmQuery,setCrmQuery]=useState('');
  const [crmStatus,setCrmStatus]=useState('All');
  const [services,setServices]=useState(initialServices);
- const [financeEntries,setFinanceEntries]=useState<FinanceEntry[]>([]);
- const [financeType,setFinanceType]=useState<'income'|'expense'>('income');
- const [financeDate,setFinanceDate]=useState(new Date().toISOString().slice(0,10));
- const [financeCategory,setFinanceCategory]=useState('Project income');
- const [financeDescription,setFinanceDescription]=useState('');
- const [financeAmount,setFinanceAmount]=useState('');
- const [financeParty,setFinanceParty]=useState('');
- const [financeStatus,setFinanceStatus]=useState<FinanceEntry['status']>('Received');
- const [financeNotes,setFinanceNotes]=useState('');
- const [showFinanceForm,setShowFinanceForm]=useState(false);
- const [financeQuery,setFinanceQuery]=useState('');
 
  useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem('new-era-projects')||'[]');setProjects(saved.length?saved:demoProjects);const savedMüştəris=JSON.parse(localStorage.getItem('new-era-müştəri')||'[]');setMüştəris(savedMüştəris)}catch{setProjects(demoProjects);setMüştəris([])}},[]);
  function updateProjectStatus(id:string,status:string){const now=new Date().toISOString();setProjects(v=>{const next=v.map(p=>p.id===id?{...p,status,activity:[...(p.activity||[]),{type:'status',text:`Status changed to ${status}`,at:now}]}:p);localStorage.setItem('new-era-projects',JSON.stringify(next));return next});setSelectedProject(p=>p&&p.id===id?{...p,status,activity:[...(p.activity||[]),{type:'status',text:`Status changed to ${status}`,at:now}]}:p)}
@@ -64,8 +52,6 @@ export default function AdminPage(){
  function submitDelivery(){if(!selectedProject||!deliveryNotes.trim())return;const version=(selectedProject.delivery?.version||0)+1;updateProject(selectedProject.id,{delivery:{notes:deliveryNotes.trim(),link:deliveryLink.trim()||undefined,submittedAt:new Date().toISOString(),version},status:'Review'},`Delivery v${version} submitted for client review`);setDeliveryNotes('');setDeliveryLink('')}
  function requestRevision(){if(!selectedProject||!revisionNote.trim())return;const now=new Date().toISOString();const nextRequests=[...(selectedProject.revisionRequests||[]),{text:revisionNote.trim(),at:now}];updateProject(selectedProject.id,{revisionRequests:nextRequests,status:'In Progress'},'Düzəliş tələbied; project returned to production');setRevisionNote('')}
  function approveDelivery(){if(!selectedProject)return;updateProject(selectedProject.id,{status:'Completed'},'Müştəri-approved delivery marked completed by New Era')}
- function addFinanceEntry(){const amount=Number(financeAmount);if(!amount||amount<=0||!financeDescription.trim())return;const now=new Date().toISOString();const entry:FinanceEntry={id:`FIN-${Date.now()}`,type:financeType,date:financeDate,category:financeCategory,description:financeDescription.trim(),amount,currency:'AZN',clientOrVendor:financeParty.trim(),status:financeStatus,notes:financeNotes.trim(),createdAt:now};setFinanceEntries(v=>[entry,...v]);setFinanceDescription('');setFinanceAmount('');setFinanceParty('');setFinanceNotes('');setShowFinanceForm(false)}
- function deleteFinanceEntry(id:string){if(window.confirm('Delete this financial entry?'))setFinanceEntries(v=>v.filter(x=>x.id!==id))}
 
  const companyMap = Array.from(müştəri.reduce((m:Map<string,Müştəri[]>, c)=>{const key=(c.company||'Independent').trim()||'Independent';const list=m.get(key)||[];list.push(c);m.set(key,list);return m},new Map<string,Müştəri[]>()).entries());
  const filteredMüştəris = müştəri.filter(c=>`${c.firstName} ${c.lastName} ${c.company} ${c.jobTitle} ${c.email}`.toLowerCase().includes(clientQuery.toLowerCase()));
@@ -122,12 +108,7 @@ export default function AdminPage(){
 
      {tab==='sales' && <SalesCrm/>}
 
-     {tab==='finance' && <>
-       <div className="financeHeader"><div><small>NEW ERA MALİYYƏ</small><h2>Know where the money goes.</h2><p>Record business income and expenses, track payment status and see the operating result in one place.</p></div><button className="adminAction" onClick={()=>setShowFinanceForm(true)}><Plus size={15}/> Əməliyyat əlavə et</button></div>
-       {(()=>{const received=financeEntries.filter(x=>x.type==='income'&&x.status==='Received').reduce((a,x)=>a+x.amount,0);const paid=financeEntries.filter(x=>x.type==='expense'&&x.status==='Paid').reduce((a,x)=>a+x.amount,0);const plannedGəlir=financeEntries.filter(x=>x.type==='income'&&x.status==='Planned').reduce((a,x)=>a+x.amount,0);const plannedXərc=financeEntries.filter(x=>x.type==='expense'&&x.status==='Planned').reduce((a,x)=>a+x.amount,0);const profit=received-paid;return <><div className="financeKpis"><div><ArrowUpRight/><span>Gəlir received</span><strong>{received.toLocaleString()} AZN</strong></div><div><ArrowDownRight/><span>Xərcs paid</span><strong>{paid.toLocaleString()} AZN</strong></div><div><CircleDollarSign/><span>Operating result</span><strong>{profit.toLocaleString()} AZN</strong></div><div><WalletCards/><span>Planned cash flow</span><strong>{(plannedGəlir-plannedXərc).toLocaleString()} AZN</strong></div></div><div className="financeSummary"><div><small>FINANCIAL POSITION</small><h3>Gəlir vs expenses</h3><div className="financeBars"><span><i style={{width:`${Math.min(100,(received/Math.max(received,paid,1))*100)}%`}}></i><b>Received income Â· {received.toLocaleString()} AZN</b></span><span><i style={{width:`${Math.min(100,(paid/Math.max(received,paid,1))*100)}%`}}></i><b>Paid expenses Â· {paid.toLocaleString()} AZN</b></span></div></div><div className="financeMini"><span>Planned income<strong>{plannedGəlir.toLocaleString()} AZN</strong></span><span>Planned expenses<strong>{plannedXərc.toLocaleString()} AZN</strong></span></div></div></>})()}
-       <div className="financeToolbar"><div className="clientSearch"><Search size={14}/><input value={financeQuery} onChange={e=>setFinanceQuery(e.target.value)} placeholder="Əməliyyat, kateqoriya və ya şirkət axtar..."/></div><button className="secondaryAction" onClick={()=>setFinanceType('income')}>Gəlir</button><button className="secondaryAction" onClick={()=>setFinanceType('expense')}>Xərc</button></div>
-       <div className="adminPanel financeTable"><div className="panelHead"><div><small>KASSA JURNALI</small><h3>{financeEntries.length} əməliyyat</h3></div><WalletCards size={17}/></div>{financeEntries.filter(x=>`${x.description} ${x.category} ${x.clientOrVendor}`.toLowerCase().includes(financeQuery.toLowerCase())).map(entry=><div className="financeRow" key={entry.id}><span className={'financeType '+entry.type}>{entry.type==='income'?<ArrowUpRight size={15}/>:<ArrowDownRight size={15}/>}</span><div><strong>{entry.description}</strong><small>{entry.date} Â· {entry.category} Â· {entry.clientOrVendor||'No party set'}</small></div><b className={entry.type}>{entry.type==='income'?'+':'âˆ’'}{entry.amount.toLocaleString()} AZN</b><em>{entry.status}</em><button title="Delete" onClick={()=>deleteFinanceEntry(entry.id)}><Trash2 size={14}/></button></div>)}{financeEntries.length===0&&<div className="emptyClientProjects">No əməliyyat yet. Add your first income or expense.</div>}</div>
-     </>}
+     {tab==='finance' && <FinanceManager/>}
 
      {tab==='müştəri' && <>
        <div className="müştəriAdminToolbar"><div><small>MÜŞTƏRİ ƏLAQƏLƏRİNİN İDARƏETMƏSİ</small><h2>Müştəris & Companies</h2><p>Every registered client belongs to a company workspace. Admin can see their role, contact details and New Era projects without exposing mütəxəssis əlaqə məlumatları.</p></div><div className="clientCountBadge"><Building2 size={16}/><strong>{companyMap.length}</strong><span>şirkət</span><strong>{müştəri.length}</strong><span>müştəri</span></div></div>
@@ -152,7 +133,6 @@ export default function AdminPage(){
      {tab==='cms' && <CmsMüştəri/>}
    </section>
 
-   {showFinanceForm && <div className="modalBackdrop"><div className="modal"><button className="modalClose" onClick={()=>setShowFinanceForm(false)}><X size={18}/></button><small>NEW FINANCIAL ENTRY</small><h2>{financeType==='income'?'Gəlir əlavə et':'Xərc əlavə et'}</h2><div className="formSplit"><label>Type<select value={financeType} onChange={e=>{const t=e.target.value as 'income'|'expense';setFinanceType(t);setFinanceCategory(t==='income'?'Project income':'Marketing');setFinanceStatus(t==='income'?'Received':'Paid')}}><option value="income">Gəlir</option><option value="expense">Xərc</option></select></label><label>Tarix<input type="date" value={financeDate} onChange={e=>setFinanceDate(e.target.value)}/></label></div><label>Kateqoriya<select value={financeCategory} onChange={e=>setFinanceCategory(e.target.value)}>{financeCategories.map(x=><option key={x}>{x}</option>)}</select></label><label>Açıqlama<input value={financeDescription} onChange={e=>setFinanceDescription(e.target.value)} placeholder="e.g. Website project payment"/></label><div className="formSplit"><label>Məbləğ (AZN)<input type="number" min="0" step="0.01" value={financeAmount} onChange={e=>setFinanceAmount(e.target.value)} placeholder="0"/></label><label>Status<select value={financeStatus} onChange={e=>setFinanceStatus(e.target.value as FinanceEntry['status'])}>{(financeType==='income'?['Planned','Received','Cancelled']:['Planned','Paid','Cancelled']).map(x=><option key={x}>{x}</option>)}</select></label></div><label>Müştəri / vendor<input value={financeParty} onChange={e=>setFinanceParty(e.target.value)} placeholder="Company, mütəxəssis və ya tərəfdaş"/></label><label>Qeydlər<textarea rows={3} value={financeNotes} onChange={e=>setFinanceNotes(e.target.value)} placeholder="Invoice, reason, payment reference..."/></label><button className="adminSave" onClick={addFinanceEntry}>Əməliyyatı yadda saxla</button></div></div>}
- </main>
+</main>
 }
 

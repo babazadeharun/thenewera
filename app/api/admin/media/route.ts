@@ -54,7 +54,7 @@ export async function PATCH(request: Request) {
     await requireAdmin();
     const body = await request.json();
     if (!body.id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
-    const media = await prisma.media.update({ where: { id: body.id }, data: { ...(body.alt !== undefined ? { alt: String(body.alt).slice(0, 500) || null } : {}), ...(body.category ? { category: body.category } : {}) } });
+    const media = await prisma.media.update({ where: { id: body.id }, data: { ...(body.alt !== undefined ? { alt: String(body.alt).slice(0, 20000) || null } : {}), ...(body.category ? { category: body.category } : {}) } });
     return NextResponse.json({ media });
   } catch (e) { return fail(e); }
 }

@@ -223,7 +223,7 @@ model Client {
   financeInvoices Invoice[]
   financeTransactions FinanceTransaction[]
   financePayments FinancePayment[]
-
+  financePayables FinancePayable[]
 }
 
 model VerificationCode {
@@ -373,7 +373,6 @@ model Project {
   financeInvoices Invoice[]
   financeTransactions FinanceTransaction[]
   financePayables FinancePayable[]
-
 }
 
 model ProjectMessage {
@@ -968,6 +967,3 @@ model FinancePayable {
   @@index([status, dueDate])
   @@index([projectId])
 }
-
-
-

@@ -52,17 +52,19 @@ export default function PortfolioManager(){
     const groups=new Map<string,PortfolioItem>();
     for(const m of media){
       const meta=parseMeta(m);
-      const isDraft=meta?.status==='DRAFT';
-      const isPortfolio=m.category==='PORTFOLIO'||m.category==='PORTFOLIO_VIDEO'||m.category==='PORTFOLIO_DESIGN'||isDraft;
+      const hasPortfolioMeta=Boolean(m.alt?.startsWith(META_PREFIX));
+      const isDraft=meta?.status==='DRAFT' || (hasPortfolioMeta && !meta);
+      const isPortfolio=m.category==='PORTFOLIO'||m.category==='PORTFOLIO_VIDEO'||m.category==='PORTFOLIO_DESIGN'||isDraft||hasPortfolioMeta;
       if(!isPortfolio) continue;
       const id=String(meta?.itemId||m.id);
-      if(!groups.has(id)) groups.set(id,{id,title:meta?.title||m.originalName.replace(/\.[^.]+$/,''),client:meta?.client||'',category:meta?.category||m.category,year:String(meta?.year||''),shortDescription:meta?.description||displayAlt(m),fullDescription:meta?.fullDescription||'',services:meta?.services||'',projectUrl:meta?.projectUrl||'',featured:Boolean(meta?.featured),status:isDraft?'DRAFT':'PUBLISHED',cover:null,gallery:[],video:null,updatedAt:m.updatedAt||m.createdAt});
+      const recoveredCategory=meta?.category || (m.category==='PORTFOLIO_VIDEO'||m.category==='PORTFOLIO_DESIGN'||m.category==='PORTFOLIO' ? m.category : 'PORTFOLIO');
+      if(!groups.has(id)) groups.set(id,{id,title:meta?.title||m.originalName.replace(/\.[^.]+$/,''),client:meta?.client||'',category:recoveredCategory,year:String(meta?.year||''),shortDescription:meta?.description||displayAlt(m),fullDescription:meta?.fullDescription||'',services:meta?.services||'',projectUrl:meta?.projectUrl||'',featured:Boolean(meta?.featured),status:isDraft?'DRAFT':'PUBLISHED',cover:null,gallery:[],video:null,updatedAt:m.updatedAt||m.createdAt});
       const item=groups.get(id)!;
       if(m.category==='PORTFOLIO_VIDEO') item.video=m; else if(!item.cover || meta?.role==='cover') item.cover=m;
       if(meta?.role==='gallery') item.gallery.push(m);
       if(meta?.role==='cover' && !item.cover) item.cover=m;
       if(new Date(m.updatedAt||m.createdAt)>new Date(item.updatedAt)) item.updatedAt=m.updatedAt||m.createdAt;
-      item.status=meta?.status==='DRAFT'?'DRAFT':'PUBLISHED'; item.featured=Boolean(meta?.featured); item.title=meta?.title||item.title;
+      item.status=isDraft?'DRAFT':'PUBLISHED'; item.featured=Boolean(meta?.featured); item.title=meta?.title||item.title;
     }
     return [...groups.values()].sort((a,b)=>new Date(b.updatedAt).getTime()-new Date(a.updatedAt).getTime());
   },[media]);
@@ -89,7 +91,7 @@ export default function PortfolioManager(){
   }
   async function patchMedia(m:Media,patch:Record<string,unknown>){
     const meta=parseMeta(m)||{}; const alt=encodeMeta({...meta,...patch});
-    const r=await fetch('/api/admin/media',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:m.id,alt,category:patch.status==='PUBLISHED'?patch.category||m.category:patch.status==='DRAFT'?'GENERAL':m.category})});
+    const r=await fetch('/api/admin/media',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:m.id,alt,category:patch.category || m.category})});
     const d=await r.json(); if(!r.ok) throw new Error(d.error||'Media yenilənmədi'); return d.media as Media;
   }
   async function save(){

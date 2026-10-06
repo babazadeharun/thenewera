@@ -96,6 +96,32 @@ enum LeadTargetType {
   OTHER
 }
 
+enum SalesDealStage {
+  NEW
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum SalesPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SalesActivityType {
+  CALL
+  EMAIL
+  MEETING
+  WHATSAPP
+  FOLLOW_UP
+  NOTE
+  PROPOSAL
+}
+
 enum ProjectStatus {
   BRIEF_SUBMITTED
   REVIEWING
@@ -135,6 +161,8 @@ model User {
   promoterPayments             PromoterPayment[]     @relation("PromoterPaymentRecorder")
   ledgerEntries                PromoterLedgerEntry[] @relation("LedgerEntryActor")
   leadSearches                 LeadSearch[]          @relation("LeadSearchCreator")
+  assignedSalesDeals           SalesDeal[]           @relation("SalesDealAssignee")
+  salesActivities              SalesActivity[]       @relation("SalesActivityCreator")
   createdAt                    DateTime              @default(now())
   updatedAt                    DateTime              @updatedAt
 }
@@ -166,6 +194,8 @@ model Client {
   createdAt   DateTime  @default(now())
   projects    Project[]
   user        User?
+  salesDeals  SalesDeal[]
+  salesActivities SalesActivity[]
 }
 
 model VerificationCode {
@@ -283,6 +313,7 @@ model Service {
   name      String    @unique
   createdAt DateTime  @default(now())
   projects  Project[]
+  salesDeals SalesDeal[]
 }
 
 model Project {
@@ -309,6 +340,8 @@ model Project {
   deliveries   Delivery[]
   revisions    RevisionRequest[]
   review       ProjectReview?
+  salesDeals   SalesDeal[]
+  salesActivities SalesActivity[]
 }
 
 model ProjectMessage {
@@ -683,6 +716,68 @@ model PromoterEvent {
   @@id([promoterId, eventId])
   @@index([eventId, status])
   @@index([promoterId, status])
+}
+
+model SalesDeal {
+  id                 String          @id @default(cuid())
+  title              String
+  contactName        String?
+  email              String?
+  phone              String?
+  source             String?
+  stage              SalesDealStage  @default(NEW)
+  priority           SalesPriority   @default(NORMAL)
+  budget             Decimal?        @db.Decimal(14, 2)
+  value              Decimal?        @db.Decimal(14, 2)
+  probability        Int             @default(20)
+  expectedCloseDate  DateTime?
+  nextFollowUp       DateTime?
+  lossReason         String?
+  notes              String?         @db.Text
+  proposalStatus     String?
+  proposalValue      Decimal?        @db.Decimal(14, 2)
+  proposalDate       DateTime?
+  proposalSentAt     DateTime?
+  proposalResponse   String?
+  revisionStatus     String?
+  clientId           String?
+  serviceId          String?
+  projectId          String?
+  assignedUserId     String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  client             Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  service            Service?        @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  project            Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  assignedUser       User?           @relation("SalesDealAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  activities         SalesActivity[]
+
+  @@index([stage, updatedAt])
+  @@index([clientId])
+  @@index([serviceId])
+  @@index([assignedUserId])
+  @@index([nextFollowUp])
+}
+
+model SalesActivity {
+  id               String            @id @default(cuid())
+  type             SalesActivityType
+  text             String            @db.Text
+  dueAt            DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  dealId           String
+  clientId         String?
+  projectId        String?
+  createdByUserId  String?
+  deal             SalesDeal         @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  client           Client?           @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  project          Project?          @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  createdByUser    User?             @relation("SalesActivityCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+
+  @@index([dealId, createdAt])
+  @@index([dueAt, completedAt])
+  @@index([clientId])
 }
 
 model LeadSearch {

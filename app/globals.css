@@ -1361,3 +1361,174 @@ body{
   .screenshotHero .brand img{width:108px!important}.heroInner{padding-top:88px!important}.hero h1{font-size:35px!important}.hero p{font-size:12px!important}
   .auditProgressList{grid-template-columns:1fr}.innerHero h1,.portfolioIntro h1{font-size:39px!important}.eventsPublicHero h1,.auditHero h1{font-size:40px!important}
 }
+
+/* Phase 1 — Azerbaijani admin typography */
+.adminPage,.adminPage *{font-family:Arial,"Segoe UI",sans-serif;font-synthesis:none}
+
+/* Phase 1 — Portfolio CMS */
+.portfolioManager{margin-top:8px}.portfolioNotice{margin:14px 0;padding:12px 14px;border:1px solid rgba(255,196,92,.24);background:rgba(255,196,92,.06);color:#e9d9ad;border-radius:10px;font-size:12px}.portfolioStats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.portfolioStats>div{padding:15px 16px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);border-radius:12px;display:grid;gap:5px}.portfolioStats span{font-size:10px;color:#7f8699}.portfolioStats strong{font-size:22px}.portfolioFilters{display:flex;gap:9px;align-items:center;margin:14px 0 18px}.portfolioFilters>label{display:flex;align-items:center;gap:8px;flex:1;margin:0;padding:0 12px;height:42px;border:1px solid rgba(255,255,255,.09);background:#070a13;border-radius:10px;color:#737a8c}.portfolioFilters input{border:0!important;padding:0!important;background:transparent!important}.portfolioFilters select{width:auto;min-width:160px;height:42px}.portfolioGridAdmin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.portfolioAdminCard{border:1px solid rgba(105,113,155,.23);background:linear-gradient(145deg,rgba(10,13,25,.96),rgba(4,6,13,.98));border-radius:15px;overflow:hidden}.portfolioAdminCover{height:210px;position:relative;background:#080b13}.portfolioAdminCover img{width:100%;height:100%;object-fit:cover;display:block}.portfolioAdminCover>div{height:100%;display:grid;place-items:center;color:#636b7e}.portfolioAdminCover>span{position:absolute;left:11px;top:11px;padding:6px 9px;border-radius:999px;font-size:9px;border:1px solid rgba(255,255,255,.1);background:rgba(3,5,10,.72);backdrop-filter:blur(8px)}.portfolioAdminCover .published{color:#b9f3d0;border-color:rgba(91,214,142,.28)}.portfolioAdminCover .draft{color:#e8d9aa;border-color:rgba(230,192,91,.25)}.featuredBadge{position:absolute;right:11px;top:11px;display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:999px;background:rgba(100,71,180,.72);font-size:9px;color:#efe7ff}.portfolioAdminBody{padding:16px}.portfolioAdminTitle{display:flex;justify-content:space-between;gap:10px}.portfolioAdminTitle h3{font-size:16px;margin:0 0 4px}.portfolioAdminTitle span{font-size:10px;color:#7d8496}.portfolioAdminTitle>svg{color:#757d90}.portfolioAdminBody>p{font-size:11px;line-height:1.55;color:#858b9d;min-height:35px}.portfolioAdminMeta{display:flex;gap:7px;flex-wrap:wrap}.portfolioAdminMeta span{font-size:9px;padding:5px 7px;border-radius:999px;border:1px solid rgba(255,255,255,.07);color:#8e95a7}.portfolioCardActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}.portfolioCardActions button{min-height:36px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);color:#c8ccd7;border-radius:9px;font:600 10px inherit;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}.portfolioCardActions button:hover{border-color:rgba(151,119,255,.45);color:#fff}.portfolioCardActions .dangerAction{color:#dca2a8}.portfolioEmptyAdmin{grid-column:1/-1;text-align:center;padding:70px 25px;border:1px dashed rgba(255,255,255,.1);border-radius:15px;color:#71788b}.portfolioEmptyAdmin h3{color:#e3e5ed;margin:13px 0 6px}.portfolioEmptyAdmin p{font-size:11px;max-width:500px;margin:0 auto 18px;line-height:1.6}.portfolioEmptyIcon{width:54px;height:54px;margin:auto;border-radius:15px;display:grid;place-items:center;background:rgba(125,83,239,.09);color:#a889ff}.portfolioEditorModal{max-height:90vh;overflow:auto}.portfolioEditorHead{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:22px}.portfolioEditorHead h2{font-size:26px;margin:6px 0 0}.portfolioEditorHead>span{padding:7px 10px;border-radius:999px;font-size:9px;border:1px solid rgba(255,255,255,.1)}.portfolioEditorHead .published{color:#b9f3d0}.portfolioEditorHead .draft{color:#e8d9aa}.portfolioFormSections{display:grid;grid-template-columns:1.05fr .95fr;gap:16px}.portfolioFormSections>section{padding:18px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(255,255,255,.018)}.portfolioFormSections h3{font-size:16px;margin:0 0 17px}.portfolioCheck{display:flex!important;grid-template-columns:none!important;align-items:flex-start;gap:10px!important}.portfolioCheck input{width:18px!important;height:18px;margin:0}.portfolioCheck span{display:grid;gap:3px}.portfolioCheck small{font-size:9px;color:#747b8d}.mediaRelation{margin-bottom:14px}.mediaRelationHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.mediaRelationHead>span{font-size:11px;font-weight:600;color:#d3d6e0}.mediaRelationHead button{border:1px solid rgba(145,108,255,.35);background:rgba(112,70,255,.08);color:#c5b6ff;border-radius:8px;padding:7px 9px;font:600 10px inherit;display:flex;align-items:center;gap:5px;cursor:pointer}.mediaRelationItem{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid rgba(255,255,255,.07);background:#080a12;border-radius:9px}.mediaRelationItem img{width:52px;height:52px;border-radius:7px;object-fit:cover}.mediaRelationItem span{display:grid;gap:3px;min-width:0;flex:1}.mediaRelationItem b{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mediaRelationItem small{font-size:8px;color:#71788a}.mediaRelationItem button{border:0;background:transparent;color:#767d8f;cursor:pointer;padding:5px}.mediaRelationEmpty{padding:16px;border:1px dashed rgba(255,255,255,.09);border-radius:9px;color:#6d7487;font-size:9px}.galleryRelationList{display:grid;gap:7px}.galleryRelationList .mediaRelationItem img{width:42px;height:42px}.portfolioUploadBox{display:flex;align-items:center;gap:10px;margin-top:18px;padding:13px;border:1px dashed rgba(147,112,255,.32);border-radius:10px;background:rgba(104,67,204,.05);color:#9c82df}.portfolioUploadBox>div{display:grid;gap:3px;flex:1}.portfolioUploadBox b{font-size:10px;color:#d5d8e2}.portfolioUploadBox small{font-size:8px;color:#737a8d}.portfolioUploadBox>button{border:1px solid rgba(255,255,255,.1);background:#0b0d15;color:#dfe1ea;border-radius:8px;padding:8px 10px;font:600 9px inherit;cursor:pointer}.portfolioEditorFooter{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.portfolioEditorFooter .adminSave{width:auto;min-width:180px}.mediaPickerModal{max-height:88vh;overflow:auto}.mediaPickerSearch{display:flex;gap:8px;align-items:center;padding:0 11px;height:42px;border:1px solid rgba(255,255,255,.09);background:#070a13;border-radius:9px;margin-bottom:13px}.mediaPickerSearch svg{color:#71798b}.mediaPickerSearch input{border:0;background:transparent;color:#eef0f8;outline:0;width:100%;font:inherit}.mediaPickerGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-height:55vh;overflow:auto}.mediaPickerCard{border:1px solid rgba(255,255,255,.08);background:#080a12;color:#dfe2ea;border-radius:9px;padding:7px;text-align:left;cursor:pointer}.mediaPickerCard:hover{border-color:rgba(147,112,255,.55)}.mediaPickerCard>div{height:105px;border-radius:6px;overflow:hidden;background:#05070d;margin-bottom:7px}.mediaPickerCard img,.mediaPickerCard video{width:100%;height:100%;object-fit:cover}.mediaPickerCard strong{display:block;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mediaPickerCard small{display:block;margin-top:3px;font-size:7px;color:#70788a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1000px){.portfolioGridAdmin{grid-template-columns:repeat(2,minmax(0,1fr))}.portfolioFormSections{grid-template-columns:1fr}.mediaPickerGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.portfolioStats{grid-template-columns:1fr 1fr}.portfolioFilters{flex-wrap:wrap}.portfolioFilters>label{flex-basis:100%}.portfolioFilters select,.portfolioFilters button{flex:1;min-width:0}.portfolioGridAdmin{grid-template-columns:1fr}.portfolioCardActions{grid-template-columns:1fr 1fr}.mediaPickerGrid{grid-template-columns:repeat(2,1fr)}.portfolioEditorFooter{flex-direction:column-reverse}.portfolioEditorFooter button{width:100%!important}.portfolioUploadBox{align-items:flex-start;flex-wrap:wrap}.portfolioUploadBox>div{min-width:180px}.portfolioUploadBox>button{margin-left:auto}}
+
+/* =========================================================
+   NEW ERA ADMIN — SELECTED TURQUOISE / YELLOW CONTROL CENTER
+   Design-only layer. No routes, state, APIs or business logic changed.
+   ========================================================= */
+.adminPage{
+  --admin-bg:#05080a;
+  --admin-panel:#0b1114;
+  --admin-panel-2:#10171a;
+  --admin-line:rgba(255,255,255,.085);
+  --admin-line-strong:rgba(255,255,255,.14);
+  --admin-muted:#7f8c91;
+  --admin-soft:#b8c3c7;
+  --admin-text:#f5f8f8;
+  --admin-accent:#11d9d0;
+  --admin-accent-2:#f5d21f;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 78% -8%,rgba(16,216,207,.13),transparent 28%),
+    radial-gradient(circle at 12% 76%,rgba(245,210,31,.08),transparent 24%),
+    #05080a;
+}
+.adminPage .adminTop{
+  background:rgba(5,8,10,.91);
+  border-color:var(--admin-line);
+  backdrop-filter:blur(18px) saturate(130%);
+}
+.adminPage .adminBack:hover{color:#fff}
+.adminPage .adminTitle svg,.adminPage .adminEyebrow svg{color:var(--admin-accent)}
+.adminPage .adminEyebrow{color:var(--admin-accent);}
+.adminPage .adminHeadingRow h1 span{
+  background:linear-gradient(100deg,var(--admin-accent),var(--admin-accent-2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.adminPage .adminTabs{
+  background:linear-gradient(180deg,#071013 0%,#05080a 100%);
+  border-right-color:var(--admin-line);
+}
+.adminPage .adminTabs:before{
+  content:'NEW ERA';
+  color:#f7f9f9;
+}
+.adminPage .adminTabs:after{color:#56656a;border-top-color:var(--admin-line)}
+.adminPage .adminTabs button{color:#859398}
+.adminPage .adminTabs button svg{color:#65767b}
+.adminPage .adminTabs button:hover{
+  color:#f5f8f8;
+  background:rgba(17,217,208,.055);
+  border-color:rgba(17,217,208,.13);
+}
+.adminPage .adminTabs button.active,
+.adminPage .adminTabs button.adminEventsTab{
+  color:#fff;
+  background:linear-gradient(100deg,rgba(17,217,208,.17),rgba(245,210,31,.055));
+  border-color:rgba(17,217,208,.24);
+  box-shadow:inset 3px 0 0 var(--admin-accent);
+}
+.adminPage .adminTabs button.active svg,
+.adminPage .adminTabs button.adminEventsTab svg{color:var(--admin-accent)}
+.adminPage .adminTabs button.adminEventsTab{background:linear-gradient(100deg,rgba(245,210,31,.11),rgba(17,217,208,.055));box-shadow:inset 3px 0 0 var(--admin-accent-2)}
+.adminPage .overviewCard,
+.adminPage .adminPanel,
+.adminPage .salesTargetCard{
+  border-color:var(--admin-line);
+  background:linear-gradient(145deg,rgba(15,23,26,.96),rgba(7,12,14,.98));
+  box-shadow:0 18px 50px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.02);
+}
+.adminPage .overviewCard:first-child{border-color:rgba(17,217,208,.3)}
+.adminPage .overviewCard:nth-child(2){border-color:rgba(245,210,31,.24)}
+.adminPage .overviewCard strong{color:#f5f8f8}
+.adminPage .panelHead{border-bottom-color:rgba(255,255,255,.065)}
+.adminPage .panelHead small,
+.adminPage .overviewCard small,
+.adminPage .adminToolbar small,
+.adminPage .projectsAdminToolbar small,
+.adminPage .clientsAdminToolbar small,
+.adminPage .financeHeader small,
+.adminPage .salesHeader small{color:#5fd7d2}
+.adminPage .adminLead,.adminPage .overviewCard span{color:#849196}
+.adminPage .overviewHero{
+  background:
+    radial-gradient(circle at 85% 15%,rgba(17,217,208,.18),transparent 29%),
+    radial-gradient(circle at 65% 95%,rgba(245,210,31,.09),transparent 25%),
+    linear-gradient(135deg,#101a1d,#070d0f);
+}
+.adminPage .overviewHero>svg{color:var(--admin-accent)}
+.adminPage .quickActions button,.adminPage .quickActionLink{border-color:rgba(255,255,255,.065);background:#0d1518}
+.adminPage .quickActions button:hover,.adminPage .quickActionLink:hover{border-color:rgba(17,217,208,.28);background:#111d20}
+.adminPage .adminAction,.adminPage .adminSave{background:linear-gradient(100deg,#0dbfba,#10d9d0);color:#031011;box-shadow:0 9px 25px rgba(17,217,208,.16)}
+.adminPage .secondaryAction{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1);color:#eaf0f0}
+.adminPage .adminAction:hover,.adminPage .adminSave:hover{box-shadow:0 12px 30px rgba(17,217,208,.22)}
+.adminPage input,.adminPage select,.adminPage textarea{
+  border-color:rgba(255,255,255,.1)!important;
+  background:#071012!important;
+  color:#eef5f5!important;
+}
+.adminPage input:focus,.adminPage select:focus,.adminPage textarea:focus{border-color:rgba(17,217,208,.55)!important;box-shadow:0 0 0 3px rgba(17,217,208,.08)}
+.adminPage button:hover{border-color:rgba(17,217,208,.24)}
+.adminPage .statusPill,.adminPage .badge{background:rgba(17,217,208,.08);color:#8de8e3;border-color:rgba(17,217,208,.18)}
+.adminPage .statusPill.active,.adminPage .published,.adminPage .completed{color:#91eee8;background:rgba(17,217,208,.1)}
+.adminPage .statusPill.draft,.adminPage .draft{color:#f5dc55;background:rgba(245,210,31,.1)}
+.adminPage a{color:#64ded9}
+.adminPage a:hover{color:#fff}
+.adminPage .quickActions svg:first-child,.adminPage .panelHead>svg{color:var(--admin-accent)}
+.adminPage .quickActions button:nth-child(even) svg:first-child{color:var(--admin-accent-2)}
+.adminPage .portfolioCard,.adminPage .portfolioItem,.adminPage .mediaCard{border-color:rgba(255,255,255,.075);background:#0b1316}
+.adminPage .portfolioCard:hover,.adminPage .portfolioItem:hover,.adminPage .mediaCard:hover{border-color:rgba(17,217,208,.28)}
+.adminPage .portfolioToolbar,.adminPage .adminToolbar,.adminPage .projectsAdminToolbar,.adminPage .clientsAdminToolbar,.adminPage .financeHeader,.adminPage .salesHeader{background:#081013;border-color:rgba(255,255,255,.075)}
+.adminPage .adminSave{border-color:transparent!important}
+.adminPage .dangerAction{background:rgba(240,76,76,.08)!important;border-color:rgba(240,76,76,.22)!important;color:#ff9c9c!important}
+.adminPage .warningAction{background:rgba(245,210,31,.09)!important;border-color:rgba(245,210,31,.24)!important;color:#f6dc55!important}
+.adminPage .crmActivityRow i{background:var(--admin-accent)}
+.adminPage .salesTargetCard strong{color:var(--admin-accent)}
+.adminPage .progressBar i,.adminPage .salesProgress i{background:linear-gradient(90deg,var(--admin-accent),var(--admin-accent-2))}
+.adminPage .cmsHeader,.adminPage .cmsUploadPanel{
+  border-color:rgba(17,217,208,.18);
+  background:linear-gradient(145deg,rgba(10,26,28,.78),rgba(7,12,14,.96));
+}
+.adminPage .cmsHeader small,.adminPage .cmsUploadIntro small{color:var(--admin-accent)}
+.adminPage .cmsTabs button.active{background:var(--admin-accent);color:#031011;border-color:var(--admin-accent)}
+.adminPage .cmsPrimaryUpload,.adminPage .cmsActions button:first-child,.adminPage .cmsSettings>button,.adminPage .cmsSectionForm>button,.adminPage .heroMediaButtons button:first-child{background:var(--admin-accent);color:#031011}
+.adminPage .cmsMessage{border-color:rgba(17,217,208,.2);background:rgba(17,217,208,.06)}
+.adminPage .cmsMediaCard:hover,.adminPage .cmsPanel:hover{border-color:rgba(17,217,208,.22)}
+.adminPage .cmsHint code{color:#f5dc55}
+.adminPage .heroMediaEmpty{background:linear-gradient(145deg,rgba(17,217,208,.08),rgba(245,210,31,.045));color:#d8faf8}
+.adminPage .adminTabs::-webkit-scrollbar-thumb{background:#1c3438}
+
+/* Mobile: retain the same visual language without shrinking the desktop sidebar into content. */
+@media(max-width:900px){
+  .adminPage .adminTop{left:0;height:64px;padding:0 16px}
+  .adminPage .adminTabs{position:fixed;top:64px;bottom:auto;left:0;width:100%;height:auto;max-height:74px;flex-direction:row;align-items:center;padding:8px 12px;gap:6px;border-right:0;border-bottom:1px solid var(--admin-line);overflow-x:auto;overflow-y:hidden}
+  .adminPage .adminTabs:before,.adminPage .adminTabs:after{display:none}
+  .adminPage .adminTabs button{width:auto;min-width:max-content;min-height:38px}
+  .adminPage .adminTabs button.active,.adminPage .adminTabs button.adminEventsTab{box-shadow:inset 0 -2px 0 var(--admin-accent)}
+  .adminPage .adminContent{margin-left:0;padding:155px 16px 50px}
+}
+@media(max-width:600px){
+  .adminPage .adminContent{padding-inline:12px}
+  .adminPage .adminHeadingRow h1{font-size:32px}
+  .adminPage .adminLead{font-size:10px}
+}
+
+/* Events admin — same selected design */
+.eventsAdminPage{
+  background:
+    radial-gradient(circle at 82% 0%,rgba(17,217,208,.12),transparent 30%),
+    radial-gradient(circle at 10% 70%,rgba(245,210,31,.07),transparent 24%),#05080a!important;
+  color:#f5f8f8!important;
+}
+.eventsAdminEyebrow,.eventsAdminBack{color:#11d9d0!important}
+.eventsAdminHeader{border-bottom-color:rgba(255,255,255,.08)!important}
+.eventsAdminTabs button{background:#0b1316!important;border-color:rgba(255,255,255,.09)!important;color:#89979b!important}
+.eventsAdminTabs button.active{background:rgba(17,217,208,.13)!important;border-color:rgba(17,217,208,.35)!important;color:#f5ffff!important}
+.eventsAdminCard,.eventsAdminApplication,.eventsAdminForm{border-color:rgba(255,255,255,.08)!important;background:linear-gradient(145deg,#0d171a,#071012)!important}
+.eventsAdminCardBody small,.eventsAdminApplication small{color:#5fd7d2!important}
+.eventsAdminPrimary{border-color:rgba(17,217,208,.45)!important;background:linear-gradient(100deg,#0dbfba,#10d9d0)!important;color:#031011!important}
+.eventsAdminField input,.eventsAdminField textarea,.eventsAdminField select,.eventsAdminStatusSelect{background:#071012!important;color:#eef5f5!important;border-color:rgba(255,255,255,.1)!important}
+.eventsAdminCalculated{border-color:rgba(245,210,31,.22)!important;background:rgba(245,210,31,.06)!important}
+.eventsAdminCalculated strong{color:#f5dc55!important}
+.eventsAdminActions .approve{color:#91eee8!important;border-color:rgba(17,217,208,.28)!important;background:rgba(17,217,208,.08)!important}
+.eventsAdminActions .reject{color:#ff9eab!important}
+.eventsAdminInventorySummary>div{border-color:rgba(255,255,255,.08)!important;background:#0b1316!important}
+

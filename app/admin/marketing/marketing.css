@@ -520,3 +520,35 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* New Era selected admin visual system — design only */
+.marketingPage{
+  background:
+    radial-gradient(circle at 82% 4%,rgba(17,217,208,.13),transparent 29%),
+    radial-gradient(circle at 10% 72%,rgba(245,210,31,.07),transparent 25%),#05080a!important;
+  color:#f5f8f8!important;
+}
+.marketingKicker,.architectureCard small,.sectionTitle small,.checkGroup>small,.detailCard>small{color:#11d9d0!important}
+.marketingHeader p,.architectureCard span,.marketingCard p,.sectionTitle p{color:#839196!important}
+.marketingBack{border-color:rgba(255,255,255,.1)!important;background:#0b1316!important;color:#dce7e8!important}
+.marketingNav{border-bottom-color:rgba(255,255,255,.08)!important}
+.marketingNav a{color:#89979b!important}
+.marketingNav a.active,.marketingNav a:hover{color:#fff!important;background:rgba(17,217,208,.12)!important}
+.marketingHero>div,.architectureCard,.marketingCard,.searchFormCard,.searchStatusCard,.detailCard,.historyRow{
+  border-color:rgba(255,255,255,.085)!important;
+  background:linear-gradient(145deg,#0d171a,#071012)!important;
+}
+.heroIcon{background:rgba(17,217,208,.1)!important;color:#11d9d0!important}
+.marketingPrimary{background:linear-gradient(100deg,#0dbfba,#10d9d0)!important;color:#031011!important}
+.marketingCard{color:#eef5f5!important}
+.marketingCard>svg:first-child{color:#11d9d0!important}
+.searchFormCard input,.searchFormCard select,.searchFormCard textarea,.leadToolbar input,.leadToolbar select,.detailCard select{background:#071012!important;color:#eef5f5!important;border-color:rgba(255,255,255,.1)!important}
+.searchFormCard input:focus,.searchFormCard select:focus,.searchFormCard textarea:focus{border-color:rgba(17,217,208,.5)!important;box-shadow:0 0 0 3px rgba(17,217,208,.08)}
+.progress i{background:linear-gradient(90deg,#11d9d0,#f5d21f)!important}
+.jobRing{border-color:rgba(17,217,208,.4)!important;color:#8de8e3!important}
+.leadTable{border-color:rgba(255,255,255,.08)!important;background:#071012!important}
+.leadRow:hover{background:rgba(17,217,208,.045)!important}
+.presence span.on{color:#8de8e3!important;border-color:rgba(17,217,208,.25)!important}
+.statusPill.qualified,.statusPill.converted,.statusPill.verified{color:#91eee8!important;background:rgba(17,217,208,.08)!important}
+.emptyState svg,.detailCard>svg{color:#11d9d0!important}
+.detailCard code{color:#f5dc55!important}

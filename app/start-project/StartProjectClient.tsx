@@ -309,7 +309,7 @@ export default function StartProjectClient() {
 
             <div className="privateNote">
               Your brief and future project communication stay inside New
-              Era. Creator personal contact details are not published.
+              Era. Mütəxəssis şəxsi əlaqə məlumatları yayımlanmır.
             </div>
           </form>
         )}

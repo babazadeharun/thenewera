@@ -66,7 +66,7 @@ export default function Login() {
 
       <div className="authCard">
         <Link className="authBrand" href="/">
-          <img src="/new-era-logo-header.png" alt="New Era" />
+          <img src="/new-era-logo.png" alt="New Era" />
         </Link>
 
         <div className="eyebrow">MÜŞTƏRİ PORTALI</div>

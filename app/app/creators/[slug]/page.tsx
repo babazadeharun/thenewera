@@ -22,7 +22,7 @@ export default async function CreatorProfile({params}:{params:Promise<{slug:stri
   const {slug}=await params;
   const creator=creators[slug] ?? creators['aysel-m'];
   return <main className="profilePage">
-    <nav className="nav container profileNav"><Link className="brand" href="/"><img src="/new-era-logo.svg" alt="New Era"/></Link><div className="navLinks"><Link href="/">Home</Link><Link href="/services">Services</Link><Link className="active" href="/creators">Creators</Link><Link href="/creators">Portfolio</Link><Link href="/">About</Link><Link href="/">How It Works</Link><Link href="/">Pricing</Link></div><div className="navActions"><span className="profileLogin">Log In</span><Link href="/start-project" className="pill">Get Started</Link></div></nav>
+    <nav className="nav container profileNav"><Link className="brand" href="/"><img src="/new-era-logo.png" alt="New Era"/></Link><div className="navLinks"><Link href="/">Home</Link><Link href="/services">Services</Link><Link className="active" href="/creators">Creators</Link><Link href="/creators">Portfolio</Link><Link href="/">About</Link><Link href="/">How It Works</Link><Link href="/">Pricing</Link></div><div className="navActions"><span className="profileLogin">Log In</span><Link href="/start-project" className="pill">Get Started</Link></div></nav>
 
     <section className="cleanProfileHero">
       <div className="cleanProfileGlow"/>
@@ -61,6 +61,6 @@ export default async function CreatorProfile({params}:{params:Promise<{slug:stri
     </section>
 
     <section className="container profileBottom cleanBottom"><div><div className="eyebrow">READY TO CREATE?</div><h2>Have a vision?<br/><span>Let's build it.</span></h2><p>Choose this specialist and start the project through New Era. No direct contact details are shared.</p></div><Link href={`/start-project?creator=${slug}`} className="primary">Start a Project <ArrowRight size={16}/></Link></section>
-    <footer className="footer container"><Link className="brand" href="/"><img src="/new-era-logo.svg" alt="New Era"/></Link><span>Creative talent, connected.</span><span>© 2026 New Era</span></footer>
+    <footer className="footer container"><Link className="brand" href="/"><img src="/new-era-logo.png" alt="New Era"/></Link><span>Creative talent, connected.</span><span>© 2026 New Era</span></footer>
   </main>
 }

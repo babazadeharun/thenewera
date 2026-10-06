@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <main>
       <nav className="nav container">
-        <a className="brand" href="#top"><img src="/new-era-logo.svg" alt="New Era" /></a>
+        <a className="brand" href="#top"><img src="/new-era-logo.png" alt="New Era" /></a>
         <div className="navLinks">
           <a className="active" href="#top">Home</a><a href="#services">Services</a><a href="#creators">Creators</a><a href="#portfolio">Portfolio</a><a href="#about">About</a><a href="#how">How It Works</a><a href="#pricing">Pricing</a>
         </div>
@@ -56,7 +56,7 @@ export default function Home() {
       <section id="how" className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt"/><div className="eyebrow">HOW IT WORKS</div><h2>From Brief to Brilliance</h2><p>Get your project done in just a few simple steps.</p></div><div className="steps"><div><b>✎</b><span>1. Choose Service</span><small>Select what you need</small></div><div><b>♧</b><span>2. Pick a Creator</span><small>Browse portfolios & reviews</small></div><div><b>◉</b><span>3. Start Project</span><small>Discuss, create, get results</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>
 
       <section id="about" className="finalCta container"><div className="eyebrow">THE NEW ERA STANDARD</div><h2>Your vision deserves<br/><span>the right talent.</span></h2><p>Choose your specialist, keep the project inside New Era, and turn your idea into something real.</p><a className="primary" href="/start-project">Get Started <ArrowRight size={17}/></a></section>
-      <footer id="contact" className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.svg" alt="New Era" /></a><span>Creative talent, connected.</span><span>© 2026 New Era</span></footer>
+      <footer id="contact" className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt="New Era" /></a><span>Creative talent, connected.</span><span>© 2026 New Era</span></footer>
     </main>
   );
 }

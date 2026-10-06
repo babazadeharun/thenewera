@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { prisma } from '@/lib/prisma';
+import SiteHeader from './components-site-header';
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await prisma.siteSetting.findUnique({ where: { id: 'main' }, include: { faviconMedia: true, socialImageMedia: true } }).catch(() => null);
@@ -13,5 +14,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="az"><body>{children}</body></html>;
+  return <html lang="az"><body><SiteHeader />{children}</body></html>;
 }

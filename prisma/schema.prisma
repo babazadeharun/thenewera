@@ -215,6 +215,7 @@ model Client {
   companySize String?
   country     String?
   website     String?
+  instagram   String?
   createdAt   DateTime  @default(now())
   projects    Project[]
   user        User?
@@ -223,7 +224,6 @@ model Client {
   financeInvoices Invoice[]
   financeTransactions FinanceTransaction[]
   financePayments FinancePayment[]
-  financePayables FinancePayable[]
 }
 
 model VerificationCode {
@@ -967,3 +967,4 @@ model FinancePayable {
   @@index([status, dueDate])
   @@index([projectId])
 }
+

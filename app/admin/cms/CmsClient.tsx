@@ -63,7 +63,7 @@ export default function CmsClient(){
   <div className="panelHead"><div><small>CMS</small><h3>Yeni ana səhifə bölməsi əlavə et</h3></div></div>
   <div className="cmsGrid2">
     <label>Bölmə açarı<input value={newSectionForm.key} onChange={e=>setNewSectionForm(v=>({...v,key:e.target.value}))} placeholder="məs: partners"/></label>
-    <label>Başlıq<input value={newSectionForm.title} onChange={e=>setNewSectionForm(v=>({...v,title:e.target.value}))} placeholder="Bölmə başlığı"/></label>
+    <label>Üst başlıq (Eyebrow)<input value={newSectionForm.eyebrow} onChange={e=>setNewSectionForm(v=>({...v,eyebrow:e.target.value}))} placeholder="məs: NEW ERA YANAŞMASI"/></label><label>Başlıq<input value={newSectionForm.title} onChange={e=>setNewSectionForm(v=>({...v,title:e.target.value}))} placeholder="Bölmə başlığı"/></label>
   </div>
   <label>Açıqlama<textarea value={newSectionForm.description} onChange={e=>setNewSectionForm(v=>({...v,description:e.target.value}))} placeholder="Bölmənin mətni"/></label>
   <div className="cmsGrid2">

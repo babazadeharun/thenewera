@@ -99,7 +99,7 @@ class ImapConnection {
     const response = await this.readUntilTag(tag);
     this.buffer = Buffer.alloc(0);
     const text = response.toString('utf8');
-    const final = text.match(new RegExp(`\\r?\\n${tag}\\s+(OK|NO|BAD)\\b[^\\r\\n]*`, 'i'))?.[0] || '';
+    const final = text.match(new RegExp(`(?:^|\\r?\\n)${tag}\\s+(OK|NO|BAD)\\b[^\\r\\n]*`, 'i'))?.[0] || '';
     if (!/\bOK\b/i.test(final)) {
       const error = /\b(NO|BAD)\b[^\r\n]*/i.exec(final)?.[0] || 'IMAP command failed';
       throw new Error(error);
@@ -143,7 +143,7 @@ class ImapConnection {
       const headerStart = block.indexOf('\r\n', block.indexOf('HEADER.FIELDS'));
       const header = headerStart >= 0 ? block.slice(headerStart + 2) : '';
       const headers = parseHeaders(header);
-      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÂ¶vzusuz)', date: headers.date || '' });
+      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÆ’Ã‚Â¶vzusuz)', date: headers.date || '' });
     }
     return out;
   }
@@ -274,7 +274,7 @@ export function parseRawMessage(raw: Buffer): ImapMessage {
     to: parseAddresses(headers.to),
     cc: parseAddresses(headers.cc),
     bcc: parseAddresses(headers.bcc),
-    subject: decodeMimeWords(headers.subject || '(MÃƒÂ¶vzusuz)'),
+    subject: decodeMimeWords(headers.subject || '(MÃƒÆ’Ã‚Â¶vzusuz)'),
     date: headers.date || new Date().toISOString(),
     text: result.text,
     html: result.html,

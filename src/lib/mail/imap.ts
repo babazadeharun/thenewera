@@ -81,7 +81,7 @@ class ImapConnection {
   }
 
   private async readUntilTag(tag: string) {
-    const marker = Buffer.from(`\r\n${tag} `);
+    const marker = Buffer.from(tag + " ");
     while (true) {
       const index = this.buffer.indexOf(marker);
       if (index >= 0) {
@@ -143,7 +143,7 @@ class ImapConnection {
       const headerStart = block.indexOf('\r\n', block.indexOf('HEADER.FIELDS'));
       const header = headerStart >= 0 ? block.slice(headerStart + 2) : '';
       const headers = parseHeaders(header);
-      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(Mövzusuz)', date: headers.date || '' });
+      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃ¶vzusuz)', date: headers.date || '' });
     }
     return out;
   }
@@ -274,7 +274,7 @@ export function parseRawMessage(raw: Buffer): ImapMessage {
     to: parseAddresses(headers.to),
     cc: parseAddresses(headers.cc),
     bcc: parseAddresses(headers.bcc),
-    subject: decodeMimeWords(headers.subject || '(Mövzusuz)'),
+    subject: decodeMimeWords(headers.subject || '(MÃ¶vzusuz)'),
     date: headers.date || new Date().toISOString(),
     text: result.text,
     html: result.html,

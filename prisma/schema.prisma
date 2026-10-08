@@ -315,6 +315,7 @@ model HomepageSection {
   id           String   @id @default(cuid())
   key          String   @unique
   title        String
+  eyebrow      String?
   description  String?  @db.Text
   imageId      String?
   enabled      Boolean  @default(true)
@@ -967,3 +968,4 @@ model FinancePayable {
   @@index([status, dueDate])
   @@index([projectId])
 }
+

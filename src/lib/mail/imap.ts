@@ -143,7 +143,7 @@ class ImapConnection {
       const headerStart = block.indexOf('\r\n', block.indexOf('HEADER.FIELDS'));
       const header = headerStart >= 0 ? block.slice(headerStart + 2) : '';
       const headers = parseHeaders(header);
-      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶vzusuz)', date: headers.date || '' });
+      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶vzusuz)', date: headers.date || '' });
     }
     return out;
   }
@@ -257,7 +257,7 @@ function walkMime(raw: Buffer, result: {text:string;html:string;attachments:Imap
   }
   const decoded = decodeBody(body, headers['content-transfer-encoding'], ct.charset);
   if (ct.type === 'text/html') result.html += decoded;
-  else if (ct.type === 'text/plain') result.text += decoded;
+  else if (ct.type === 'text/plain') result.text += decoded.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '').replace(/@font-face\s*\{[\s\S]*?\}\s*/gi, '').trim();
 }
 
 export function parseRawMessage(raw: Buffer): ImapMessage {
@@ -274,7 +274,7 @@ export function parseRawMessage(raw: Buffer): ImapMessage {
     to: parseAddresses(headers.to),
     cc: parseAddresses(headers.cc),
     bcc: parseAddresses(headers.bcc),
-    subject: decodeMimeWords(headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶vzusuz)'),
+    subject: decodeMimeWords(headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶vzusuz)'),
     date: headers.date || new Date().toISOString(),
     text: result.text,
     html: result.html,

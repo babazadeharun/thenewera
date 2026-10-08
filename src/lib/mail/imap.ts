@@ -63,7 +63,7 @@ class ImapConnection {
     if (!this.socket) throw new Error('MAIL_IMAP_NOT_CONNECTED');
     return new Promise((resolve, reject) => {
       const socket = this.socket!;
-      const onData = (chunk: Buffer) => { cleanup(); this.buffer = Buffer.concat([this.buffer, chunk]); resolve(); };
+      const onData = (chunk: Buffer) => { cleanup(); socket.pause(); this.buffer = Buffer.concat([this.buffer, chunk]); resolve(); };
       const onError = (err: Error) => { cleanup(); reject(err); };
       const onTimeout = () => { cleanup(); reject(new Error('MAIL_IMAP_TIMEOUT')); };
       const cleanup = () => { socket.off('data', onData); socket.off('error', onError); socket.off('timeout', onTimeout); };
@@ -143,7 +143,7 @@ class ImapConnection {
       const headerStart = block.indexOf('\r\n', block.indexOf('HEADER.FIELDS'));
       const header = headerStart >= 0 ? block.slice(headerStart + 2) : '';
       const headers = parseHeaders(header);
-      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃ¶vzusuz)', date: headers.date || '' });
+      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÂ¶vzusuz)', date: headers.date || '' });
     }
     return out;
   }
@@ -274,7 +274,7 @@ export function parseRawMessage(raw: Buffer): ImapMessage {
     to: parseAddresses(headers.to),
     cc: parseAddresses(headers.cc),
     bcc: parseAddresses(headers.bcc),
-    subject: decodeMimeWords(headers.subject || '(MÃ¶vzusuz)'),
+    subject: decodeMimeWords(headers.subject || '(MÃƒÂ¶vzusuz)'),
     date: headers.date || new Date().toISOString(),
     text: result.text,
     html: result.html,

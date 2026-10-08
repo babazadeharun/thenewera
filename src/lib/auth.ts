@@ -48,6 +48,12 @@ export async function getCurrentUser() {
     await prisma.session.delete({ where: { id: session.id } }).catch(() => undefined);
     return null;
   }
+  // Public accounts are authenticated only after email ownership is verified.
+  // Existing admin/internal roles remain unaffected.
+  if ((session.user.role === 'CLIENT' || session.user.role === 'PROMOTER') && !session.user.verifiedAt) {
+    await prisma.session.delete({ where: { id: session.id } }).catch(() => undefined);
+    return null;
+  }
   return session.user;
 }
 

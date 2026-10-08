@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-export type SendMailInput = { to:string[]; cc?:string[]; bcc?:string[]; subject?:string; text:string; html?:string; inReplyTo?:string; references?:string; attachments?:Array<{filename:string;content:Buffer;contentType?:string}> };
+export type SendMailInput = { to:string[]; cc?:string[]; bcc?:string[]; subject?:string; text:string; html?:string; inReplyTo?:string; references?:string; attachments?:Array<{filename:string;content:Buffer;contentType?:string}>; fromAddress?:string; fromName?:string };
 
 function config() {
   const host = process.env.MAIL_SMTP_HOST || process.env.EVENT_EMAIL_HOST || '';
@@ -15,8 +15,8 @@ export function smtpConfigured() { try { config(); return true; } catch { return
 
 export async function sendMail(input: SendMailInput) {
   const c = config();
-  const from = process.env.MAIL_FROM_ADDRESS || c.user;
-  const fromName = process.env.MAIL_FROM_NAME || 'New Era';
+  const from = input.fromAddress || process.env.MAIL_FROM_ADDRESS || c.user;
+  const fromName = input.fromName || process.env.MAIL_FROM_NAME || 'New Era';
   const transporter = nodemailer.createTransport({ host:c.host, port:c.port, secure:String(process.env.MAIL_SMTP_SECURE ?? (c.port===465)).toLowerCase() !== 'false', auth:{user:c.user,pass:c.password}, connectionTimeout:15000, greetingTimeout:15000, socketTimeout:20000 });
   return transporter.sendMail({ from:`${fromName} <${from}>`, to:input.to, cc:input.cc, bcc:input.bcc, subject:input.subject || '', text:input.text, html:input.html, inReplyTo:input.inReplyTo, references:input.references, attachments:input.attachments?.map(a=>({filename:a.filename,content:a.content,contentType:a.contentType})) });
 }

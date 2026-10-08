@@ -14,6 +14,7 @@ export default function VerifyPage() {
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [resendSeconds, setResendSeconds] = useState(0);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
@@ -22,6 +23,12 @@ export default function VerifyPage() {
     setFlow(q.get('flow') === 'promoter' ? 'promoter' : 'client');
     setEventSlug(q.get('eventSlug') || '');
   }, []);
+
+  useEffect(() => {
+    if (resendSeconds <= 0) return;
+    const timer = window.setInterval(() => setResendSeconds((value) => Math.max(0, value - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, [resendSeconds]);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -73,6 +80,7 @@ export default function VerifyPage() {
       }
       setTarget(data.target || target);
       setNotice('Yeni təsdiq kodu göndərildi.');
+      setResendSeconds(60);
     } catch {
       setError('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     } finally {
@@ -90,7 +98,7 @@ export default function VerifyPage() {
         <div className="eyebrow">E-POÇT TƏSDİQİ</div>
         <h1>{flow === 'promoter' ? <>Müraciəti <span>təsdiqləyin.</span></> : <>Bir addım <span>qalıb.</span></>}</h1>
         <p className="authIntro">
-          6 rəqəmli təsdiq kodunu <strong>{target || 'e-poçtunuza'}</strong> ünvanına göndərdik. Bu kod e-poçt ünvanına çıxışınız olduğunu təsdiqləyir.
+          Email ünvanınıza göndərdiyimiz 6 rəqəmli kodu <strong>{target || 'e-poçtunuza'}</strong> daxil edin. Bu kod e-poçt ünvanına çıxışınız olduğunu təsdiqləyir.
         </p>
 
         <form onSubmit={submit} className="authForm">
@@ -116,8 +124,8 @@ export default function VerifyPage() {
             {loading ? 'Yoxlanılır…' : 'E-poçtu təsdiqlə'} {!loading && <ArrowRight size={16} />}
           </button>
 
-          <button disabled={resending} type="button" className="secondary authResend" onClick={resend}>
-            {resending ? 'Göndərilir…' : 'Yeni kod göndər'}
+          <button disabled={resending || resendSeconds > 0} type="button" className="secondary authResend" onClick={resend}>
+            {resending ? 'Göndərilir…' : resendSeconds > 0 ? `Yeni kodu ${resendSeconds} saniyədən sonra göndərə bilərsiniz.` : 'Yeni kod göndər'}
           </button>
         </form>
 

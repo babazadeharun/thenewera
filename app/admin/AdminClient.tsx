@@ -5,6 +5,7 @@ import PortfolioManager from './PortfolioManager';
 import SalesCrm from './SalesCrm';
 import FinanceManager from './FinanceManager';
 import CollaborationsManager from './CollaborationsManager';
+import NotificationsCenter from './NotificationsCenter';
 import { BarChart3, Check, ChevronLeft, Clock3, Image as ImageIcon, LayoutGrid, Plus, Search, Settings2, ShieldCheck, Sparkles, Trash2, Upload, Users, X, BriefcaseBusiness, Layers3, MessageCircle, ArrowRight, Send, Building2, Mail, Phone, Globe2, MapPin, UserRound, Activity, Filter, UserCheck, CalendarDays, TrendingUp, WalletCards, Target, FileText, CircleDollarSign, ArrowDownRight, ArrowUpRight, Pencil, Copy, ExternalLink } from 'lucide-react';
 
 type Activity={type:string;text:string;at:string};
@@ -61,7 +62,7 @@ export default function AdminPage(){
  const statusOptions=['All',...projectStatuses];
 
  return <main className="adminPage">
-   <header className="adminTop container"><a href="/" className="adminBack"><ChevronLeft size={16}/> Back to New Era</a><div className="adminTitle"><ShieldCheck size={17}/> Admin Control Center</div></header>
+   <header className="adminTop container"><a href="/" className="adminBack"><ChevronLeft size={16}/> Back to New Era</a><div className="adminTitle"><ShieldCheck size={17}/> Admin Control Center</div><NotificationsCenter/></header>
    <section className="container adminContent">
      <div className="adminEyebrow"><Sparkles size={14}/> NEW ERA CONTENT MANAGEMENT</div>
      <div className="adminHeadingRow"><div><h1>İdarəetmə <span>mərkəzi.</span></h1><p className="adminLead">New Era-nın əsas biznes modullarını bir yerdən idarə edin. Məzmun, portfolio, layihələr, müştərilər, CRM, satış, maliyyə və tədbirlər.</p></div><div className="adminTabs"><button className={tab==='overview'?'active':''} onClick={()=>setTab('overview')}><BarChart3 size={15}/> Ümumi baxış</button><button className={tab==='services'?'active':''} onClick={()=>setTab('services')}><Layers3 size={15}/> Xidmətlər</button><button className={tab==='portfolio'?'active':''} onClick={()=>setTab('portfolio')}><LayoutGrid size={15}/> Portfolio</button><button className={tab==='projects'?'active':''} onClick={()=>setTab('projects')}><BriefcaseBusiness size={15}/> Layihələr</button><button className={tab==='müştəri'?'active':''} onClick={()=>setTab('müştəri')}><Building2 size={15}/> Müştərilər</button><button className={tab==='crm'?'active':''} onClick={()=>setTab('crm')}><Activity size={15}/> CRM</button><button type="button" className="adminEventsTab" onClick={() => { window.location.href = '/admin/mail'; }}><Mail size={15}/> Mail</button><button className={tab==='sales'?'active':''} onClick={()=>setTab('sales')}><Target size={15}/> Satış CRM</button><button className={tab==='finance'?'active':''} onClick={()=>setTab('finance')}><WalletCards size={15}/> Maliyyə</button><button type="button" className="adminEventsTab" onClick={() => { window.location.href = '/admin/events'; }}><CalendarDays size={15}/> Tədbirlər</button><button className={tab==='collaborations'?'active':''} onClick={()=>setTab('collaborations')}><Building2 size={15}/> Əməkdaşlıqlar</button><button className={tab==='cms'?'active':''} onClick={()=>setTab('cms')}><Settings2 size={15}/> CMS</button></div></div>

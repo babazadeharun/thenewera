@@ -153,6 +153,24 @@ enum PaymentMethod {
   OTHER
 }
 
+
+enum NotificationType {
+  INVOICE_OVERDUE
+  FOLLOW_UP_DUE
+  NEW_EMAIL
+  PAYMENT_RECEIVED
+  PROMOTER_APPLICATION
+  PROJECT_DEADLINE
+  SYSTEM
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
 enum PayableStatus {
   OPEN
   PARTIALLY_PAID
@@ -164,6 +182,30 @@ enum PayableStatus {
 enum VendorStatus {
   ACTIVE
   INACTIVE
+}
+
+
+
+model Notification {
+  id          String               @id @default(cuid())
+  type        NotificationType
+  title       String
+  message     String               @db.Text
+  link        String?
+  entityType  String?
+  entityId    String?
+  eventKey    String               @unique
+  isRead      Boolean              @default(false)
+  readAt      DateTime?
+  priority    NotificationPriority @default(NORMAL)
+  metadata    Json?
+  userId      String?
+  user        User?                @relation("AdminNotifications", fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime             @default(now())
+
+  @@index([userId, isRead, createdAt])
+  @@index([type, createdAt])
+  @@index([entityType, entityId])
 }
 
 model User {
@@ -189,6 +231,7 @@ model User {
   emailDrafts                  MailDraft[]
   mailMetadata                 MailMetadata[]
   financePayments              FinancePayment[]      @relation("FinancePaymentCreator")
+  adminNotifications           Notification[]     @relation("AdminNotifications")
   createdAt                    DateTime              @default(now())
   updatedAt                    DateTime              @updatedAt
 }
@@ -374,6 +417,7 @@ model Project {
   revisions    RevisionRequest[]
   review       ProjectReview?
   salesDeals   SalesDeal[]
+  @@index([deadline, status])
   salesActivities SalesActivity[]
   financeInvoices Invoice[]
   financeTransactions FinanceTransaction[]
@@ -916,6 +960,7 @@ model Invoice {
   @@index([clientId, dueDate])
   @@index([projectId])
   @@index([status, dueDate])
+  @@index([status, dueDate, id])
 }
 
 model InvoiceItem {

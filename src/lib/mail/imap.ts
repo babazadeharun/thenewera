@@ -53,6 +53,7 @@ class ImapConnection {
   async connect() {
     if (!mailConfigured()) throw new Error('MAIL_IMAP_CONFIG_MISSING');
     this.socket = secure() ? tls.connect({ host: host(), port: port(), servername: host(), rejectUnauthorized: true }) : net.connect({ host: host(), port: port() });
+    this.socket.pause();
     this.socket.setTimeout(timeoutMs());
     await this.waitForGreeting();
     await this.command(`LOGIN ${quote(user())} ${quote(password())}`);
@@ -67,6 +68,7 @@ class ImapConnection {
       const onTimeout = () => { cleanup(); reject(new Error('MAIL_IMAP_TIMEOUT')); };
       const cleanup = () => { socket.off('data', onData); socket.off('error', onError); socket.off('timeout', onTimeout); };
       socket.once('data', onData); socket.once('error', onError); socket.once('timeout', onTimeout);
+      socket.resume();
     });
   }
 

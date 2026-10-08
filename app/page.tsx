@@ -33,7 +33,7 @@ export default async function Home() {
   }).catch(() => []);
   const parsePortfolioMeta = (alt: string | null) => {
     if (!alt?.startsWith('NEPORTFOLIO:')) return null;
-    try { return JSON.parse(alt.slice('NEPORTFOLIO:'.length)) as { title?: string; client?: string; category?: string; description?: string; featured?: boolean; status?: string; role?: string; itemId?: string }; }
+    try { return JSON.parse(alt.slice('NEPORTFOLIO:'.length)) as { title?: string; client?: string; category?: string; description?: string; featured?: boolean; status?: string; itemId?: string; role?: string }; }
     catch { return null; }
   };
   const featuredProjects = new Map<string, { media: typeof featuredMedia[number]; meta: NonNullable<ReturnType<typeof parsePortfolioMeta>> }>();
@@ -120,7 +120,7 @@ export default async function Home() {
         <div className="container">
           <div className="sectionIntro"><div><div className="eyebrow">İŞLƏRİMİZ</div><h2>İdeyadan <span>nəticəyə.</span></h2></div><p>Fərqli sahələrdə həyata keçirdiyimiz brend, kreativ və rəqəmsal işlərdən seçilmiş nümunələr.</p></div>
           <div className="agencyPortfolioGrid">{portfolio.map((item) => (
-            <a className="agencyPortfolioCard" href={('itemId' in item && item.itemId) ? `/portfolio/${encodeURIComponent(String(item.itemId))}` : '/portfolio'} key={item.image}>
+            <a className="agencyPortfolioCard" href={('itemId' in item && typeof item.itemId === 'string' && item.itemId) ? `/portfolio/${encodeURIComponent(item.itemId)}` : '/portfolio'} key={item.image}>
               <div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title}/><span>{item.service}</span></div>
               <div className="agencyPortfolioBody"><div><strong>{item.title}</strong><small>{item.client}</small></div><ArrowRight size={17}/><p>{item.text}</p></div>
             </a>
@@ -131,7 +131,7 @@ export default async function Home() {
 
       {showSection('how') && <section id="how" className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt" style={section('how')?.image?.url ? ({ backgroundImage: `url(${section('how')?.image?.url})` } as React.CSSProperties) : undefined}/><div className="eyebrow">NECƏ İŞLƏYİR</div><h2>Biznesiniz üçün <span>vahid komanda.</span></h2><p>Brief-dən strategiyaya, kreativdən icraya qədər layihəni New Era idarə edir.</p></div><div className="steps"><div><b>01</b><span>Məqsədi paylaşın</span><small>Biznesinizi, hədəfinizi və ehtiyacınızı bizə danışın.</small></div><div><b>02</b><span>Strategiya quraq</span><small>Uyğun istiqaməti və kreativ həlli birlikdə müəyyənləşdirək.</small></div><div><b>03</b><span>İcra edək</span><small>New Era komandası işi həyata keçirir və nəticəni təqdim edir.</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>}
 
-      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">{aboutSection?.eyebrow || "NEW ERA YANAŞMASI"}</div><h2>{aboutTitle}</h2><p>{aboutDescription}</p></section>}
+      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>{aboutTitle}</h2><p>{aboutDescription}</p></section>}
 
       <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 

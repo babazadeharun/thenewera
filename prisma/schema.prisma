@@ -186,6 +186,8 @@ model User {
   salesActivities              SalesActivity[]       @relation("SalesActivityCreator")
   financeTransactions          FinanceTransaction[]  @relation("FinanceTransactionCreator")
   financeInvoices              Invoice[]             @relation("InvoiceCreator")
+  emailDrafts                  MailDraft[]
+  mailMetadata                 MailMetadata[]
   financePayments              FinancePayment[]      @relation("FinancePaymentCreator")
   createdAt                    DateTime              @default(now())
   updatedAt                    DateTime              @updatedAt
@@ -224,6 +226,9 @@ model Client {
   financeInvoices Invoice[]
   financeTransactions FinanceTransaction[]
   financePayments FinancePayment[]
+  emailDrafts MailDraft[]
+  emailCommunications EmailCommunication[]
+  mailMetadata MailMetadata[]
 }
 
 model VerificationCode {
@@ -315,7 +320,6 @@ model HomepageSection {
   id           String   @id @default(cuid())
   key          String   @unique
   title        String
-  eyebrow      String?
   description  String?  @db.Text
   imageId      String?
   enabled      Boolean  @default(true)
@@ -969,3 +973,74 @@ model FinancePayable {
   @@index([projectId])
 }
 
+
+enum EmailDirection {
+  INBOUND
+  OUTBOUND
+}
+
+model MailDraft {
+  id          String              @id @default(cuid())
+  createdById String
+  clientId    String?
+  to          String              @db.Text
+  cc          String?             @db.Text
+  bcc         String?             @db.Text
+  subject     String?             @db.Text
+  body        String              @db.Text
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  createdBy   User                @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  client      Client?             @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  attachments MailDraftAttachment[]
+
+  @@index([createdById, updatedAt])
+  @@index([clientId, updatedAt])
+}
+
+model MailDraftAttachment {
+  id          String   @id @default(cuid())
+  draftId     String
+  filename    String
+  mimeType    String
+  sizeBytes   Int
+  data        Bytes
+  createdAt   DateTime @default(now())
+  draft       MailDraft @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@index([draftId])
+}
+
+model MailMetadata {
+  id         String   @id @default(cuid())
+  folder     String
+  uid        Int
+  read       Boolean  @default(false)
+  starred    Boolean  @default(false)
+  messageId  String?
+  clientId   String?
+  updatedAt  DateTime @updatedAt
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  @@unique([folder, uid])
+  @@index([clientId, updatedAt])
+  @@index([userId, updatedAt])
+}
+
+model EmailCommunication {
+  id          String        @id @default(cuid())
+  messageId   String        @unique
+  clientId    String
+  direction   EmailDirection
+  subject     String?       @db.Text
+  fromAddress String        @db.Text
+  toAddress   String        @db.Text
+  sentAt      DateTime
+  createdAt   DateTime      @default(now())
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId, sentAt])
+  @@index([direction, sentAt])
+}

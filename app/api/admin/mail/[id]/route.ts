@@ -1,0 +1,9 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { flagMessage, openMailboxMessage, trashMessage, unreadMessage } from '@/lib/mail/service';
+import { friendlyMailError, rejectCsrf, requireMailAdmin } from '@/lib/mail/auth';
+import { mailboxFromKey } from '@/lib/mail/imap';
+import { prisma } from '@/lib/prisma';
+
+export async function GET(req:NextRequest,{params}:{params:Promise<{id:string}>}){const {response}=await requireMailAdmin();if(response)return response;try{const {id}=await params;const uid=Number(id);const folder=req.nextUrl.searchParams.get('folder')||'inbox';if(!Number.isInteger(uid)||uid<1)return NextResponse.json({error:'Email ID düzgün deyil.'},{status:400});return NextResponse.json(await openMailboxMessage(folder,uid));}catch(e){console.error('mail detail',e instanceof Error?e.message:'unknown');return NextResponse.json({error:friendlyMailError(e,'Emaili açmaq mümkün olmadı.')},{status:502});}}
+
+export async function POST(req:NextRequest,{params}:{params:Promise<{id:string}>}){const {response}=await requireMailAdmin();if(response)return response;const csrf=rejectCsrf(req);if(csrf)return csrf;try{const {id}=await params;const uid=Number(id);const b=await req.json();const folder=String(b.folder||'inbox');if(!Number.isInteger(uid)||uid<1)return NextResponse.json({error:'Email ID düzgün deyil.'},{status:400});if(b.action==='star')await flagMessage(folder,uid,Boolean(b.value));else if(b.action==='unread')await unreadMessage(folder,uid);else if(b.action==='delete')await trashMessage(folder,uid);else return NextResponse.json({error:'Naməlum əməliyyat.'},{status:400});return NextResponse.json({ok:true});}catch(e){console.error('mail action',e instanceof Error?e.message:'unknown');return NextResponse.json({error:friendlyMailError(e,'Email əməliyyatı tamamlanmadı.')},{status:502});}}

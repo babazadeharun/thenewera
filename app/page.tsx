@@ -57,6 +57,20 @@ export default async function Home() {
   const portfolio = dynamicPortfolio.length ? dynamicPortfolio : fallbackPortfolio;
   const section = (key: string) => sections.find((item) => item.key === key);
   const showSection = (key: string) => section(key)?.enabled !== false;
+
+  // Keep the existing CMS editable, but migrate the old hard-coded About copy
+  // to the new approved wording without requiring a destructive DB migration.
+  const aboutSection = section('about');
+  const legacyAboutCopy =
+    !aboutSection ||
+    (
+      aboutSection.title.trim().toLocaleLowerCase('az-AZ') === 'new era yanaşması' &&
+      (aboutSection.description || '').trim().toLocaleLowerCase('az-AZ').startsWith('strategiya, kreativ və icranı vahid tərəfdaş kimi idarə edirik')
+    );
+  const aboutTitle = legacyAboutCopy ? 'Bir layihə. Bir tərəfdaş. Bütöv nəticə.' : aboutSection?.title;
+  const aboutDescription = legacyAboutCopy
+    ? 'Strategiyadan kreativə, dizayndan istehsala qədər layihənizin bütün mərhələlərini vahid sistemdə birləşdiririk. Siz isə ayrı-ayrı icraçıları deyil, nəticəni idarə edirsiniz.'
+    : aboutSection?.description;
   const heroes = await prisma.hero.findMany({ where: { active: true }, include: { desktopMedia: true, mobileMedia: true, videoMedia: true }, orderBy: { displayOrder: 'asc' }, take: 10 }).catch(() => []);
   const hero = heroes[0];
   const heroImage = hero?.desktopMedia?.url || cms?.heroImage || '/hero-space-4k.png';
@@ -117,7 +131,7 @@ export default async function Home() {
 
       {showSection('how') && <section id="how" className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt" style={section('how')?.image?.url ? ({ backgroundImage: `url(${section('how')?.image?.url})` } as React.CSSProperties) : undefined}/><div className="eyebrow">NECƏ İŞLƏYİR</div><h2>Biznesiniz üçün <span>vahid komanda.</span></h2><p>Brief-dən strategiyaya, kreativdən icraya qədər layihəni New Era idarə edir.</p></div><div className="steps"><div><b>01</b><span>Məqsədi paylaşın</span><small>Biznesinizi, hədəfinizi və ehtiyacınızı bizə danışın.</small></div><div><b>02</b><span>Strategiya quraq</span><small>Uyğun istiqaməti və kreativ həlli birlikdə müəyyənləşdirək.</small></div><div><b>03</b><span>İcra edək</span><small>New Era komandası işi həyata keçirir və nəticəni təqdim edir.</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>}
 
-      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>Ayrı-ayrı podratçı axtarmayın.<br/><span>New Era ilə işləyin.</span></h2><p>Layihəniz üçün müxtəlif peşəkarları ayrı-ayrılıqda idarə etmək əvəzinə, strategiyadan kreativ istehsala qədər bütün prosesi vahid tərəfdaş kimi bizə həvalə edin.</p></section>}
+      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>{aboutTitle}</h2><p>{aboutDescription}</p></section>}
 
       <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 

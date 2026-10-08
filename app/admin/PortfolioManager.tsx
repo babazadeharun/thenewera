@@ -18,6 +18,15 @@ function parseMeta(media:Media){
   try { return JSON.parse(media.alt.slice(META_PREFIX.length)); } catch { return null; }
 }
 function encodeMeta(meta:Record<string,unknown>){ return META_PREFIX + JSON.stringify(meta); }
+function normalizeProjectPart(value:unknown){
+  return String(value||'').trim().toLocaleLowerCase('az-AZ').replace(/\s+/g,' ');
+}
+function projectGroupKey(media:Media, meta:any){
+  const title=normalizeProjectPart(meta?.title);
+  const client=normalizeProjectPart(meta?.client);
+  if(title || client) return `project:${title}::${client}`;
+  return `project:${String(meta?.itemId||media.id)}`;
+}
 function displayAlt(media:Media){
   const meta=parseMeta(media);
   return meta?.description || meta?.title || media.originalName;
@@ -57,9 +66,10 @@ export default function PortfolioManager(){
       const isPortfolio=m.category==='PORTFOLIO'||m.category==='PORTFOLIO_VIDEO'||m.category==='PORTFOLIO_DESIGN'||isDraft||hasPortfolioMeta;
       if(!isPortfolio) continue;
       const id=String(meta?.itemId||m.id);
+      const groupKey=projectGroupKey(m,meta);
       const recoveredCategory=meta?.category || (m.category==='PORTFOLIO_VIDEO'||m.category==='PORTFOLIO_DESIGN'||m.category==='PORTFOLIO' ? m.category : 'PORTFOLIO');
-      if(!groups.has(id)) groups.set(id,{id,title:meta?.title||m.originalName.replace(/\.[^.]+$/,''),client:meta?.client||'',category:recoveredCategory,year:String(meta?.year||''),shortDescription:meta?.description||displayAlt(m),fullDescription:meta?.fullDescription||'',services:meta?.services||'',projectUrl:meta?.projectUrl||'',featured:Boolean(meta?.featured),status:isDraft?'DRAFT':'PUBLISHED',cover:null,gallery:[],video:null,updatedAt:m.updatedAt||m.createdAt});
-      const item=groups.get(id)!;
+      if(!groups.has(groupKey)) groups.set(groupKey,{id,title:meta?.title||m.originalName.replace(/\.[^.]+$/,''),client:meta?.client||'',category:recoveredCategory,year:String(meta?.year||''),shortDescription:meta?.description||displayAlt(m),fullDescription:meta?.fullDescription||'',services:meta?.services||'',projectUrl:meta?.projectUrl||'',featured:Boolean(meta?.featured),status:isDraft?'DRAFT':'PUBLISHED',cover:null,gallery:[],video:null,updatedAt:m.updatedAt||m.createdAt});
+      const item=groups.get(groupKey)!;
       if(m.category==='PORTFOLIO_VIDEO') item.video=m; else if(!item.cover || meta?.role==='cover') item.cover=m;
       if(meta?.role==='gallery') item.gallery.push(m);
       if(meta?.role==='cover' && !item.cover) item.cover=m;

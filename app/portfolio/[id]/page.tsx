@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
@@ -155,7 +155,3 @@ export default async function PortfolioDetailPage({
     </main>
   );
 }
-
-
-
-

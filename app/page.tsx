@@ -33,19 +33,27 @@ export default async function Home() {
   }).catch(() => []);
   const parsePortfolioMeta = (alt: string | null) => {
     if (!alt?.startsWith('NEPORTFOLIO:')) return null;
-    try { return JSON.parse(alt.slice('NEPORTFOLIO:'.length)) as { title?: string; client?: string; category?: string; description?: string; featured?: boolean; status?: string }; }
+    try { return JSON.parse(alt.slice('NEPORTFOLIO:'.length)) as { title?: string; client?: string; category?: string; description?: string; featured?: boolean; status?: string; role?: string; itemId?: string }; }
     catch { return null; }
   };
-  const dynamicPortfolio = featuredMedia
-    .map((m) => ({ media: m, meta: parsePortfolioMeta(m.alt) }))
-    .filter(({ meta }) => meta?.status === 'PUBLISHED' && meta.featured === true)
-    .map(({ media: m, meta }) => ({
-      image: m.url,
-      title: meta?.title || m.originalName.replace(/\.[^.]+$/, ''),
-      client: meta?.client || 'New Era layihəsi',
-      service: meta?.category || 'Portfolio',
-      text: meta?.description || 'New Era tərəfindən həyata keçirilmiş kreativ və marketinq işi.',
-    }));
+  const featuredProjects = new Map<string, { media: typeof featuredMedia[number]; meta: NonNullable<ReturnType<typeof parsePortfolioMeta>> }>();
+  for (const m of featuredMedia) {
+    const meta = parsePortfolioMeta(m.alt);
+    if (meta?.status !== 'PUBLISHED' || meta.featured !== true) continue;
+    const titleKey = String(meta.title || '').trim().toLocaleLowerCase('az-AZ').replace(/\s+/g,' ');
+    const clientKey = String(meta.client || '').trim().toLocaleLowerCase('az-AZ').replace(/\s+/g,' ');
+    const key = titleKey || clientKey ? `${titleKey}::${clientKey}` : String(meta.itemId || m.id);
+    const current = featuredProjects.get(key);
+    if (!current || meta.role === 'cover') featuredProjects.set(key, { media: m, meta });
+  }
+  const dynamicPortfolio = [...featuredProjects.values()].map(({ media: m, meta }) => ({
+    image: m.url,
+    title: meta.title || m.originalName.replace(/\.[^.]+$/, ''),
+    client: meta.client || 'New Era layihəsi',
+    service: meta.category || 'Portfolio',
+    text: meta.description || 'New Era tərəfindən həyata keçirilmiş kreativ və marketinq işi.',
+    itemId: meta.itemId,
+  }));
   const portfolio = dynamicPortfolio.length ? dynamicPortfolio : fallbackPortfolio;
   const section = (key: string) => sections.find((item) => item.key === key);
   const showSection = (key: string) => section(key)?.enabled !== false;
@@ -97,7 +105,12 @@ export default async function Home() {
       {showSection('portfolio') !== false && <section id="portfolio" className="section portfolioSection">
         <div className="container">
           <div className="sectionIntro"><div><div className="eyebrow">İŞLƏRİMİZ</div><h2>İdeyadan <span>nəticəyə.</span></h2></div><p>Fərqli sahələrdə həyata keçirdiyimiz brend, kreativ və rəqəmsal işlərdən seçilmiş nümunələr.</p></div>
-          <div className="agencyPortfolioGrid">{portfolio.map((item)=><a className="agencyPortfolioCard" href="/portfolio" key={item.image}><div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title}/><span>{item.service}</span></div><div className="agencyPortfolioBody"><div><strong>{item.title}</strong><small>{item.client}</small></div><ArrowRight size={17}/><p>{item.text}</p></div></a>)}</div>
+          <div className="agencyPortfolioGrid">{portfolio.map((item) => (
+            <a className="agencyPortfolioCard" href={('itemId' in item && item.itemId) ? `/portfolio/${encodeURIComponent(String(item.itemId))}` : '/portfolio'} key={item.image}>
+              <div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title}/><span>{item.service}</span></div>
+              <div className="agencyPortfolioBody"><div><strong>{item.title}</strong><small>{item.client}</small></div><ArrowRight size={17}/><p>{item.text}</p></div>
+            </a>
+          ))}</div>
           <a className="outlineBtn" href="/portfolio">Bütün işlərimizə bax <ArrowRight size={16}/></a>
         </div>
       </section>}

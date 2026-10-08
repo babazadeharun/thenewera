@@ -143,7 +143,7 @@ class ImapConnection {
       const headerStart = block.indexOf('\r\n', block.indexOf('HEADER.FIELDS'));
       const header = headerStart >= 0 ? block.slice(headerStart + 2) : '';
       const headers = parseHeaders(header);
-      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÆ’Ã‚Â¶vzusuz)', date: headers.date || '' });
+      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶vzusuz)', date: headers.date || '' });
     }
     return out;
   }
@@ -261,6 +261,7 @@ function walkMime(raw: Buffer, result: {text:string;html:string;attachments:Imap
 }
 
 export function parseRawMessage(raw: Buffer): ImapMessage {
+  console.log('MAIL_RAW_HEADER', raw.subarray(0, Math.min(raw.length, 5000)).toString('utf8'));
   const {headers} = parseMimePart(raw);
   const result = { text:'', html:'', attachments:[] as ImapAttachment[] };
   walkMime(raw, result);
@@ -274,7 +275,7 @@ export function parseRawMessage(raw: Buffer): ImapMessage {
     to: parseAddresses(headers.to),
     cc: parseAddresses(headers.cc),
     bcc: parseAddresses(headers.bcc),
-    subject: decodeMimeWords(headers.subject || '(MÃƒÆ’Ã‚Â¶vzusuz)'),
+    subject: decodeMimeWords(headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶vzusuz)'),
     date: headers.date || new Date().toISOString(),
     text: result.text,
     html: result.html,

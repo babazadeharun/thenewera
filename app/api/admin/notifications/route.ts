@@ -15,11 +15,11 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, Number(sp.get('page') || 1));
   const limit = Math.min(50, Math.max(1, Number(sp.get('limit') || 20)));
   const filter = sp.get('filter') || (sp.get('unreadOnly') === 'true' ? 'unread' : 'all');
-  const where = { OR: [{ userId: user.id }, { userId: null }], ...(filter === 'unread' ? { isRead: false } : filter === 'read' ? { isRead: true } : {}) } as any;
+  const where = { userId: user.id, ...(filter === 'unread' ? { isRead: false } : filter === 'read' ? { isRead: true } : {}) } as any;
   const [notifications, total, unreadCount] = await Promise.all([
-    prisma.notification.findMany({ where, orderBy: { createdAt: 'desc' }, skip: (page - 1) * limit, take: limit }),
-    prisma.notification.count({ where }),
-    prisma.notification.count({ where: { isRead: false, OR: [{ userId: user.id }, { userId: null }] } }),
+    prisma.customerNotification.findMany({ where, orderBy: { createdAt: 'desc' }, skip: (page - 1) * limit, take: limit }),
+    prisma.customerNotification.count({ where }),
+    prisma.customerNotification.count({ where: { isRead: false, userId: user.id } }),
   ]);
   return NextResponse.json({ notifications, total, unreadCount, page, limit, totalPages: Math.max(1, Math.ceil(total / limit)) });
 }

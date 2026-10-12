@@ -1,120 +1,194 @@
-import { prisma } from '@/lib/prisma';
-import type { NotificationPriority, NotificationType, Prisma } from '@prisma/client';
-import { Prisma as PrismaNamespace } from '@prisma/client';
+﻿import { prisma } from '@/lib/prisma';
 
-export type CreateNotificationInput = {
+export type NotificationType =
+  | 'INVOICE_OVERDUE'
+  | 'FOLLOW_UP_DUE'
+  | 'NEW_EMAIL'
+  | 'PAYMENT_RECEIVED'
+  | 'PROMOTER_APPLICATION'
+  | 'PROJECT_DEADLINE'
+  | 'SYSTEM';
+
+export type NotificationPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+
+type NotificationInput = {
   type: NotificationType;
   title: string;
   message: string;
-  eventKey: string;
+  userId: string;
   link?: string | null;
-  entityType?: string | null;
-  entityId?: string | null;
-  priority?: NotificationPriority;
-  metadata?: Prisma.InputJsonValue | null;
-  userId?: string | null;
 };
 
-export async function createNotification(input: CreateNotificationInput) {
-  try {
-    return await prisma.notification.create({
-      data: {
-        type: input.type,
-        title: input.title.slice(0, 180),
-        message: input.message.slice(0, 2000),
-        eventKey: input.eventKey,
-        link: input.link?.slice(0, 500) || null,
-        entityType: input.entityType?.slice(0, 80) || null,
-        entityId: input.entityId?.slice(0, 120) || null,
-        priority: input.priority ?? 'NORMAL',
-        metadata: input.metadata ?? undefined,
-        userId: input.userId ?? null,
-      },
-    });
-  } catch (error) {
-    if (error instanceof PrismaNamespace.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return prisma.notification.findUniqueOrThrow({ where: { eventKey: input.eventKey } });
-    }
-    throw error;
-  }
+function utcDayRange(date: Date) {
+  const start = new Date(date);
+  start.setUTCHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 1);
+  return { start, end };
+}
+
+async function createOncePerDay(input: NotificationInput, date: Date) {
+  const { start, end } = utcDayRange(date);
+
+  const existing = await prisma.customerNotification.findFirst({
+    where: {
+      userId: input.userId,
+      type: input.type,
+      title: input.title.slice(0, 180),
+      message: input.message.slice(0, 2000),
+      createdAt: { gte: start, lt: end },
+    },
+    select: { id: true },
+  });
+
+  if (existing) return false;
+
+  await prisma.customerNotification.create({
+    data: {
+      userId: input.userId,
+      type: input.type,
+      title: input.title.slice(0, 180),
+      message: input.message.slice(0, 2000),
+      link: input.link?.slice(0, 500) || null,
+    },
+  });
+
+  return true;
+}
+
+export async function createNotification(input: NotificationInput) {
+  return prisma.customerNotification.create({
+    data: {
+      userId: input.userId,
+      type: input.type,
+      title: input.title.slice(0, 180),
+      message: input.message.slice(0, 2000),
+      link: input.link?.slice(0, 500) || null,
+    },
+  });
 }
 
 export async function processScheduledNotifications() {
   const now = new Date();
-  const today = now.toISOString().slice(0, 10);
+  const { start: todayStart } = utcDayRange(now);
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+  const admins = await prisma.user.findMany({
+    where: { role: { in: ['ADMIN', 'SUPER_ADMIN'] } },
+    select: { id: true },
+  });
+
+  if (admins.length === 0) {
+    return {
+      created: 0,
+      checkedAt: now.toISOString(),
+      message: 'No admin recipients found',
+    };
+  }
+
   let created = 0;
+
+  async function notifyAdmins(input: Omit<NotificationInput, 'userId'>) {
+    for (const admin of admins) {
+      const wasCreated = await createOncePerDay(
+        { ...input, userId: admin.id },
+        now,
+      );
+      if (wasCreated) created++;
+    }
+  }
 
   const invoices = await prisma.invoice.findMany({
     where: {
       status: { in: ['SENT', 'PARTIALLY_PAID'] },
       dueDate: { lt: now },
     },
-    select: { id: true, number: true, dueDate: true, total: true, paidAmount: true, currency: true, client: { select: { company: true, firstName: true, lastName: true } } },
+    select: {
+      id: true,
+      number: true,
+      dueDate: true,
+      client: {
+        select: { company: true, firstName: true, lastName: true },
+      },
+    },
     take: 200,
   });
+
   for (const invoice of invoices) {
-    const name = invoice.client.company || `${invoice.client.firstName} ${invoice.client.lastName}`.trim() || 'Müştəri';
-    const result = await createNotification({
+    const name =
+      invoice.client.company ||
+      `${invoice.client.firstName} ${invoice.client.lastName}`.trim() ||
+      'Müştəri';
+
+    await notifyAdmins({
       type: 'INVOICE_OVERDUE',
       title: 'Invoice overdue',
-      message: `${name} şirkətinin ${invoice.number} invoice ödənişi gecikib.`,
-      eventKey: `INVOICE_OVERDUE:${invoice.id}:${today}`,
-      link: '/admin?tab=finance', entityType: 'Invoice', entityId: invoice.id, priority: 'HIGH',
-      metadata: { amount: Number(invoice.total), paid: Number(invoice.paidAmount), currency: invoice.currency, dueDate: invoice.dueDate.toISOString() },
+      message: `${name} — ${invoice.number} fakturasının ödənişi gecikib.`,
+      link: '/admin?tab=finance',
     });
-    if (result.createdAt.getTime() >= now.getTime() - 1000) created++;
   }
 
   const followUps = await prisma.salesActivity.findMany({
-    where: { type: 'FOLLOW_UP', completedAt: null, dueAt: { lte: now } },
-    select: { id: true, text: true, dueAt: true, deal: { select: { id: true, title: true } } },
+    where: {
+      type: 'FOLLOW_UP',
+      completedAt: null,
+      dueAt: { lte: now },
+    },
+    select: {
+      id: true,
+      text: true,
+      deal: { select: { title: true } },
+    },
     take: 200,
   });
+
   for (const activity of followUps) {
-    const result = await createNotification({
-      type: 'FOLLOW_UP_DUE', title: 'Follow-up bu gün',
+    await notifyAdmins({
+      type: 'FOLLOW_UP_DUE',
+      title: 'Follow-up vaxtı çatıb',
       message: `${activity.deal.title}: ${activity.text}`,
-      eventKey: `FOLLOW_UP_DUE:${activity.id}:${today}`,
-      link: '/admin?tab=sales', entityType: 'SalesActivity', entityId: activity.id, priority: 'HIGH',
-      metadata: { dueAt: activity.dueAt?.toISOString() ?? null, dealId: activity.deal.id },
+      link: '/admin?tab=sales',
     });
-    if (result.createdAt.getTime() >= now.getTime() - 1000) created++;
   }
 
   const upcoming = await prisma.project.findMany({
     where: { deadline: { gt: now, lte: tomorrow } },
-    select: { id: true, title: true, deadline: true }, take: 200,
+    select: { id: true, title: true, deadline: true },
+    take: 200,
   });
+
   for (const project of upcoming) {
-    const result = await createNotification({
-      type: 'PROJECT_DEADLINE', title: 'Project deadline sabahdır',
-      message: `“${project.title}” layihəsinin deadline-ı 24 saatdan az qalıb.`,
-      eventKey: `PROJECT_DEADLINE:${project.id}:24H`,
-      link: '/admin?tab=projects', entityType: 'Project', entityId: project.id, priority: 'HIGH',
-      metadata: { deadline: project.deadline?.toISOString() ?? null },
+    await notifyAdmins({
+      type: 'PROJECT_DEADLINE',
+      title: 'Layihənin deadline-ı yaxınlaşır',
+      message: `“${project.title}” layihəsinin deadline-ına 24 saatdan az qalıb.`,
+      link: '/admin?tab=projects',
     });
-    if (result.createdAt.getTime() >= now.getTime() - 1000) created++;
   }
 
   const overdueProjects = await prisma.project.findMany({
-    where: { deadline: { lt: now }, status: { not: 'COMPLETED' } },
-    select: { id: true, title: true, deadline: true }, take: 200,
+    where: {
+      deadline: { lt: todayStart },
+      status: { not: 'COMPLETED' },
+    },
+    select: { id: true, title: true, deadline: true },
+    take: 200,
   });
+
   for (const project of overdueProjects) {
-    const result = await createNotification({
-      type: 'PROJECT_DEADLINE', title: 'Project deadline keçib',
+    await notifyAdmins({
+      type: 'PROJECT_DEADLINE',
+      title: 'Layihənin deadline-ı keçib',
       message: `“${project.title}” layihəsinin deadline-ı keçib.`,
-      eventKey: `PROJECT_DEADLINE:${project.id}:OVERDUE:${today}`,
-      link: '/admin?tab=projects', entityType: 'Project', entityId: project.id, priority: 'URGENT',
-      metadata: { deadline: project.deadline?.toISOString() ?? null, overdue: true },
+      link: '/admin?tab=projects',
     });
-    if (result.createdAt.getTime() >= now.getTime() - 1000) created++;
   }
 
   return { created, checkedAt: now.toISOString() };
 }
 
 export async function getUnreadNotificationCount(userId: string) {
-  return prisma.notification.count({ where: { isRead: false, OR: [{ userId }, { userId: null }] } });
+  return prisma.customerNotification.count({
+    where: { userId, isRead: false },
+  });
 }

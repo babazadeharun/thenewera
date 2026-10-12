@@ -1,5 +1,5 @@
-import { Bell, CalendarClock, CircleDollarSign, Mail, Megaphone, ReceiptText, type LucideIcon } from 'lucide-react';
-import type { NotificationPriority, NotificationType } from '@prisma/client';
+﻿import { Bell, CalendarClock, CircleDollarSign, Mail, Megaphone, ReceiptText, type LucideIcon } from 'lucide-react';
+import type { NotificationPriority, NotificationType } from '@/lib/notifications/service';
 
 export const NOTIFICATION_CONFIG: Record<NotificationType, { icon: LucideIcon; label: string; color: string; tone: string }> = {
   INVOICE_OVERDUE: { icon: ReceiptText, label: 'Invoice overdue', color: '#ff6673', tone: 'danger' },

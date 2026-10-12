@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { looksLikeEmail, maskIdentifier, sendVerificationCode, verificationErrorMessage } from '@/lib/verification';
+import { createWorkspaceForUser } from '@/lib/workspace';
 
 const registrationMailError = 'Email təsdiq kodunu göndərmək mümkün olmadı. Zəhmət olmasa bir neçə dəqiqə sonra yenidən cəhd edin.';
 
@@ -29,6 +30,7 @@ export async function POST(request: Request) {
     if (existing) {
       if (!existing.verifiedAt) {
         try {
+          if (existing.clientId) { const ws = await prisma.workspace.findUnique({ where: { clientId: existing.clientId } }); if (!ws) { const c = await prisma.client.findUnique({ where: { id: existing.clientId } }); if (c) await createWorkspaceForUser(existing.id, c.id, c.company || `${c.firstName} ${c.lastName} — New Era`, c.company ? 'BUSINESS' : 'INDIVIDUAL'); } }
           await sendVerificationCode(existing.id, email, 'EMAIL');
         } catch (error) {
           console.error('registration verification email failed', error instanceof Error ? error.message : 'unknown error');
@@ -44,9 +46,16 @@ export async function POST(request: Request) {
         email,
         passwordHash: hashPassword(password),
         role: 'CLIENT',
+        accountStatus: 'REGISTERED',
+        accountType: company ? 'BUSINESS' : 'INDIVIDUAL',
         client: { create: { email, firstName, lastName, phone, company, jobTitle, industry, companySize, country, website: website || null } },
       },
+      include: { client: true },
     });
+    if (user.client) {
+      await createWorkspaceForUser(user.id, user.client.id, company || `${firstName} ${lastName} — New Era`, company ? 'BUSINESS' : 'INDIVIDUAL');
+    }
+    await prisma.auditLog.create({ data: { event: 'USER_REGISTERED', targetUserId: user.id, newValue: 'REGISTERED', metadata: { email } } });
 
     try {
       await sendVerificationCode(user.id, email, 'EMAIL');

@@ -3,8 +3,9 @@ import type { ProjectRecord, ProjectStatus } from './types'
 
 export interface ProjectRepository {
   list(): Promise<ProjectRecord[]>
+  listByClientId(clientId: string): Promise<ProjectRecord[]>
   get(id: string): Promise<ProjectRecord | null>
-  create(input: Omit<ProjectRecord, 'id' | 'createdAt' | 'messages' | 'activity' | 'revisionRequests'>): Promise<ProjectRecord>
+  create(input: Omit<ProjectRecord, 'id' | 'createdAt' | 'messages' | 'activity' | 'revisionRequests'> & { clientId?: string }): Promise<ProjectRecord>
   update(id: string, patch: Partial<ProjectRecord>): Promise<ProjectRecord | null>
 }
 
@@ -31,9 +32,10 @@ const include = { client:true, creator:true, service:true, messages:{orderBy:{cr
 
 class PrismaProjectRepository implements ProjectRepository {
   async list(){ const rows=await prisma.project.findMany({include,orderBy:{createdAt:'desc'}}); return rows.map(toRecord) }
+  async listByClientId(clientId: string){ const rows=await prisma.project.findMany({where:{clientId},include,orderBy:{createdAt:'desc'}}); return rows.map(toRecord) }
   async get(id:string){ const row=await prisma.project.findUnique({where:{id},include}); return row?toRecord(row):null }
-  async create(input: Omit<ProjectRecord,'id'|'createdAt'|'messages'|'activity'|'revisionRequests'>){
-    const client=await prisma.client.findFirst({where:{OR:[{email:input.clientEmail},{phone:input.clientEmail}]}}); if(!client) throw new Error('Client not found')
+  async create(input: Omit<ProjectRecord,'id'|'createdAt'|'messages'|'activity'|'revisionRequests'> & { clientId?: string }){
+    const client=input.clientId ? await prisma.client.findUnique({where:{id:input.clientId}}) : await prisma.client.findFirst({where:{OR:[{email:input.clientEmail},{phone:input.clientEmail}]}}); if(!client) throw new Error('Client not found')
     const service=await prisma.service.upsert({where:{name:input.service},update:{},create:{name:input.service}})
     const creator=input.creator && input.creator!=='No preference' ? await prisma.creator.findFirst({where:{name:input.creator}}) : null
     const row=await prisma.project.create({data:{title:input.title,brief:input.brief,goal:input.goal,audience:input.audience,deliverables:input.deliverables,references:input.references,deadline:input.deadline?new Date(input.deadline):undefined,budget:(input as any).budget,status:statusToDb[input.status],clientId:client.id,serviceId:service.id,creatorId:creator?.id,activities:{create:{type:'created',text:'Project created through the New Era platform'}}},include})

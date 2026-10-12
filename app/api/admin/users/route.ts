@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-const admin = async () => { const u = await getCurrentUser(); return u && ['ADMIN','SUPER_ADMIN'].includes(u.role) ? u : null; };
 export async function GET(req: NextRequest) {
-  const actor = await admin(); if (!actor) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  const actor = await getCurrentUser(); if (!actor) return NextResponse.json({ error: 'Authentication required' }, { status: 401 }); if (!['ADMIN','SUPER_ADMIN'].includes(actor.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const p = Math.max(1, Number(req.nextUrl.searchParams.get('page') || 1)); const limit = Math.min(50, Math.max(1, Number(req.nextUrl.searchParams.get('limit') || 25)));
   const q = (req.nextUrl.searchParams.get('q') || '').trim(); const status = req.nextUrl.searchParams.get('status');
   const where: any = { role: 'CLIENT' };

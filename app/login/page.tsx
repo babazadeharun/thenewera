@@ -3,6 +3,7 @@
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { getAccountHomePath } from '@/lib/account-routing';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -46,13 +47,7 @@ export default function Login() {
         );
       }
 
-      if (['ADMIN', 'SUPER_ADMIN', 'EVENTS_ADMIN', 'EVENTS_FINANCE'].includes(data.user?.role)) {
-        window.location.href = data.user?.role === 'EVENTS_FINANCE' ? '/admin/events' : '/admin';
-      } else if (data.user?.role === 'PROMOTER') {
-        window.location.href = '/promoter';
-      } else {
-        window.location.href = '/account';
-      }
+      window.location.href = getAccountHomePath(data.user?.role);
     } catch {
       setError('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     } finally {

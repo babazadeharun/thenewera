@@ -1,10 +1,13 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { requireEventsAdmin } from '@/lib/events/authorization';
+import { getCurrentUser } from '@/lib/auth';
+import { getAccountHomePath } from '@/lib/account-routing';
 import EventOperationsClient from './EventOperationsClient';
 
 export default async function EventOperationsPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireEventsAdmin();
+  const user = await getCurrentUser();
+  if (!user) redirect('/login');
+  if (!['ADMIN','SUPER_ADMIN','EVENTS_ADMIN'].includes(user.role)) redirect(getAccountHomePath(user.role));
   const { id } = await params;
   const event = await prisma.event.findUnique({ where: { id }, select: { id: true } });
   if (!event) notFound();

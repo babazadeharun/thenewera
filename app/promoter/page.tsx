@@ -1,12 +1,13 @@
 import { redirect } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
+import { getAccountHomePath } from '@/lib/account-routing';
 import { prisma } from '@/lib/prisma';
 import PromoterDashboardClient from './PromoterDashboardClient';
 
 export default async function PromoterDashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
-  if (user.role !== 'PROMOTER') redirect('/account');
+  if (user.role !== 'PROMOTER') redirect(getAccountHomePath(user.role));
 
   const promoter = await prisma.promoter.findUnique({
     where: { userId: user.id },

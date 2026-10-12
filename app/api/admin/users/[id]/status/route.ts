@@ -5,7 +5,7 @@ import { addCustomerNotification } from '@/lib/workspace';
 const allowed = new Set(['REGISTERED','QUALIFIED','CLIENT','SUSPENDED','ARCHIVED']);
 const transitions: Record<string,string[]> = { REGISTERED:['QUALIFIED','SUSPENDED','ARCHIVED'], QUALIFIED:['CLIENT','REGISTERED','SUSPENDED','ARCHIVED'], CLIENT:['SUSPENDED','ARCHIVED'], SUSPENDED:['CLIENT','ARCHIVED'], ARCHIVED:[] };
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const actor = await getCurrentUser(); if (!actor || !['ADMIN','SUPER_ADMIN'].includes(actor.role)) return NextResponse.json({ error:'Forbidden' },{status:403});
+  const actor = await getCurrentUser(); if (!actor) return NextResponse.json({ error:'Authentication required' },{status:401}); if (!['ADMIN','SUPER_ADMIN'].includes(actor.role)) return NextResponse.json({ error:'Forbidden' },{status:403});
   const {id}=await params; const body=await req.json().catch(()=>({})); const next=String(body.status||''); const reason=String(body.reason||'').trim();
   if (!allowed.has(next)) return NextResponse.json({error:'Yanlış status.'},{status:400});
   const target=await prisma.user.findUnique({where:{id},select:{id:true,role:true,accountStatus:true,email:true,client:{select:{firstName:true,lastName:true}}}});

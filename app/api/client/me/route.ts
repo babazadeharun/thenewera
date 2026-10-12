@@ -5,6 +5,7 @@ import { getWorkspaceContext } from '@/lib/workspace';
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  if (user.role !== 'CLIENT') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const context = await getWorkspaceContext(user.id);
   if (!context) return NextResponse.json({ error: 'Account context not found' }, { status: 404 });
   if (user.accountStatus === 'SUSPENDED' || user.accountStatus === 'ARCHIVED') return NextResponse.json({ error: 'Account unavailable' }, { status: 403 });

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Menu, Search, UserRound } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { getAccountHomePath } from '@/lib/account-routing';
 
 type Me = { id: string; email: string; role: string; client?: { firstName?: string; lastName?: string } | null };
 
@@ -50,7 +51,7 @@ export default function SiteHeader() {
           <button type="button" className="neSiteSearch" aria-label="Axtarış"><Search size={18} /></button>
           {ready && user ? (
             <>
-              <Link href="/account" className="neSiteLogin"><UserRound size={15} /> Hesabım</Link>
+              <Link href={getAccountHomePath(user.role)} className="neSiteLogin"><UserRound size={15} /> Hesabım</Link>
               <button type="button" className="neSiteSignup" onClick={logout}>Çıxış</button>
             </>
           ) : ready ? (

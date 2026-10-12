@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { getAccountHomePath } from '@/lib/account-routing';
 
 export default function VerifyPage() {
   const [identifier, setIdentifier] = useState('');
@@ -55,7 +56,7 @@ export default function VerifyPage() {
       }
 
       if (data.user?.client) localStorage.setItem('new-era-client-session', JSON.stringify(data.user.client));
-      window.location.href = '/account';
+      window.location.href = getAccountHomePath(data.user?.role);
     } catch {
       setError('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     } finally {

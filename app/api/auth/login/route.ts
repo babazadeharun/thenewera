@@ -28,6 +28,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Daxil olmaq üçün əvvəlcə e-poçtunuzu təsdiqləyin.', verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email }, { status: 403 });
     }
 
+    if (user.role === 'CLIENT' && ['SUSPENDED', 'ARCHIVED'].includes(user.accountStatus)) {
+      return NextResponse.json({ error: user.accountStatus === 'SUSPENDED' ? 'Hesabınız hazırda dayandırılıb. New Era komandası ilə əlaqə saxlayın.' : 'Bu hesab artıq aktiv deyil. New Era komandası ilə əlaqə saxlayın.' }, { status: 403 });
+    }
+
     if (user.role === 'PROMOTER') {
       const promoter = await prisma.promoter.findUnique({ where: { userId: user.id }, select: { status: true } });
       if (!promoter || promoter.status !== 'ACTIVE') {
@@ -36,7 +40,9 @@ export async function POST(request: Request) {
     }
 
     await createSession(user.id);
-    return NextResponse.json({ ok: true, user: { id: user.id, email: user.email, role: user.role, client: user.client } });
+    await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
+    await prisma.auditLog.create({ data: { event: 'LOGIN', actorId: user.id, targetUserId: user.id } }).catch(() => undefined);
+    return NextResponse.json({ ok: true, user: { id: user.id, email: user.email, role: user.role, accountStatus: user.accountStatus, accountType: user.accountType, client: user.client } });
   } catch (error) {
     console.error('login error', error);
     return NextResponse.json({ error: 'Hazırda giriş etmək mümkün deyil.' }, { status: 500 });

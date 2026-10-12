@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/auth';
 import { ArrowRight, BarChart3, Code2, Layers3, Megaphone, Palette, Search, Sparkles, Target, Video } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,7 @@ const fallbackPortfolio = [
 ];
 
 export default async function Home() {
+  const currentUser = await getCurrentUser();
   const cms = await prisma.siteSetting.findUnique({ where: { id: 'main' }, include: { logoMedia: true } }).catch(() => null);
   const sections = await prisma.homepageSection.findMany({ include: { image: true }, orderBy: { displayOrder: 'asc' } }).catch(() => []);
   const featuredMedia = await prisma.media.findMany({
@@ -94,7 +96,7 @@ export default async function Home() {
             <a href="/events">Tədbirlər</a>
             <a href="/start-project">Layihəyə başla</a>
           </div>
-          <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></div>
+          <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button>{currentUser ? <><a href="/account" className="login">Hesabım</a><a href="/account" className="pill">Profilim</a></> : <><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></>}</div>
         </nav>
         <div className="heroArt" aria-hidden="true" style={{ ['--hero-desktop' as string]: `url(${heroImage})`, ['--hero-mobile' as string]: `url(${hero?.mobileMedia?.url || heroImage})` } as React.CSSProperties}>
           {hero?.videoMedia?.url && <video className="heroVideo" src={hero.videoMedia.url} autoPlay muted loop playsInline aria-hidden="true" />}

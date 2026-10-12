@@ -97,7 +97,7 @@ export default async function Home() {
             <a href="/events">Tədbirlər</a>
             <a href="/start-project">Layihəyə başla</a>
           </div>
-          <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button>{currentUser ? <><a href={getAccountHomePath(currentUser.role)} className="login">Hesabım</a><a href={getAccountHomePath(currentUser.role)} className="pill">Profilim</a></> : <><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></>}</div>
+          <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button>{currentUser ? <><a href={getAccountHomePath(currentUser.role)} className="login">Hesabım</a></> : <><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></>}</div>
         </nav>
         <div className="heroArt" aria-hidden="true" style={{ ['--hero-desktop' as string]: `url(${heroImage})`, ['--hero-mobile' as string]: `url(${hero?.mobileMedia?.url || heroImage})` } as React.CSSProperties}>
           {hero?.videoMedia?.url && <video className="heroVideo" src={hero.videoMedia.url} autoPlay muted loop playsInline aria-hidden="true" />}

@@ -41,7 +41,7 @@ export async function getCurrentUser() {
   const tokenHash = createHash('sha256').update(token).digest('hex');
   const session = await prisma.session.findUnique({
     where: { tokenHash },
-    include: { user: { include: { client: true, workspaceMemberships: { where: { active: true }, orderBy: { createdAt: 'asc' }, take: 1, include: { workspace: true } } } } },
+    include: { user: { include: { client: true } } },
   });
   if (!session) return null;
   if (session.expiresAt <= new Date()) {
@@ -51,10 +51,6 @@ export async function getCurrentUser() {
   // Public accounts are authenticated only after email ownership is verified.
   // Existing admin/internal roles remain unaffected.
   if ((session.user.role === 'CLIENT' || session.user.role === 'PROMOTER') && !session.user.verifiedAt) {
-    await prisma.session.delete({ where: { id: session.id } }).catch(() => undefined);
-    return null;
-  }
-  if (session.user.role === 'CLIENT' && ['SUSPENDED', 'ARCHIVED'].includes(session.user.accountStatus)) {
     await prisma.session.delete({ where: { id: session.id } }).catch(() => undefined);
     return null;
   }

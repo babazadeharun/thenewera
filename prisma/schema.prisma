@@ -7,50 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AccountStatus {
-  REGISTERED
-  QUALIFIED
-  CLIENT
-  SUSPENDED
-  ARCHIVED
-}
-
-enum AccountType {
-  INDIVIDUAL
-  BUSINESS
-}
-
-enum WorkspaceType {
-  INDIVIDUAL
-  BUSINESS
-}
-
-enum WorkspaceStatus {
-  ACTIVE
-  SUSPENDED
-  ARCHIVED
-}
-
-enum WorkspaceRole {
-  OWNER
-  MANAGER
-  MEMBER
-  VIEWER
-}
-
-enum AuditEventType {
-  USER_REGISTERED
-  EMAIL_VERIFIED
-  ACCOUNT_STATUS_CHANGED
-  CLIENT_APPROVED
-  ACCOUNT_SUSPENDED
-  ACCOUNT_RESTORED
-  ACCOUNT_ARCHIVED
-  LOGIN
-  PROJECT_CREATED
-  BRIEF_SUBMITTED
-}
-
 enum UserRole {
   CLIENT
   ADMIN
@@ -197,6 +153,7 @@ enum PaymentMethod {
   OTHER
 }
 
+
 enum NotificationType {
   INVOICE_OVERDUE
   FOLLOW_UP_DUE
@@ -213,6 +170,21 @@ enum NotificationPriority {
   HIGH
   URGENT
 }
+
+enum PayableStatus {
+  OPEN
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum VendorStatus {
+  ACTIVE
+  INACTIVE
+}
+
+
 
 model Notification {
   id          String               @id @default(cuid())
@@ -235,18 +207,6 @@ model Notification {
   @@index([type, createdAt])
   @@index([entityType, entityId])
 }
-enum PayableStatus {
-  OPEN
-  PARTIALLY_PAID
-  PAID
-  OVERDUE
-  CANCELLED
-}
-
-enum VendorStatus {
-  ACTIVE
-  INACTIVE
-}
 
 model User {
   id                           String                @id @default(cuid())
@@ -254,9 +214,6 @@ model User {
   phone                        String?               @unique
   passwordHash                 String
   verifiedAt                   DateTime?
-  accountStatus                AccountStatus         @default(REGISTERED)
-  accountType                  AccountType           @default(INDIVIDUAL)
-  lastLoginAt                  DateTime?
   role                         UserRole              @default(CLIENT)
   clientId                     String?               @unique
   client                       Client?               @relation(fields: [clientId], references: [id], onDelete: Cascade)
@@ -273,81 +230,10 @@ model User {
   financeInvoices              Invoice[]             @relation("InvoiceCreator")
   emailDrafts                  MailDraft[]
   mailMetadata                 MailMetadata[]
-  workspaceMemberships         WorkspaceMembership[]
-  ownedWorkspaces              Workspace[]            @relation("WorkspaceOwner")
-  adminNotifications           Notification[]     @relation("AdminNotifications")
-  customerNotifications        CustomerNotification[]
-  auditEvents                   AuditLog[]             @relation("AuditActor")
-  auditTargets                  AuditLog[]             @relation("AuditTarget")
   financePayments              FinancePayment[]      @relation("FinancePaymentCreator")
+  adminNotifications           Notification[]     @relation("AdminNotifications")
   createdAt                    DateTime              @default(now())
   updatedAt                    DateTime              @updatedAt
-
-  @@index([accountStatus, createdAt])
-}
-
-
-model Workspace {
-  id          String          @id @default(cuid())
-  name        String
-  type        WorkspaceType   @default(BUSINESS)
-  status      WorkspaceStatus @default(ACTIVE)
-  ownerUserId String?         @unique
-  owner       User?           @relation("WorkspaceOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
-  clientId    String?         @unique
-  client      Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  memberships WorkspaceMembership[]
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-
-  @@index([status, createdAt])
-}
-
-model WorkspaceMembership {
-  id          String        @id @default(cuid())
-  workspaceId String
-  userId      String
-  role        WorkspaceRole @default(OWNER)
-  active      Boolean       @default(true)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([workspaceId, userId])
-  @@index([userId, active])
-}
-
-model AuditLog {
-  id         String          @id @default(cuid())
-  event      AuditEventType
-  actorId    String?
-  targetUserId String?
-  oldValue   String?         @db.Text
-  newValue   String?         @db.Text
-  reason     String?         @db.Text
-  metadata   Json?
-  createdAt  DateTime        @default(now())
-  actor      User?           @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
-  targetUser  User?          @relation("AuditTarget", fields: [targetUserId], references: [id], onDelete: SetNull)
-
-  @@index([targetUserId, createdAt])
-  @@index([event, createdAt])
-}
-
-model CustomerNotification {
-  id          String   @id @default(cuid())
-  userId      String
-  type        String
-  title       String
-  message     String   @db.Text
-  link        String?
-  isRead      Boolean  @default(false)
-  readAt      DateTime?
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, isRead, createdAt])
 }
 
 model Session {
@@ -386,9 +272,6 @@ model Client {
   emailDrafts MailDraft[]
   emailCommunications EmailCommunication[]
   mailMetadata MailMetadata[]
-  workspace   Workspace?
-
-  updatedAt   DateTime @updatedAt
 }
 
 model VerificationCode {
@@ -534,6 +417,7 @@ model Project {
   revisions    RevisionRequest[]
   review       ProjectReview?
   salesDeals   SalesDeal[]
+  @@index([deadline, status])
   salesActivities SalesActivity[]
   financeInvoices Invoice[]
   financeTransactions FinanceTransaction[]
@@ -1076,6 +960,7 @@ model Invoice {
   @@index([clientId, dueDate])
   @@index([projectId])
   @@index([status, dueDate])
+  @@index([status, dueDate, id])
 }
 
 model InvoiceItem {

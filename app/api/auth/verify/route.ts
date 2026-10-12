@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { createSession } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { looksLikeEmail, verifyCode } from '@/lib/verification';
-import { addCustomerNotification } from '@/lib/workspace';
 
 export async function POST(request: Request) {
   try {
@@ -25,8 +24,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, emailVerified: true, promoterPending: true, role: user.role });
     }
 
-    await prisma.auditLog.create({ data: { event: 'EMAIL_VERIFIED', targetUserId: user.id, newValue: 'verifiedAt', metadata: { email: identifier } } }).catch(() => undefined);
-    await addCustomerNotification(user.id, { type: 'SYSTEM', title: 'Email ünvanınız təsdiqləndi', message: 'Email ünvanınız uğurla təsdiqləndi. New Era Workspace hesabınız aktivdir.', link: '/account' }).catch(() => undefined);
     await createSession(user.id);
     return NextResponse.json({ ok: true, emailVerified: true, user: { id: user.id, email: user.email, role: user.role, client: user.client } });
   } catch (error) {

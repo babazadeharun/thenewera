@@ -53,7 +53,6 @@ class ImapConnection {
   async connect() {
     if (!mailConfigured()) throw new Error('MAIL_IMAP_CONFIG_MISSING');
     this.socket = secure() ? tls.connect({ host: host(), port: port(), servername: host(), rejectUnauthorized: true }) : net.connect({ host: host(), port: port() });
-    this.socket.pause();
     this.socket.setTimeout(timeoutMs());
     await this.waitForGreeting();
     await this.command(`LOGIN ${quote(user())} ${quote(password())}`);
@@ -63,12 +62,11 @@ class ImapConnection {
     if (!this.socket) throw new Error('MAIL_IMAP_NOT_CONNECTED');
     return new Promise((resolve, reject) => {
       const socket = this.socket!;
-      const onData = (chunk: Buffer) => { cleanup(); socket.pause(); this.buffer = Buffer.concat([this.buffer, chunk]); resolve(); };
+      const onData = (chunk: Buffer) => { cleanup(); this.buffer = Buffer.concat([this.buffer, chunk]); resolve(); };
       const onError = (err: Error) => { cleanup(); reject(err); };
       const onTimeout = () => { cleanup(); reject(new Error('MAIL_IMAP_TIMEOUT')); };
       const cleanup = () => { socket.off('data', onData); socket.off('error', onError); socket.off('timeout', onTimeout); };
       socket.once('data', onData); socket.once('error', onError); socket.once('timeout', onTimeout);
-      socket.resume();
     });
   }
 
@@ -81,7 +79,7 @@ class ImapConnection {
   }
 
   private async readUntilTag(tag: string) {
-    const marker = Buffer.from(tag + " ");
+    const marker = Buffer.from(`\r\n${tag} `);
     while (true) {
       const index = this.buffer.indexOf(marker);
       if (index >= 0) {
@@ -99,7 +97,7 @@ class ImapConnection {
     const response = await this.readUntilTag(tag);
     this.buffer = Buffer.alloc(0);
     const text = response.toString('utf8');
-    const final = text.match(new RegExp(`(?:^|\\r?\\n)${tag}\\s+(OK|NO|BAD)\\b[^\\r\\n]*`, 'i'))?.[0] || '';
+    const final = text.match(new RegExp(`\\r?\\n${tag}\\s+(OK|NO|BAD)\\b[^\\r\\n]*`, 'i'))?.[0] || '';
     if (!/\bOK\b/i.test(final)) {
       const error = /\b(NO|BAD)\b[^\r\n]*/i.exec(final)?.[0] || 'IMAP command failed';
       throw new Error(error);
@@ -143,7 +141,7 @@ class ImapConnection {
       const headerStart = block.indexOf('\r\n', block.indexOf('HEADER.FIELDS'));
       const header = headerStart >= 0 ? block.slice(headerStart + 2) : '';
       const headers = parseHeaders(header);
-      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶vzusuz)', date: headers.date || '' });
+      out.push({ uid, flags, size, messageId: headers['message-id'], from: parseAddresses(headers.from), to: parseAddresses(headers.to), cc: parseAddresses(headers.cc), subject: headers.subject || '(Mövzusuz)', date: headers.date || '' });
     }
     return out;
   }
@@ -257,7 +255,7 @@ function walkMime(raw: Buffer, result: {text:string;html:string;attachments:Imap
   }
   const decoded = decodeBody(body, headers['content-transfer-encoding'], ct.charset);
   if (ct.type === 'text/html') result.html += decoded;
-  else if (ct.type === 'text/plain') result.text += decoded.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '').replace(/@font-face\s*\{[\s\S]*?\}\s*/gi, '').trim();
+  else if (ct.type === 'text/plain') result.text += decoded;
 }
 
 export function parseRawMessage(raw: Buffer): ImapMessage {
@@ -274,7 +272,7 @@ export function parseRawMessage(raw: Buffer): ImapMessage {
     to: parseAddresses(headers.to),
     cc: parseAddresses(headers.cc),
     bcc: parseAddresses(headers.bcc),
-    subject: decodeMimeWords(headers.subject || '(MÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶vzusuz)'),
+    subject: decodeMimeWords(headers.subject || '(Mövzusuz)'),
     date: headers.date || new Date().toISOString(),
     text: result.text,
     html: result.html,

@@ -1,7 +1,9 @@
 'use client';
 
+import {formatWorkspaceDate} from '../components-workspace/format-date';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { ArrowRight, CalendarDays, CheckCircle2, Clock3, LogOut, MapPin, Ticket, TrendingUp, XCircle } from 'lucide-react';
 
 type EventRow = {
@@ -68,11 +70,16 @@ function money(value: string) {
 }
 
 function dateTime(value: string) {
-  return new Intl.DateTimeFormat('az-AZ', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
+  return formatWorkspaceDate(value);
 }
 
 export default function PromoterDashboardClient({ promoter, events, applications, tickets, sales, finance }: { promoter: { firstName: string; lastName: string; email: string | null; phone: string | null; city: string | null; status: string }; events: EventRow[]; applications: ApplicationRow[]; tickets: TicketRow[]; sales: SaleRow[]; finance: FinanceSummary }) {
   const [activeTab, setActiveTab] = useState<'events' | 'tickets' | 'sales' | 'finance' | 'applications'>('events');
+  const params=useSearchParams();const router=useRouter();
+  function choosePanel(value:typeof activeTab){setActiveTab(value);router.replace(`/promoter?panel=${value}`,{scroll:false})}
+  useEffect(()=>{const p=params.get('panel');if(p&&['events','tickets','sales','finance','applications'].includes(p))setActiveTab(p as typeof activeTab);else setActiveTab('events')},[params]);
+  const [eventQuery,setEventQuery]=useState('');const [eventFilter,setEventFilter]=useState('all');
+  const visibleEvents=events.filter(item=>(eventFilter==='all'||item.status===eventFilter)&&`${item.event.name} ${item.event.artist||''} ${item.event.city||''} ${item.event.venue||''}`.toLocaleLowerCase('az').includes(eventQuery.toLocaleLowerCase('az')));
   const totalAllocation = events.reduce((sum, item) => sum + item.allocation, 0);
   const totalSold = events.reduce((sum, item) => sum + item.soldQuantity, 0);
   const totalRemaining = events.reduce((sum, item) => sum + item.remainingQuantity, 0);
@@ -107,18 +114,18 @@ export default function PromoterDashboardClient({ promoter, events, applications
         <div className="promoterPortalGrid">
           <section className="promoterMainPanel">
             <div className="promoterTabs">
-              <button className={activeTab === 'events' ? 'active' : ''} onClick={() => setActiveTab('events')}>Tədbirlərim</button>
-              <button className={activeTab === 'tickets' ? 'active' : ''} onClick={() => setActiveTab('tickets')}>Biletlərim <b>{tickets.length}</b></button>
-              <button className={activeTab === 'sales' ? 'active' : ''} onClick={() => setActiveTab('sales')}>Satışlarım <b>{sales.length}</b></button><button className={activeTab === 'finance' ? 'active' : ''} onClick={() => setActiveTab('finance')}>Maliyyə</button>
-              <button className={activeTab === 'applications' ? 'active' : ''} onClick={() => setActiveTab('applications')}>Müraciətlərim {pendingApplications > 0 && <b>{pendingApplications}</b>}</button>
+              <button className={activeTab === 'events' ? 'active' : ''} onClick={() => choosePanel('events')}>Tədbirlərim</button>
+              <button className={activeTab === 'tickets' ? 'active' : ''} onClick={() => choosePanel('tickets')}>Biletlərim <b>{tickets.length}</b></button>
+              <button className={activeTab === 'sales' ? 'active' : ''} onClick={() => choosePanel('sales')}>Satışlarım <b>{sales.length}</b></button><button className={activeTab === 'finance' ? 'active' : ''} onClick={() => choosePanel('finance')}>Maliyyə</button>
+              <button className={activeTab === 'applications' ? 'active' : ''} onClick={() => choosePanel('applications')}>Müraciətlərim {pendingApplications > 0 && <b>{pendingApplications}</b>}</button>
             </div>
 
             {activeTab === 'events' ? (
               events.length === 0 ? (
                 <div className="promoterEmpty"><Ticket size={26} /><h3>Hələ təsdiqlənmiş tədbirin yoxdur</h3><p>Açıq tədbirlərə bax və əməkdaşlıq üçün müraciət et.</p><Link href="/events" className="promoterPrimary">Tədbirlərə bax <ArrowRight size={16} /></Link></div>
               ) : (
-                <div className="promoterEventList">
-                  {events.map((item) => (
+                <><div className="promoterEventFilters"><label>Tədbir axtar<input value={eventQuery} onChange={e=>setEventQuery(e.target.value)} placeholder="Ad, artist və ya məkan"/></label><label>Status<select value={eventFilter} onChange={e=>setEventFilter(e.target.value)}><option value="all">Hamısı</option>{Object.entries(eventLabels).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label></div>{visibleEvents.length===0&&<div className="promoterEmpty">Axtarışa uyğun tədbir yoxdur.</div>}<div className="promoterEventList">
+                  {visibleEvents.map((item) => (
                     <article className="promoterEventCard" key={`${item.eventId}-${item.joinedAt}`}>
                       <div className="promoterEventCover">{item.event.coverMedia ? <img src={item.event.coverMedia.url} alt={item.event.coverMedia.alt || item.event.name} /> : <div className="promoterCoverFallback">NEW ERA</div>}</div>
                       <div className="promoterEventBody">
@@ -135,7 +142,7 @@ export default function PromoterDashboardClient({ promoter, events, applications
                       </div>
                     </article>
                   ))}
-                </div>
+                </div></>
               )
             ) : activeTab === 'tickets' ? (
               tickets.length === 0 ? (

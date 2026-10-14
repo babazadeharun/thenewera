@@ -8,6 +8,7 @@ export type ProjectReview = { rating: number; text: string; at: string }
 
 export type ProjectRecord = {
   id: string
+  clientId?: string
   clientEmail: string
   clientName: string
   company?: string

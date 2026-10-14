@@ -8,8 +8,8 @@ const money=(n:number)=>new Intl.NumberFormat('az-AZ',{style:'currency',currency
 const dateLabel=(v:string)=>v?new Intl.DateTimeFormat('az-AZ',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(v)):'';
 
 export default function FinanceManager(){
- const [tab,setTab]=useState<Tab>('dashboard'); const [data,setData]=useState<AnyRecord>({transactions:[],accounts:[],vendors:[],clients:[],services:[],projects:[],invoices:[],payables:[],summary:{income:0,expense:0,profit:0,receivables:0,payables:0}}); const [loading,setLoading]=useState(true); const [error,setError]=useState(''); const [query,setQuery]=useState(''); const [modal,setModal]=useState<string|null>(null); const [saving,setSaving]=useState(false);
- const load=async()=>{setLoading(true);setError('');try{const r=await fetch('/api/admin/finance',{cache:'no-store'});const j=await r.json();if(!r.ok)throw new Error(j.error||'Maliyyə məlumatlarını yükləmək olmadı.');setData(j)}catch(e){setError(e instanceof Error?e.message:'Maliyyə məlumatları yüklənmədi.')}finally{setLoading(false)}};
+ const [tab,setTab]=useState<Tab>('dashboard'); const [data,setData]=useState<AnyRecord>({transactions:[],accounts:[],vendors:[],clients:[],services:[],projects:[],invoices:[],payables:[],summary:{income:0,expense:0,profit:0,receivables:0,payables:0}}); const [loading,setLoading]=useState(true); const [hasLoaded,setHasLoaded]=useState(false); const [error,setError]=useState(''); const [query,setQuery]=useState(''); const [modal,setModal]=useState<string|null>(null); const [saving,setSaving]=useState(false);
+ const load=async()=>{setLoading(true);setError('');try{const r=await fetch('/api/admin/finance',{cache:'no-store'});const j=await r.json();if(!r.ok)throw new Error(j.error||'Maliyyə məlumatlarını yükləmək olmadı.');setData(j);setHasLoaded(true)}catch(e){setError(e instanceof Error?e.message:'Maliyyə məlumatları yüklənmədi.')}finally{setLoading(false)}};
  useEffect(()=>{load()},[]);
  const nav=[['dashboard','Ümumi baxış'],['transactions','Əməliyyatlar'],['income','Gəlir'],['expenses','Xərclər'],['invoices','Fakturalar'],['receivables','Alacaqlar'],['payables','Borclar'],['cashflow','Pul axını'],['pnl','Mənfəət və zərər'],['projects','Layihə rentabelliyi'],['reports','Hesabatlar']] as [Tab,string][];
  const tx=data.transactions||[]; const invoices=data.invoices||[]; const payables=data.payables||[]; const accounts=data.accounts||[];
@@ -21,7 +21,7 @@ export default function FinanceManager(){
   <div className="financeWorkspaceHead"><div><span>NEW ERA · MALİYYƏ</span><h2>Şirkətin maliyyəsini bir mərkəzdən idarə edin.</h2><p>Gəlir, xərc, faktura, ödəniş, alacaq, borc və layihə rentabelliyini real məlumatlarla izləyin.</p></div><div className="financeHeadActions"><button className="financeGhost" onClick={load}><RefreshCw size={15}/> Yenilə</button><button className="financePrimary" onClick={()=>setModal('transaction')}><Plus size={15}/> Yeni əməliyyat</button></div></div>
   <nav className="financeNav">{nav.map(([id,label])=><button key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}>{label}</button>)}</nav>
   {error&&<div className="financeError"><X size={15}/>{error}</div>}
-  {loading?<div className="financeLoading"><RefreshCw className="spin"/> Maliyyə məlumatları yüklənir...</div>:<>
+  {loading?<div className="financeLoading"><RefreshCw className="spin"/> Maliyyə məlumatları yüklənir...</div>:!hasLoaded?<div className="financeEmpty">Maliyyə göstəriciləri əlçatan deyil. <button onClick={load}>Yenidən cəhd et</button></div>:<>
    {tab==='dashboard'&&<Dashboard data={data} onTab={setTab} onAccount={()=>setModal('account')}/>} 
    {(tab==='transactions'||tab==='income'||tab==='expenses')&&<Transactions tab={tab} rows={filteredTx} query={query} setQuery={setQuery} onAdd={()=>setModal('transaction')} onVoid={voidTx}/>} 
    {tab==='invoices'&&<Invoices data={data} onAdd={()=>setModal('invoice')} onPayment={()=>setModal('payment')}/>} 

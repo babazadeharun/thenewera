@@ -1,9 +1,10 @@
 'use client';
+import {formatWorkspaceDate} from '../../../components-workspace/format-date';
 import Link from 'next/link';
 import { useEffect,useState } from 'react';
 import { ArrowLeft,CalendarDays,Ticket,TrendingUp,Wallet } from 'lucide-react';
 const money=(v:any)=>`${new Intl.NumberFormat('az-AZ',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v||0))} ₼`;
-const dt=(v:any)=>new Intl.DateTimeFormat('az-AZ',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v));
+const dt=(v:any)=>formatWorkspaceDate(String(v));
 export default function PromoterEventWorkspace({eventId}:{eventId:string}){
  const[d,setD]=useState<any>(null);const[error,setError]=useState('');const[loading,setLoading]=useState(true);
  async function load(){setLoading(true);try{const r=await fetch(`/api/promoter/events/${eventId}`,{cache:'no-store'});const x=await r.json();if(!r.ok)throw new Error(x.error);setD(x);setError('')}catch(e:any){setError(e.message||'Məlumat yüklənmədi')}finally{setLoading(false)}}

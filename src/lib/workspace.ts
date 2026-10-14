@@ -53,7 +53,7 @@ export async function getWorkspaceContext(userId: string) {
 }
 
 export function hasPermission(context: Awaited<ReturnType<typeof getWorkspaceContext>>, permission: Permission) {
-  return Boolean(context?.permissions.includes(permission));
+  return Boolean(context?.membership?.active && context.workspace?.status === 'ACTIVE' && context.permissions.includes(permission));
 }
 
 export async function createWorkspaceForUser(userId: string, clientId: string, name: string, type: 'INDIVIDUAL' | 'BUSINESS') {

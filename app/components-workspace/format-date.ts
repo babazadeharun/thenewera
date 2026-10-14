@@ -1,0 +1,2 @@
+/** Stable numeric Baku dates avoid server/browser locale-data differences. */
+export function formatWorkspaceDate(value:string,withTime=true){const date=new Date(value);if(!Number.isFinite(date.getTime()))return '—';const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Baku',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);const p=(type:string)=>parts.find(p=>p.type===type)?.value||'';return `${p('day')}.${p('month')}.${p('year')}${withTime?` · ${p('hour')}:${p('minute')}`:''}`}

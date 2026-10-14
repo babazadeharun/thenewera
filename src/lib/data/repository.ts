@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import type { ProjectRecord, ProjectStatus } from './types'
 
 export interface ProjectRepository {
-  list(): Promise<ProjectRecord[]>
+  list(scope?: {clientId:string}): Promise<ProjectRecord[]>
   get(id: string): Promise<ProjectRecord | null>
   create(input: Omit<ProjectRecord, 'id' | 'createdAt' | 'messages' | 'activity' | 'revisionRequests'>): Promise<ProjectRecord>
   update(id: string, patch: Partial<ProjectRecord>): Promise<ProjectRecord | null>
@@ -15,7 +15,7 @@ const statusFromDb: Record<string, ProjectStatus> = { BRIEF_SUBMITTED:'Brief Sub
 
 function toRecord(p: any): ProjectRecord {
   return {
-    id: p.id, clientEmail: p.client.email ?? p.client.phone ?? '', clientName: `${p.client.firstName} ${p.client.lastName}`.trim(), company: p.client.company ?? undefined,
+    id: p.id, clientId:p.clientId, clientEmail: p.client.email ?? p.client.phone ?? '', clientName: `${p.client.firstName} ${p.client.lastName}`.trim(), company: p.client.company ?? undefined,
     service: p.service.name, title: p.title, brief: p.brief, goal: p.goal ?? undefined, audience: p.audience ?? undefined,
     deliverables: p.deliverables ?? undefined, references: p.references ?? undefined, deadline: p.deadline?.toISOString(), budget: p.budget ?? undefined,
     creator: p.creator?.name ?? undefined, status: statusFromDb[p.status], createdAt: p.createdAt.toISOString(),
@@ -30,7 +30,7 @@ function toRecord(p: any): ProjectRecord {
 const include = { client:true, creator:true, service:true, messages:{orderBy:{createdAt:'asc'}}, activities:{orderBy:{createdAt:'asc'}}, deliveries:{orderBy:{version:'asc'}}, revisions:{orderBy:{createdAt:'asc'}}, review:true } as const
 
 class PrismaProjectRepository implements ProjectRepository {
-  async list(){ const rows=await prisma.project.findMany({include,orderBy:{createdAt:'desc'}}); return rows.map(toRecord) }
+  async list(scope?:{clientId:string}){ const rows=await prisma.project.findMany({...(scope?{where:{clientId:scope.clientId}}:{}),include,orderBy:{createdAt:'desc'}}); return rows.map(toRecord) }
   async get(id:string){ const row=await prisma.project.findUnique({where:{id},include}); return row?toRecord(row):null }
   async create(input: Omit<ProjectRecord,'id'|'createdAt'|'messages'|'activity'|'revisionRequests'>){
     const client=await prisma.client.findFirst({where:{OR:[{email:input.clientEmail},{phone:input.clientEmail}]}}); if(!client) throw new Error('Client not found')

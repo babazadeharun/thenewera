@@ -1,0 +1,31 @@
+[
+  {
+    "archive": "cms-original.sql",
+    "source_revision": "8fcad221b6df661d1df9a990411deb12c3c65965",
+    "migration": "20260929170000_add_cms_media_hero_homepage",
+    "sha256": "096405c24bac5888923cf485a71092956b20d4ce3a9a2fd8e6c2c946aaccd793",
+    "reviewed_active_sha256": "a036ccc0c3ddf769e42cd60005d938571b8b201a6313bac150ebf72ac065871e"
+  },
+  {
+    "archive": "lifecycle-original-unquoted.sql",
+    "source_revision": "8fcad221b6df661d1df9a990411deb12c3c65965",
+    "migration": "20261008193000_add_account_lifecycle",
+    "sha256": "0aa266c1af1efbe854e75205cbac5304ddd87da760127f7204cdeb683dedc016",
+    "reviewed_active_sha256": "99da26ae19303118800417b6f5e24c21ea5d305a90c53f998b2abcf19b4c1186"
+  },
+  {
+    "archive": "lifecycle-historical-quoted.sql",
+    "source_revision": "c93a1a9fa149af03683b57acb61ab5bcaffe1002",
+    "migration": "20261008193000_add_account_lifecycle",
+    "sha256": "15e9002bee02b4b52c8edca482111f59bf9ab189aaaae89ab18b91b7159cabce",
+    "reviewed_active_sha256": "99da26ae19303118800417b6f5e24c21ea5d305a90c53f998b2abcf19b4c1186"
+  },
+  {
+    "archive": "cms-existence-guard-v1.sql",
+    "source_revision": null,
+    "source": "previous reviewed workspace guard",
+    "migration": "20260929170000_add_cms_media_hero_homepage",
+    "sha256": "e435decc19450774e797ae0cbd970c1a4b2b32f6447ad57643f2855fd8b4e097",
+    "reviewed_active_sha256": "a036ccc0c3ddf769e42cd60005d938571b8b201a6313bac150ebf72ac065871e"
+  }
+]

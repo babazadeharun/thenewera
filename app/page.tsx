@@ -93,15 +93,15 @@ export default async function Home() {
     <main className={styles.home}>
       <HomeNavigation logo={cms?.logoMedia?.url || '/new-era-logo.png'} siteName={cms?.siteName || 'New Era'} accountHref={currentUser ? getAccountHomePath(currentUser.role) : null} servicesEnabled={showSection('services')} portfolioEnabled={showSection('portfolio')} aboutEnabled={showSection('about')} />
       <section id="top" className={styles.hero} data-presentation>
-        <div className={`${styles.scene} ${presentation.defaultArtwork ? styles.defaultScene : ''}`}>
+        <div className={styles.scene}>
           <HeroMedia desktop={presentation.desktop} mobile={presentation.mobile} video={presentation.video} defaultArtwork={presentation.defaultArtwork} />
-          {presentation.defaultArtwork && <div className={styles.artCards}>
+          {<div className={styles.artCards}>
             {[
-              ['Kreativ istehsal', '/creator-presets/photographer.jpg', styles.creativeCard, '/services'],
-              ['Rəqəmsal marketinq', '/portfolio/nova.jpg', styles.digitalCard, '/services'],
-              ['Brend strategiyası', '/portfolio/velora.jpg', styles.brandCard, '/services'],
-              ['Video istehsalı', '/creator-presets/videographer.jpg', styles.videoCard, '/portfolio#videos'],
-            ].map(([title, image, className, href]) => <a className={`${styles.artCard} ${className}`} key={title} href={href}><img src={image} alt="" width="240" height="180" decoding="async" /><span>{title}</span><ArrowRight size={19} /></a>)}
+              ['Kreativ istehsal', '0% 0%', styles.creativeCard, '/services'],
+              ['Rəqəmsal marketinq', '100% 0%', styles.digitalCard, '/services'],
+              ['Brend strategiyası', '0% 100%', styles.brandCard, '/services'],
+              ['Video istehsalı', '100% 100%', styles.videoCard, '/portfolio#videos'],
+            ].map(([title, position, className, href]) => <a className={`${styles.artCard} ${className}`} key={title} href={href}><i className={styles.cardVisual} style={{ backgroundPosition: position }} aria-hidden="true" /><span>{title}</span><ArrowRight size={19} /></a>)}
           </div>}
         </div>
         <div id="home-content" className={styles.heroCopy} tabIndex={-1}>

@@ -15,7 +15,7 @@ const errors = [];
 let passed=0;
 const check=(label,fn)=>{fn();console.log('PASS '+label);passed++};
 try {
-  for (const [name,width,height] of [['desktop',1536,1024],['tablet',834,1112],['mobile',390,844],['small-mobile',320,740]]) {
+  for (const [name,width,height] of [['desktop',1536,1024],['compact-desktop',1536,728],['wide-desktop',1920,910],['tablet',834,1112],['mobile',390,844],['small-mobile',320,740]]) {
     const context = await browser.newContext({viewport:{width,height},hasTouch:width<800,isMobile:width<800});
     const page = await context.newPage(); page.on('pageerror',e=>errors.push(e.message));
     const response = await page.goto(origin,{waitUntil:'networkidle'});
@@ -25,7 +25,29 @@ try {
     const layout=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,hero:document.querySelector('#top').getBoundingClientRect().height,h1:document.querySelector('h1').getBoundingClientRect().toJSON(),snap:getComputedStyle(document.documentElement).scrollSnapType,portfolioSnap:getComputedStyle(document.querySelector('#portfolio')).scrollSnapAlign}));
     check(name+' no horizontal overflow',()=>assert.ok(layout.scrollWidth<=layout.width,JSON.stringify(layout)));
     check(name+' unclipped hero and free-scroll portfolio',()=>{assert.ok(layout.hero>=height);assert.equal(layout.portfolioSnap,'none');assert.ok(layout.h1.x>=0 && layout.h1.right<=width);});
+    if(width>=1021) {
+      const panel=await page.getByText('NƏ ETDİYİMİZ',{exact:true}).evaluate(el=>el.parentElement.parentElement.getBoundingClientRect().toJSON());
+      check(name+' service strip fits first viewport',()=>assert.ok(panel.bottom<=height+1,JSON.stringify(panel)));
+    }
+    assert.equal(await page.locator('#top a:has(i[style])').count(),4);
+    check(name+' real linked artwork cards',()=>assert.ok(true));
+    const covered=await page.evaluate(()=>{
+      const text=[]; const walker=document.createTreeWalker(document.querySelector('#home-content'),NodeFilter.SHOW_TEXT);
+      while(walker.nextNode()) { if(!walker.currentNode.textContent.trim())continue; const range=document.createRange();range.selectNodeContents(walker.currentNode);text.push(...range.getClientRects()); }
+      return [...document.querySelectorAll('#top a:has(i[style])')].some(a=>{const b=a.getBoundingClientRect();return text.some(t=>b.left<t.right&&b.right>t.left&&b.top<t.bottom&&b.bottom>t.top)});
+    });
+    check(name+' artwork cards never cover hero text',()=>assert.equal(covered,false));
     if(width<761)check(name+' natural mobile scrolling',()=>assert.equal(layout.snap,'none'));
+    if(process.env.NEWERA_CMS_FIXTURE!=='1') assert.ok((await page.locator('#top img').first().getAttribute('src')).includes('creative-scene-reference.webp'));
+    if(process.env.NEWERA_CMS_FIXTURE==='1') {
+      const cms=await page.locator('#top picture img').evaluate(el=>({src:el.getAttribute('src'),current:el.currentSrc,fit:getComputedStyle(el).objectFit,blend:getComputedStyle(el).mixBlendMode}));
+      assert.ok(cms.src.endsWith('/bright-desktop.svg'));
+      assert.ok(cms.current.endsWith(width<=760?'/bright-mobile.svg':'/bright-desktop.svg'));
+      assert.equal(cms.fit,'contain'); assert.equal(cms.blend,'multiply');
+      assert.ok((await page.locator('header img').getAttribute('src')).endsWith('/dark-logo.svg'));
+      assert.notEqual(await page.locator('header img').evaluate(el=>getComputedStyle(el).filter),'none');
+      check(name+' CMS media, mobile selection, tint and logo contrast remain connected',()=>assert.ok(true));
+    }
     await page.screenshot({path:`${out}/${name}.png`,fullPage:false});
     await page.getByRole('button',{name:'Saytda axtarış'}).click();
     await page.getByRole('searchbox').fill('Lumière');

@@ -99,3 +99,73 @@ public schema. Requests used unauthenticated sessions and no forms were submitte
 No migrations, reconciliation, shadow replay, reset, DROP or production access
 occurred. Prior Prisma working-tree changes were preserved. No merge, push or
 deployment occurred; the existing database deployment block remains in force.
+
+
+## Reference fidelity correction (2026-10-14)
+
+Follow-up to the supplied live screenshot: the CMS-selected bright artwork and
+low-contrast logo differ from the local fallback. The reference correction keeps
+CMS precedence and changes presentation instead of editing production records.
+
+- All hero images/videos use an inset, contained frame rather than cover/negative
+  right positioning. Positioning adapts to shorter desktop viewports.
+- CMS media gets a dark teal multiply treatment; the logo silhouette is rendered
+  in the reference cyan to keep dark uploaded logos readable.
+- Four glass artwork cards are always genuine linked HTML elements, with a new
+  camera/phone/stationery/spotlight sprite (`service-objects.webp`, 186,930 bytes).
+- New standalone scene (`creative-scene-reference.webp`, 230,070 bytes) brings
+  the swept-hair sculpture, cyan/violet visor, laptop and ribbons closer to the
+  supplied reference. The earlier asset is preserved unchanged. A new filename
+  avoids serving the previous image through Next.js image cache.
+- Short-desktop typography/spacing keeps the service strip in the first viewport;
+  text-range overlap checks verify that cards never obscure hero text.
+
+These are reconstructed illustrations, not the original source 3D assets.
+Pixel-identical artwork reproduction is not claimed. The original reference's
+individual artwork files were not provided. Normal requests still honor selected
+CMS images/video: **the new reference asset cannot replace a different image
+already selected in CMS automatically**. To use the new scene on the live site,
+upload/select `public/homepage/creative-scene-reference.webp` through CMS Hero
+media selection. That content operation was not performed; production access and
+database writes remain outside this remediation. The tint alone does not turn a
+different selected illustration into the new source asset.
+
+Exact final checks:
+
+```bash
+node --test scripts/tests/homepage-content.test.mjs
+./node_modules/.bin/tsc --noEmit --incremental false
+DATABASE_URL='postgresql://thenewera@127.0.0.1:5432/newera_verify_59bacd85_fresh?schema=public' NEXT_TELEMETRY_DISABLED=1 npm run build
+# Start the normal test server with the same verified local database:
+DATABASE_URL='postgresql://thenewera@127.0.0.1:5432/newera_verify_59bacd85_fresh?schema=public' NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next start -H 127.0.0.1 -p 3100
+NEWERA_TEST_ORIGIN=http://127.0.0.1:3100 NEWERA_CHROMIUM=/usr/bin/chromium NEWERA_SCREENSHOT_DIR=/tmp/newera-reference-screenshots node scripts/tests/homepage-browser.mjs
+# Synthetic bright CMS image and dark-logo fixtures, with no real database:
+node scripts/tests/homepage-cms-assets.cjs
+NEWERA_CMS_FIXTURE=1 DATABASE_URL='postgresql://unused@127.0.0.1:1/unreachable?schema=public' NODE_OPTIONS='--require=/workspace/thenewera/scripts/tests/homepage-cms-fixture.cjs' NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next start -H 127.0.0.1 -p 3103
+NEWERA_CMS_FIXTURE=1 NEWERA_TEST_ORIGIN=http://127.0.0.1:3103 NEWERA_CHROMIUM=/usr/bin/chromium NEWERA_SCREENSHOT_DIR=/tmp/newera-reference-cms-screenshots node scripts/tests/homepage-browser.mjs
+git diff --check
+```
+
+All final checks exited 0; servers reached readiness and were stopped after
+testing. The asset fixture server was first started with the same handler in a
+temporary script, then retained in the repository for reproduction. The Prisma read fixture
+requires explicit opt-in and rejects all write operations before a connection;
+both safeguards are covered by the final **6 passing unit tests**.
+
+Final browser suites: **73 checks passed** for fallback media, **79 checks passed**
+for the isolated synthetic CMS fixture, zero page runtime errors. Six viewport
+sizes: 1536×1024, 1536×728, 1920×910, 834×1112, 390×844, 320×740. Checks include
+service-strip visibility on desktop, four linked cards, no card/text intersection,
+CMS desktop/mobile image selection and logo/tint treatment, plus the prior search,
+navigation, scrolling, reduced-motion, long-section and form-input checks.
+Fallback screenshots now assert the new versioned source filename. Synthetic CMS
+checks do not validate actual production content or its precise artistic result.
+Build and TypeScript passed. Logs are `/tmp/newera-reference-{build,types,content,
+browser,cms-browser}.log`. Screenshots were inspected in both screenshot folders.
+Lint setup, physical-device/trackpad testing and native scrollbar dragging retain
+the earlier stated limitations. Prisma files retain their prior hashes unchanged.
+
+Frontend corrections are prepared on the existing cinematic homepage preview
+branch; no main merge, migration, reconciliation, reset, DROP or production data
+operation occurs. Vercel deployment success still cannot be independently checked
+while external Vercel/GitHub status access is blocked.

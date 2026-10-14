@@ -169,3 +169,65 @@ Frontend corrections are prepared on the existing cinematic homepage preview
 branch; no main merge, migration, reconciliation, reset, DROP or production data
 operation occurs. Vercel deployment success still cannot be independently checked
 while external Vercel/GitHub status access is blocked.
+
+
+## Full-bleed hero and desktop slides (latest user correction)
+
+The latest instruction explicitly requests desktop slide transitions rather than
+continuous mouse scrolling. It supersedes the earlier native-proximity-only rule.
+The image/video now covers the entire hero with no inset frame or image mask,
+including the area behind the fixed navigation. A left readability gradient is
+separate from the photo; the navbar has a lighter translucent tint and backdrop
+blur. CMS media and logo connections remain intact. Art cards are a separate HTML
+layer, flow below the copy on mobile/tablet, and retain normal linked destinations.
+Short-desktop typography now also adapts at 1920×910, keeping the hero at one
+viewport instead of overflowing it by 65 px.
+
+`PresentationSlides.tsx` activates only on the homepage at ≥1021px, with reduced
+motion disabled. A wheel/trackpad gesture advances one adjacent presentation
+section using smooth vertical movement and a brief opacity transition. A gesture
+latch prevents momentum—even a sustained stream longer than the transition
+safety timeout—from advancing several slides. PageUp/PageDown offer keyboard
+control; Home/End, pointer interaction and mode changes cancel an active
+transition. All listeners, animation handles and document classes are cleaned up
+on unmount. No route is navigated automatically: portfolio/event/account/project
+routes retain their existing navigation and scrolling.
+
+Long portfolio/CMS sections stay natively scrollable until their visible boundary;
+backward movement into a long section lands at its last viewport. Inputs,
+contenteditable areas, open search/menu, nested scroll regions and modified
+wheel events bypass the controller. Mobile/tablet/reduced-motion modes keep
+natural scrolling. No new content section, database operation or dependency was
+introduced. `slide-policy.ts` contains the tested boundary/unit normalization
+rules. This is a homepage presentation deck, not automatic switching of URLs.
+
+Actual final results:
+
+```bash
+node --test scripts/tests/homepage-content.test.mjs scripts/tests/homepage-slide-policy.test.mjs
+./node_modules/.bin/tsc --noEmit --incremental false
+DATABASE_URL='postgresql://thenewera@127.0.0.1:5432/newera_verify_59bacd85_fresh?schema=public' NEXT_TELEMETRY_DISABLED=1 npm run build
+# Same verified local normal/fixture server commands documented above:
+NEWERA_TEST_ORIGIN=http://127.0.0.1:3100 NEWERA_CHROMIUM=/usr/bin/chromium NEWERA_SCREENSHOT_DIR=/tmp/newera-slides-screenshots node scripts/tests/homepage-browser.mjs
+NEWERA_CMS_FIXTURE=1 NEWERA_TEST_ORIGIN=http://127.0.0.1:3103 NEWERA_CHROMIUM=/usr/bin/chromium NEWERA_SCREENSHOT_DIR=/tmp/newera-slides-cms-screenshots node scripts/tests/homepage-browser.mjs
+git diff --check
+```
+
+All final checks exited 0: **14 unit tests**, **106 normal-media browser checks**,
+**112 synthetic-CMS browser checks**. Build and TypeScript passed. Six viewport
+sizes match the preceding record. New assertions verify full-hero image bounds,
+no image mask, cover sizing, glass navigation, a viewport-sized desktop hero,
+one slide per sustained wheel stream, reverse movement, PageUp/PageDown,
+Ctrl-wheel pass-through, nested native scrolling, long portfolio reading and
+search/input protections. Existing touch/reduced-motion/route/form/overflow tests
+still passed with zero page runtime errors. Both desktop screenshot sets were
+inspected. Native scrollbar dragging and physical trackpad/device testing remain
+unverified, as previously recorded. Lint configuration remains unchanged.
+
+Logs: `/tmp/newera-slides-{unit,types,build,browser,cms-browser}.log`.
+Screenshots: `/tmp/newera-slides-screenshots` and
+`/tmp/newera-slides-cms-screenshots`. The local fixture asset endpoint already
+running at 127.0.0.1:3199 was verified against the retained synthetic handler
+before reuse; no production content was fetched. Test servers were stopped after
+verification. Existing Prisma work and migration history are preserved unchanged.
+Deployment confirmation remains subject to the external Vercel access limitation.

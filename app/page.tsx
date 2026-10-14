@@ -4,6 +4,7 @@ import { getAccountHomePath } from '@/lib/account-routing';
 import { ArrowRight, BarChart3, Code2, Layers3, Megaphone, Palette, Play, Lightbulb, Image as ImageIcon, UsersRound, Sparkles, Target, Video } from 'lucide-react';
 
 import HomeNavigation from './components/home/HomeNavigation';
+import PresentationSlides from './components/home/PresentationSlides';
 import HeroMedia from './components/home/HeroMedia';
 import { heroPresentation } from './components/home/hero-content';
 import styles from './components/home/home.module.css';
@@ -91,24 +92,25 @@ export default async function Home() {
 
   return (
     <main className={styles.home}>
+      <PresentationSlides />
       <HomeNavigation logo={cms?.logoMedia?.url || '/new-era-logo.png'} siteName={cms?.siteName || 'New Era'} accountHref={currentUser ? getAccountHomePath(currentUser.role) : null} servicesEnabled={showSection('services')} portfolioEnabled={showSection('portfolio')} aboutEnabled={showSection('about')} />
       <section id="top" className={styles.hero} data-presentation>
         <div className={styles.scene}>
           <HeroMedia desktop={presentation.desktop} mobile={presentation.mobile} video={presentation.video} defaultArtwork={presentation.defaultArtwork} />
-          {<div className={styles.artCards}>
-            {[
-              ['Kreativ istehsal', '0% 0%', styles.creativeCard, '/services'],
-              ['Rəqəmsal marketinq', '100% 0%', styles.digitalCard, '/services'],
-              ['Brend strategiyası', '0% 100%', styles.brandCard, '/services'],
-              ['Video istehsalı', '100% 100%', styles.videoCard, '/portfolio#videos'],
-            ].map(([title, position, className, href]) => <a className={`${styles.artCard} ${className}`} key={title} href={href}><i className={styles.cardVisual} style={{ backgroundPosition: position }} aria-hidden="true" /><span>{title}</span><ArrowRight size={19} /></a>)}
-          </div>}
         </div>
         <div id="home-content" className={styles.heroCopy} tabIndex={-1}>
           <div className={styles.eyebrow}>B2B MARKETİNQ &amp; KREATİV AGENTLİYİ</div>
           <h1>{heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br /><span>Buradan<br />Başlayır.</span></> : heroTitle}</h1>
           <p>{heroDescription}</p>
           <div className={styles.ctas}><a className={styles.primary} href={presentation.cta}>{heroCtaText}<ArrowRight size={20} /></a><a className={styles.secondary} href={showSection('portfolio') ? '#portfolio' : '/portfolio'}>İşlərimizə baxın <Play size={14} /></a></div>
+        </div>
+        <div className={styles.artCards}>
+            {[
+              ['Kreativ istehsal', '0% 0%', styles.creativeCard, '/services'],
+              ['Rəqəmsal marketinq', '100% 0%', styles.digitalCard, '/services'],
+              ['Brend strategiyası', '0% 100%', styles.brandCard, '/services'],
+              ['Video istehsalı', '100% 100%', styles.videoCard, '/portfolio#videos'],
+            ].map(([title, position, className, href]) => <a className={`${styles.artCard} ${className}`} key={title} href={href}><i className={styles.cardVisual} style={{ backgroundPosition: position }} aria-hidden="true" /><span>{title}</span><ArrowRight size={19} /></a>)}
         </div>
         {showSection('services') && <div className={styles.servicePanel}>
           <a className={styles.panelHeading} href="#services"><small>NƏ ETDİYİMİZ</small><strong>Xidmətlərimiz</strong></a>

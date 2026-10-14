@@ -26,6 +26,7 @@ try {
     check(name+' no horizontal overflow',()=>assert.ok(layout.scrollWidth<=layout.width,JSON.stringify(layout)));
     check(name+' unclipped hero and free-scroll portfolio',()=>{assert.ok(layout.hero>=height);assert.equal(layout.portfolioSnap,'none');assert.ok(layout.h1.x>=0 && layout.h1.right<=width);});
     if(width>=1021) {
+      check(name+' hero is a complete viewport slide',()=>assert.ok(layout.hero<=height+2));
       const panel=await page.getByText('NƏ ETDİYİMİZ',{exact:true}).evaluate(el=>el.parentElement.parentElement.getBoundingClientRect().toJSON());
       check(name+' service strip fits first viewport',()=>assert.ok(panel.bottom<=height+1,JSON.stringify(panel)));
     }
@@ -43,13 +44,45 @@ try {
       const cms=await page.locator('#top picture img').evaluate(el=>({src:el.getAttribute('src'),current:el.currentSrc,fit:getComputedStyle(el).objectFit,blend:getComputedStyle(el).mixBlendMode}));
       assert.ok(cms.src.endsWith('/bright-desktop.svg'));
       assert.ok(cms.current.endsWith(width<=760?'/bright-mobile.svg':'/bright-desktop.svg'));
-      assert.equal(cms.fit,'contain'); assert.equal(cms.blend,'multiply');
+      assert.equal(cms.fit,'cover'); assert.equal(cms.blend,'multiply');
       assert.ok((await page.locator('header img').getAttribute('src')).endsWith('/dark-logo.svg'));
       assert.notEqual(await page.locator('header img').evaluate(el=>getComputedStyle(el).filter),'none');
       check(name+' CMS media, mobile selection, tint and logo contrast remain connected',()=>assert.ok(true));
     }
+    const backdrop=await page.locator('#top img').first().evaluate(el=>({image:el.getBoundingClientRect().toJSON(),hero:document.querySelector('#top').getBoundingClientRect().toJSON(),mask:getComputedStyle(el).maskImage,fit:getComputedStyle(el).objectFit,glass:getComputedStyle(document.querySelector('header')).backdropFilter}));
+    check(name+' full-hero photo under glass navigation',()=>{assert.equal(backdrop.fit,'cover');assert.equal(backdrop.mask,'none');assert.ok(Math.abs(backdrop.image.width-backdrop.hero.width)<2&&Math.abs(backdrop.image.height-backdrop.hero.height)<2&&Math.abs(backdrop.image.top-backdrop.hero.top)<2);assert.notEqual(backdrop.glass,'none');});
     await page.screenshot({path:`${out}/${name}.png`,fullPage:false});
+    if(width>=1021) {
+      assert.equal(await page.locator('html').evaluate(el=>el.classList.contains('neSlideshow')),true);
+      const serviceY=await page.locator('#services').evaluate(el=>el.getBoundingClientRect().top+scrollY-document.querySelector('header').getBoundingClientRect().bottom-22);
+      await page.mouse.move(width*.65,height*.45);
+      await page.mouse.wheel(0,160);
+      for(let i=0;i<30;i++){await page.waitForTimeout(90);await page.mouse.wheel(0,160);}
+      await page.waitForFunction(y=>Math.abs(scrollY-y)<2,serviceY,{timeout:5000}); await page.waitForTimeout(350);
+      assert.ok(Math.abs(await page.evaluate(()=>scrollY)-serviceY)<2);
+      check(name+' one wheel gesture advances exactly one slide',()=>assert.ok(true));
+      await page.mouse.wheel(0,-160); await page.waitForFunction(()=>scrollY<2,{},{timeout:5000}); await page.waitForTimeout(350);
+      check(name+' reverse wheel returns to hero',()=>assert.ok(true));
+      await page.keyboard.press('PageDown'); await page.waitForFunction(y=>Math.abs(scrollY-y)<2,serviceY,{timeout:5000}); await page.waitForTimeout(350);
+      await page.keyboard.press('PageUp'); await page.waitForFunction(()=>scrollY<2,{},{timeout:5000}); await page.waitForTimeout(350);
+      check(name+' PageDown and PageUp navigate slides',()=>assert.ok(true));
+      assert.equal(await page.evaluate(()=>window.dispatchEvent(new WheelEvent('wheel',{deltaY:160,ctrlKey:true,cancelable:true}))),true);
+      check(name+' Ctrl-wheel remains available for browser zoom',()=>assert.ok(true));
+      await page.evaluate(()=>{const box=document.createElement('div');box.id='nested-scroll-fixture';box.style.cssText='position:fixed;left:45%;top:200px;width:200px;height:100px;overflow-y:auto;z-index:100;background:#123';box.innerHTML='<div style="height:800px">Nested scroll fixture</div>';document.body.append(box)});
+      await page.locator('#nested-scroll-fixture').hover(); await page.mouse.wheel(0,180); await page.waitForFunction(()=>document.querySelector('#nested-scroll-fixture').scrollTop>0);
+      assert.ok(await page.evaluate(()=>scrollY<2)); await page.locator('#nested-scroll-fixture').evaluate(el=>el.remove());
+      check(name+' nested scroll area keeps its own wheel gesture',()=>assert.ok(true));
+      await page.evaluate(()=>{const portfolio=document.querySelector('#portfolio');portfolio.style.minHeight='2400px';window.scrollTo({top:portfolio.getBoundingClientRect().top+scrollY+150,behavior:'instant'})});
+      const before=await page.evaluate(()=>scrollY); await page.mouse.move(width*.8,height*.6); await page.mouse.wheel(0,160); await page.waitForFunction(y=>scrollY>y,before);
+      assert.ok(await page.evaluate(y=>scrollY-y<350,before));
+      await page.evaluate(()=>{document.querySelector('#portfolio').style.minHeight='';window.scrollTo({top:0,behavior:'instant'})});await page.waitForTimeout(250);
+      check(name+' long portfolio remains free-scroll between slide boundaries',()=>assert.ok(true));
+    } else assert.equal(await page.locator('html').evaluate(el=>el.classList.contains('neSlideshow')),false);
     await page.getByRole('button',{name:'Saytda axtarış'}).click();
+    const searchY=await page.evaluate(()=>scrollY);
+    assert.equal(await page.getByRole('searchbox').evaluate(el=>el.dispatchEvent(new WheelEvent('wheel',{deltaY:160,bubbles:true,cancelable:true}))),true);
+    await page.keyboard.press('PageDown');assert.equal(await page.evaluate(()=>scrollY),searchY);
+    check(name+' open search and focused input disable slide navigation',()=>assert.ok(true));
     await page.getByRole('searchbox').fill('Lumière');
     assert.equal(await page.locator('dialog li').count(),1);
     assert.equal(await page.locator('dialog li a').getAttribute('href'),'/portfolio');
@@ -111,6 +144,7 @@ try {
   const page=await context.newPage(); await page.goto(origin,{waitUntil:'networkidle'});
   assert.equal(await page.locator('html').evaluate(el=>getComputedStyle(el).scrollSnapType),'none');
   assert.equal(await page.locator('html').evaluate(el=>getComputedStyle(el).scrollBehavior),'auto');
+  assert.equal(await page.locator('html').evaluate(el=>el.classList.contains('neSlideshow')),false);
   check('reduced motion disables snap and smooth scrolling',()=>assert.ok(true));
   // Browser document navigation also proves homepage styles clean up off-route.
   await page.goto(origin+'/start-project',{waitUntil:'networkidle'});

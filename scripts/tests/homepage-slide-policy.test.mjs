@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const js=ts.transpileModule(readFileSync('app/components/home/slide-policy.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const {slideTarget,wheelPixels}=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'));
+const slides=[{top:0,bottom:1000,free:false},{top:1000,bottom:1890,free:false},{top:1890,bottom:3890,free:true},{top:3890,bottom:4780,free:false},{top:4780,bottom:4900,free:true}];
+const target=(y,d)=>slideTarget(slides,y,1000,110,d,3900);
+test('one step from hero lands at services below the glass header',()=>assert.equal(target(0,1),890));
+test('next and previous presentation slides retain their order',()=>{assert.equal(target(890,1),1780);assert.equal(target(890,-1),0)});
+test('middle of a long portfolio stays freely scrollable in both directions',()=>{assert.equal(target(2250,1),null);assert.equal(target(2250,-1),null)});
+test('portfolio bottom advances only once its remaining content is visible',()=>{assert.equal(target(2780,1),null);assert.equal(target(2890,1),3780)});
+test('backward slide lands at the bottom of a long portfolio, not its first row',()=>assert.equal(target(3780,-1),2890));
+test('long CMS presentation content also stays readable',()=>{const s=[{top:0,bottom:1000,free:false},{top:1000,bottom:3000,free:false},{top:3000,bottom:3900,free:false}];assert.equal(slideTarget(s,1300,1000,110,1,2900),null);assert.equal(slideTarget(s,2000,1000,110,1,2900),2890)});
+test('document ends cannot trap a user or request an out-of-range destination',()=>{assert.equal(target(0,-1),null);assert.equal(target(3900,1),null);assert.equal(target(3900,-1),3780);assert.equal(slideTarget([],0,1000,110,1,0),null)});
+test('trackpad pixels, wheel lines and page units normalize consistently',()=>{assert.equal(wheelPixels(36,0,1000),36);assert.equal(wheelPixels(3,1,1000),48);assert.equal(wheelPixels(-1,2,1000),-1000)});

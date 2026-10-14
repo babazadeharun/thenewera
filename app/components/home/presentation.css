@@ -1,0 +1,10 @@
+/* Activated and cleaned up by the homepage only. No scroll interception. */
+html.nePresentation { scroll-snap-type: y proximity; scroll-padding-top: 110px; }
+html.nePresentation:has(dialog[open]),
+html.nePresentation:has(input:focus, textarea:focus, select:focus) { scroll-snap-type: none; }
+@media (max-width: 760px) {
+  html.nePresentation { scroll-snap-type: none; scroll-padding-top: 92px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.nePresentation { scroll-behavior: auto; scroll-snap-type: none; }
+}

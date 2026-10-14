@@ -1,7 +1,13 @@
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { getAccountHomePath } from '@/lib/account-routing';
-import { ArrowRight, BarChart3, Code2, Layers3, Megaphone, Palette, Search, Sparkles, Target, Video } from 'lucide-react';
+import { ArrowRight, BarChart3, Code2, Layers3, Megaphone, Palette, Play, Lightbulb, Image as ImageIcon, UsersRound, Sparkles, Target, Video } from 'lucide-react';
+
+import HomeNavigation from './components/home/HomeNavigation';
+import HeroMedia from './components/home/HeroMedia';
+import { heroPresentation } from './components/home/hero-content';
+import styles from './components/home/home.module.css';
+import './components/home/presentation.css';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,7 +82,7 @@ export default async function Home() {
     : aboutSection?.description;
   const heroes = await prisma.hero.findMany({ where: { active: true }, include: { desktopMedia: true, mobileMedia: true, videoMedia: true }, orderBy: { displayOrder: 'asc' }, take: 10 }).catch(() => []);
   const hero = heroes[0];
-  const heroImage = hero?.desktopMedia?.url || cms?.heroImage || '/hero-space-4k.png';
+  const presentation = heroPresentation(hero, cms?.heroImage);
   const heroTitle = hero?.title && !['New Era Hero', 'New Era', 'Növbəti Era Buradan Başlayır.'].includes(hero.title) ? hero.title : 'Növbəti Era Buradan Başlayır.';
   const heroDescription = hero?.description && !['Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.', 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan'].includes(hero.description.trim())
     ? hero.description
@@ -84,47 +90,51 @@ export default async function Home() {
   const heroCtaText = hero?.ctaText === 'Create Client Account' ? 'Layihəyə başla' : (hero?.ctaText || 'Layihəyə başla');
 
   return (
-    <main>
-      <section id="top" className="hero screenshotHero">
-        <nav className="nav container">
-          <a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a>
-          <div className="navLinks">
-            <a className="active" href="#top">Ana səhifə</a>
-            <a href="#services">Xidmətlər</a>
-            <a href="#portfolio">İşlərimiz</a>
-            <a href="#about">Haqqımızda</a>
-            <a href="/analysis">Analiz</a>
-            <a href="/events">Tədbirlər</a>
-            <a href="/start-project">Layihəyə başla</a>
-          </div>
-          <div className="navActions"><button className="iconBtn" aria-label="Axtarış"><Search size={19}/></button>{currentUser ? <><a href={getAccountHomePath(currentUser.role)} className="login">Hesabım</a></> : <><a href="/login" className="login">Daxil ol</a><a href="/register" className="pill">Hesab yarat</a></>}</div>
-        </nav>
-        <div className="heroArt" aria-hidden="true" style={{ ['--hero-desktop' as string]: `url(${heroImage})`, ['--hero-mobile' as string]: `url(${hero?.mobileMedia?.url || heroImage})` } as React.CSSProperties}>
-          {hero?.videoMedia?.url && <video className="heroVideo" src={hero.videoMedia.url} autoPlay muted loop playsInline aria-hidden="true" />}
+    <main className={styles.home}>
+      <HomeNavigation logo={cms?.logoMedia?.url || '/new-era-logo.png'} siteName={cms?.siteName || 'New Era'} accountHref={currentUser ? getAccountHomePath(currentUser.role) : null} servicesEnabled={showSection('services')} portfolioEnabled={showSection('portfolio')} aboutEnabled={showSection('about')} />
+      <section id="top" className={styles.hero} data-presentation>
+        <div className={`${styles.scene} ${presentation.defaultArtwork ? styles.defaultScene : ''}`}>
+          <HeroMedia desktop={presentation.desktop} mobile={presentation.mobile} video={presentation.video} defaultArtwork={presentation.defaultArtwork} />
+          {presentation.defaultArtwork && <div className={styles.artCards}>
+            {[
+              ['Kreativ istehsal', '/creator-presets/photographer.jpg', styles.creativeCard, '/services'],
+              ['Rəqəmsal marketinq', '/portfolio/nova.jpg', styles.digitalCard, '/services'],
+              ['Brend strategiyası', '/portfolio/velora.jpg', styles.brandCard, '/services'],
+              ['Video istehsalı', '/creator-presets/videographer.jpg', styles.videoCard, '/portfolio#videos'],
+            ].map(([title, image, className, href]) => <a className={`${styles.artCard} ${className}`} key={title} href={href}><img src={image} alt="" width="240" height="180" decoding="async" /><span>{title}</span><ArrowRight size={19} /></a>)}
+          </div>}
         </div>
-        <div className="stars" />
-        <div className="container heroInner">
-          <div className="eyebrow">B2B MARKETİNQ &amp; KREATİV AGENTLİYİ</div>
-          <h1>{hero ? (heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br/><span>Buradan Başlayır.</span></> : heroTitle) : <>Növbəti Era<br/><span>Buradan Başlayır.</span></>}</h1>
+        <div id="home-content" className={styles.heroCopy} tabIndex={-1}>
+          <div className={styles.eyebrow}>B2B MARKETİNQ &amp; KREATİV AGENTLİYİ</div>
+          <h1>{heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br /><span>Buradan<br />Başlayır.</span></> : heroTitle}</h1>
           <p>{heroDescription}</p>
-          <div className="heroCtas"><a className="primary" href="/start-project">{heroCtaText} <ArrowRight size={17}/></a><a className="secondary" href="#portfolio">İşlərimizə baxın</a></div>
-          <a className="auditCta auditCtaHero" href="/analysis"><span><strong>Biznes Audit</strong><small>Biznesiniz üçün real ekspert analizi və təkliflər</small></span><ArrowRight size={18}/></a>
+          <div className={styles.ctas}><a className={styles.primary} href={presentation.cta}>{heroCtaText}<ArrowRight size={20} /></a><a className={styles.secondary} href={showSection('portfolio') ? '#portfolio' : '/portfolio'}>İşlərimizə baxın <Play size={14} /></a></div>
         </div>
-        <div className="scrollHint">Aşağı sürüşdür <span>↓</span></div>
+        {showSection('services') && <div className={styles.servicePanel}>
+          <a className={styles.panelHeading} href="#services"><small>NƏ ETDİYİMİZ</small><strong>Xidmətlərimiz</strong></a>
+          {([
+            ['Kreativ həllər', 'Fərqlənən ideyalar', Lightbulb],
+            ['Rəqəmsal marketinq', 'Daha çox görünürlük', BarChart3],
+            ['Brend strategiyası', 'Davamlı inkişaf', ImageIcon],
+            ['Tam layihə dəstəyi', 'İdeyadan nəticəyə', UsersRound],
+          ] as const).map(([title, description, Icon]) => <a className={styles.panelService} key={title} href="/services"><Icon size={27} strokeWidth={1.25} /><strong>{title}</strong><span>{description}</span></a>)}
+          <a className={styles.panelArrow} href="/services" aria-label="Bütün xidmətlər"><ArrowRight size={23} /></a>
+        </div>}
+        <a className={styles.scrollHint} href={showSection('services') ? '#services' : showSection('portfolio') ? '#portfolio' : '#analysis'}><span>Daha çox kəşf et</span><i aria-hidden="true" /></a>
       </section>
 
-      {showSection('services') && <section id="services" className="section container servicesSection">
-        <div className="sectionIntro"><div><div className="eyebrow">XİDMƏTLƏRİMİZ</div><h2>Brendinizi <span>böyütmək üçün.</span></h2></div><p>Strategiyadan kreativ istehsala, rəqəmsal marketinqdən veb həllərə qədər bütün əsas istiqamətləri bir komandada idarə edirik.</p></div>
+      {showSection('services') && <section id="services" data-presentation className="section container servicesSection">
+        <div className="sectionIntro"><div><div className="eyebrow">XİDMƏTLƏRİMİZ</div><h2>{section('services')?.title || <>Brendinizi <span>böyütmək üçün.</span></>}</h2></div><p>{section('services')?.description || 'Strategiyadan kreativ istehsala, rəqəmsal marketinqdən veb həllərə qədər bütün əsas istiqamətləri bir komandada idarə edirik.'}</p></div>
         <div className="serviceGrid">{services.map(([title, desc, Icon])=><a className="serviceCard" href="/services" key={title}><div className="serviceIcon"><Icon size={21}/></div><h3>{title}</h3><p>{desc}</p></a>)}</div>
         <a className="outlineBtn" href="/services">Bütün xidmətlərə bax <ArrowRight size={16}/></a>
       </section>}
 
-      {showSection('portfolio') !== false && <section id="portfolio" className="section portfolioSection">
+      {showSection('portfolio') !== false && <section id="portfolio" data-presentation data-free-scroll className="section portfolioSection">
         <div className="container">
-          <div className="sectionIntro"><div><div className="eyebrow">İŞLƏRİMİZ</div><h2>İdeyadan <span>nəticəyə.</span></h2></div><p>Fərqli sahələrdə həyata keçirdiyimiz brend, kreativ və rəqəmsal işlərdən seçilmiş nümunələr.</p></div>
+          <div className="sectionIntro"><div><div className="eyebrow">İŞLƏRİMİZ</div><h2>{section('portfolio')?.title || <>İdeyadan <span>nəticəyə.</span></>}</h2></div><p>{section('portfolio')?.description || 'Fərqli sahələrdə həyata keçirdiyimiz brend, kreativ və rəqəmsal işlərdən seçilmiş nümunələr.'}</p></div>
           <div className="agencyPortfolioGrid">{portfolio.map((item) => (
             <a className="agencyPortfolioCard" href={('itemId' in item && typeof item.itemId === 'string' && item.itemId) ? `/portfolio/${encodeURIComponent(item.itemId)}` : '/portfolio'} key={item.image}>
-              <div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title}/><span>{item.service}</span></div>
+              <div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title} loading="lazy" decoding="async"/><span>{item.service}</span></div>
               <div className="agencyPortfolioBody"><div><strong>{item.title}</strong><small>{item.client}</small></div><ArrowRight size={17}/><p>{item.text}</p></div>
             </a>
           ))}</div>
@@ -132,11 +142,11 @@ export default async function Home() {
         </div>
       </section>}
 
-      {showSection('how') && <section id="how" className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt" style={section('how')?.image?.url ? ({ backgroundImage: `url(${section('how')?.image?.url})` } as React.CSSProperties) : undefined}/><div className="eyebrow">NECƏ İŞLƏYİR</div><h2>Biznesiniz üçün <span>vahid komanda.</span></h2><p>Brief-dən strategiyaya, kreativdən icraya qədər layihəni New Era idarə edir.</p></div><div className="steps"><div><b>01</b><span>Məqsədi paylaşın</span><small>Biznesinizi, hədəfinizi və ehtiyacınızı bizə danışın.</small></div><div><b>02</b><span>Strategiya quraq</span><small>Uyğun istiqaməti və kreativ həlli birlikdə müəyyənləşdirək.</small></div><div><b>03</b><span>İcra edək</span><small>New Era komandası işi həyata keçirir və nəticəni təqdim edir.</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>}
+      {showSection('how') && <section id="how" data-presentation className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt" style={section('how')?.image?.url ? ({ backgroundImage: `url(${section('how')?.image?.url})` } as React.CSSProperties) : undefined}/><div className="eyebrow">NECƏ İŞLƏYİR</div><h2>{section('how')?.title || <>Biznesiniz üçün <span>vahid komanda.</span></>}</h2><p>{section('how')?.description || 'Brief-dən strategiyaya, kreativdən icraya qədər layihəni New Era idarə edir.'}</p></div><div className="steps"><div><b>01</b><span>Məqsədi paylaşın</span><small>Biznesinizi, hədəfinizi və ehtiyacınızı bizə danışın.</small></div><div><b>02</b><span>Strategiya quraq</span><small>Uyğun istiqaməti və kreativ həlli birlikdə müəyyənləşdirək.</small></div><div><b>03</b><span>İcra edək</span><small>New Era komandası işi həyata keçirir və nəticəni təqdim edir.</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>}
 
-      {showSection('about') && <section id="about" className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>{aboutTitle}</h2><p>{aboutDescription}</p></section>}
+      {showSection('about') && <section id="about" data-presentation className="finalCta container"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>{aboutTitle}</h2><p>{aboutDescription}</p></section>}
 
-      <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
+      <section id="analysis" data-presentation className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 
       <footer className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><span>© 2026 New Era</span></footer>
     </main>

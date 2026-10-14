@@ -1,4 +1,6 @@
-﻿import './home-glass.css';
+import './home-glass.css';
+import './home-mobile-reference.css';
+import HomeMobileMenu from './components-home-mobile-menu';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { getAccountHomePath } from '@/lib/account-routing';
@@ -83,6 +85,7 @@ export default async function Home() {
       <section id="top" className="hero screenshotHero">
         <nav className="nav container">
           <a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a>
+          <HomeMobileMenu accountHref={currentUser ? getAccountHomePath(currentUser.role) : "/login"} signedIn={!!currentUser} />
           <div className="navLinks">
             <a href="#top">Ana səhifə</a>
             <a href="#services">Xidmətlər</a>

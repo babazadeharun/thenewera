@@ -1,3 +1,4 @@
+import { BRAND_LOGO_URL, HOME_ARTWORK_URL } from '@/lib/brand-assets';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { getAccountHomePath } from '@/lib/account-routing';
@@ -83,7 +84,7 @@ export default async function Home() {
     : aboutSection?.description;
   const heroes = await prisma.hero.findMany({ where: { active: true }, include: { desktopMedia: true, mobileMedia: true, videoMedia: true }, orderBy: { displayOrder: 'asc' }, take: 10 }).catch(() => []);
   const hero = heroes[0];
-  const presentation = heroPresentation(hero, cms?.heroImage);
+  const presentation = heroPresentation(hero, cms?.heroImage, HOME_ARTWORK_URL);
   const heroTitle = hero?.title && !['New Era Hero', 'New Era', 'Növbəti Era Buradan Başlayır.'].includes(hero.title) ? hero.title : 'Növbəti Era Buradan Başlayır.';
   const heroDescription = hero?.description && !['Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.', 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan'].includes(hero.description.trim())
     ? hero.description
@@ -93,7 +94,7 @@ export default async function Home() {
   return (
     <main className={styles.home}>
       <PresentationSlides />
-      <HomeNavigation logo={cms?.logoMedia?.url || '/new-era-logo.png'} siteName={cms?.siteName || 'New Era'} accountHref={currentUser ? getAccountHomePath(currentUser.role) : null} servicesEnabled={showSection('services')} portfolioEnabled={showSection('portfolio')} aboutEnabled={showSection('about')} />
+      <HomeNavigation logo={BRAND_LOGO_URL} siteName={cms?.siteName || 'New Era'} accountHref={currentUser ? getAccountHomePath(currentUser.role) : null} servicesEnabled={showSection('services')} portfolioEnabled={showSection('portfolio')} aboutEnabled={showSection('about')} />
       <section id="top" className={styles.hero} data-presentation>
         <div className={styles.scene}>
           <HeroMedia desktop={presentation.desktop} mobile={presentation.mobile} video={presentation.video} defaultArtwork={presentation.defaultArtwork} />
@@ -103,14 +104,6 @@ export default async function Home() {
           <h1>{heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br /><span>Buradan<br />Başlayır.</span></> : heroTitle}</h1>
           <p>{heroDescription}</p>
           <div className={styles.ctas}><a className={styles.primary} href={presentation.cta}>{heroCtaText}<ArrowRight size={20} /></a><a className={styles.secondary} href={showSection('portfolio') ? '#portfolio' : '/portfolio'}>İşlərimizə baxın <Play size={14} /></a></div>
-        </div>
-        <div className={styles.artCards}>
-            {[
-              ['Kreativ istehsal', '0% 0%', styles.creativeCard, '/services'],
-              ['Rəqəmsal marketinq', '100% 0%', styles.digitalCard, '/services'],
-              ['Brend strategiyası', '0% 100%', styles.brandCard, '/services'],
-              ['Video istehsalı', '100% 100%', styles.videoCard, '/portfolio#videos'],
-            ].map(([title, position, className, href]) => <a className={`${styles.artCard} ${className}`} key={title} href={href}><i className={styles.cardVisual} style={{ backgroundPosition: position }} aria-hidden="true" /><span>{title}</span><ArrowRight size={19} /></a>)}
         </div>
         {showSection('services') && <div className={styles.servicePanel}>
           <a className={styles.panelHeading} href="#services"><small>NƏ ETDİYİMİZ</small><strong>Xidmətlərimiz</strong></a>
@@ -150,7 +143,7 @@ export default async function Home() {
 
       <section id="analysis" data-presentation className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 
-      <footer className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><span>© 2026 New Era</span></footer>
+      <footer className="footer container"><a className="brand" href="#top"><img src={BRAND_LOGO_URL} alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><span>© 2026 New Era</span></footer>
     </main>
   );
 }

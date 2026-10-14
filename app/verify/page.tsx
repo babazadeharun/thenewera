@@ -1,5 +1,7 @@
 'use client';
 
+import { BRAND_LOGO_URL } from '@/lib/brand-assets';
+
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
@@ -94,7 +96,7 @@ export default function VerifyPage() {
       <div className="authGlow" />
       <div className="authCard">
         <Link className="authBrand" href="/">
-          <img src="/new-era-logo.png" alt="New Era" />
+          <img src={BRAND_LOGO_URL} alt="New Era" />
         </Link>
         <div className="eyebrow">E-POÇT TƏSDİQİ</div>
         <h1>{flow === 'promoter' ? <>Müraciəti <span>təsdiqləyin.</span></> : <>Bir addım <span>qalıb.</span></>}</h1>

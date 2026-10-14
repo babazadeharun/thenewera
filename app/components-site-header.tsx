@@ -1,5 +1,7 @@
 'use client';
 
+import { BRAND_LOGO_URL } from '@/lib/brand-assets';
+
 import Link from 'next/link';
 import { Menu, Search, UserRound } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -36,7 +38,7 @@ export default function SiteHeader() {
     <header className="neSiteHeader">
       <div className="neSiteHeaderInner">
         <Link className="neSiteBrand" href="/" aria-label="New Era">
-          <img src="/new-era-logo.png" alt="New Era Marketing Agency" />
+          <img src={BRAND_LOGO_URL} alt="New Era Marketing Agency" />
         </Link>
         <nav className="neSiteNav" aria-label="Əsas menyu">
           <Link href="/">Ana səhifə</Link>

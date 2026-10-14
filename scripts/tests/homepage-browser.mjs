@@ -30,25 +30,14 @@ try {
       const panel=await page.getByText('NƏ ETDİYİMİZ',{exact:true}).evaluate(el=>el.parentElement.parentElement.getBoundingClientRect().toJSON());
       check(name+' service strip fits first viewport',()=>assert.ok(panel.bottom<=height+1,JSON.stringify(panel)));
     }
-    assert.equal(await page.locator('#top a:has(i[style])').count(),4);
-    check(name+' real linked artwork cards',()=>assert.ok(true));
-    const covered=await page.evaluate(()=>{
-      const text=[]; const walker=document.createTreeWalker(document.querySelector('#home-content'),NodeFilter.SHOW_TEXT);
-      while(walker.nextNode()) { if(!walker.currentNode.textContent.trim())continue; const range=document.createRange();range.selectNodeContents(walker.currentNode);text.push(...range.getClientRects()); }
-      return [...document.querySelectorAll('#top a:has(i[style])')].some(a=>{const b=a.getBoundingClientRect();return text.some(t=>b.left<t.right&&b.right>t.left&&b.top<t.bottom&&b.bottom>t.top)});
-    });
-    check(name+' artwork cards never cover hero text',()=>assert.equal(covered,false));
+    assert.equal(await page.locator('#top a:has(i[style])').count(),0);
+    check(name+' no floating artwork links',()=>assert.ok(true));
     if(width<761)check(name+' natural mobile scrolling',()=>assert.equal(layout.snap,'none'));
-    if(process.env.NEWERA_CMS_FIXTURE!=='1') assert.ok((await page.locator('#top img').first().getAttribute('src')).includes('creative-scene-reference.webp'));
-    if(process.env.NEWERA_CMS_FIXTURE==='1') {
-      const cms=await page.locator('#top picture img').evaluate(el=>({src:el.getAttribute('src'),current:el.currentSrc,fit:getComputedStyle(el).objectFit,blend:getComputedStyle(el).mixBlendMode}));
-      assert.ok(cms.src.endsWith('/bright-desktop.svg'));
-      assert.ok(cms.current.endsWith(width<=760?'/bright-mobile.svg':'/bright-desktop.svg'));
-      assert.equal(cms.fit,'cover'); assert.equal(cms.blend,'multiply');
-      assert.ok((await page.locator('header img').getAttribute('src')).endsWith('/dark-logo.svg'));
-      assert.notEqual(await page.locator('header img').evaluate(el=>getComputedStyle(el).filter),'none');
-      check(name+' CMS media, mobile selection, tint and logo contrast remain connected',()=>assert.ok(true));
-    }
+    assert.ok((await page.locator('#top img').first().getAttribute('src')).includes('glass-analytics-header.png'));
+    assert.equal(await page.locator('#top video').count(),0);
+    assert.equal(await page.locator('header img').getAttribute('src'),'/new-era-logo-v2.png');
+    assert.equal(await page.locator('header img').evaluate(el=>getComputedStyle(el).filter),'none');
+    check(name+' approved artwork and original logo override stale CMS selections',()=>assert.ok(true));
     const backdrop=await page.locator('#top img').first().evaluate(el=>({image:el.getBoundingClientRect().toJSON(),hero:document.querySelector('#top').getBoundingClientRect().toJSON(),mask:getComputedStyle(el).maskImage,fit:getComputedStyle(el).objectFit,glass:getComputedStyle(document.querySelector('header')).backdropFilter}));
     check(name+' full-hero photo under glass navigation',()=>{assert.equal(backdrop.fit,'cover');assert.equal(backdrop.mask,'none');assert.ok(Math.abs(backdrop.image.width-backdrop.hero.width)<2&&Math.abs(backdrop.image.height-backdrop.hero.height)<2&&Math.abs(backdrop.image.top-backdrop.hero.top)<2);assert.notEqual(backdrop.glass,'none');});
     await page.screenshot({path:`${out}/${name}.png`,fullPage:false});

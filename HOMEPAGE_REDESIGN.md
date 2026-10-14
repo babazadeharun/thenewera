@@ -231,3 +231,89 @@ running at 127.0.0.1:3199 was verified against the retained synthetic handler
 before reuse; no production content was fetched. Test servers were stopped after
 verification. Existing Prisma work and migration history are preserved unchanged.
 Deployment confirmation remains subject to the external Vercel access limitation.
+
+## Pending supplied artwork and logo — October 14, 2026
+
+Local draft removes the four floating hero artwork links and their responsive
+styles. Existing navigation, account/search controls, CTA links, service strip,
+CMS settings and presentation slide behavior are preserved. Hero copy, buttons
+and service strip now use dark teal on light glass. Image multiply/tint and the
+forced cyan logo filter are removed; the menu retains dark glass for the supplied
+white wordmark. Lower sections retain their existing appearance.
+
+The two latest inline images are visible in conversation but have no accessible
+original file or Sediment reference in this workspace. The exact analytics
+artwork and distressed logo are NOT integrated. Existing media URLs remain in
+place until original files are supplied; this is a local draft, not a deployment
+or a completed asset replacement. No push or deployment was performed.
+
+Verified commands (all exit 0):
+
+```sh
+node --test scripts/tests/homepage-content.test.mjs scripts/tests/homepage-slide-policy.test.mjs
+./node_modules/.bin/tsc --noEmit --incremental false
+NEWERA_CMS_FIXTURE=1 DATABASE_URL='postgresql://unused@127.0.0.1:1/unreachable?schema=public' NODE_OPTIONS='--require=/workspace/thenewera/scripts/tests/homepage-cms-fixture.cjs' NEXT_TELEMETRY_DISABLED=1 npm run build
+node scripts/tests/homepage-cms-assets.cjs
+NEWERA_CMS_FIXTURE=1 DATABASE_URL='postgresql://unused@127.0.0.1:1/unreachable?schema=public' NODE_OPTIONS='--require=/workspace/thenewera/scripts/tests/homepage-cms-fixture.cjs' NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next start -H 127.0.0.1 -p 3103
+NEWERA_CMS_FIXTURE=1 NEWERA_TEST_ORIGIN=http://127.0.0.1:3103 NEWERA_CHROMIUM=/usr/bin/chromium NEWERA_SCREENSHOT_DIR=/tmp/newera-light-draft-screenshots node scripts/tests/homepage-browser.mjs
+```
+
+16 unit tests, TypeScript, final build and 106 synthetic-CMS browser checks
+passed. Tests use an unreachable database URL and explicitly enabled fixture;
+no real database connection or write is needed. Browser screenshots use test
+SVGs, NOT the supplied artwork/logo. An earlier browser run failed the project
+form assertion while the build output was being replaced. The server was stopped
+and restarted with the completed final build; the full repeat passed with zero
+browser runtime errors. Logs: `/tmp/newera-light-{unit,types,build-final,browser-final}.log`.
+All seven preserved Prisma working-tree files match their recorded SHA-256s.
+Original asset integration and its visual verification remain pending; request
+both original images as one ZIP file attachment. Physical-device and standalone
+lint limitations remain as previously recorded.
+
+## Supplied assets integrated — October 14, 2026
+
+Supersedes the preceding pending-assets limitation. `newera.zip` contained only
+`newera/Header foto.png` (1916×821 RGB) and `newera/Newera Logo.png` (2172×724 RGBA,
+transparent). Both were copied byte-for-byte with no generative replacement,
+cropping, recoloring or recompression:
+
+- `public/homepage/glass-analytics-header.png`, SHA-256
+  `6999aa534f24f7a5e73c1171f60d08cfb2fde7745c2b964240c2a247e3c6af4b`.
+- `public/new-era-logo-v2.png`, SHA-256
+  `f2fa7d4734574405cfc19bbf9c8bde2a017f63dd40794fddd6f8371af225ab85`.
+
+`src/lib/brand-assets.ts` centralizes versioned asset URLs. Homepage navigation,
+footer, shared site header, login, registration and verification use the approved
+logo. Old logo assets remain preserved. Per the explicit user request, the
+homepage passes an approved artwork override to `heroPresentation`; CMS hero
+text and safe CTA selection remain active, while old CMS desktop/mobile imagery
+and video cannot cover the approved background. CMS records are unchanged.
+The underlying helper still supports CMS media precedence without the override.
+No functionality was added. The four floating artwork links remain removed;
+existing service strip, navigation, search, accounts and slides remain intact.
+Full-viewport `cover` sizing intentionally crops the wide image on taller screens;
+a light overlay keeps text readable. Supplied artwork and logo are not edited.
+
+Final verification, all exit 0:
+
+```sh
+node --test scripts/tests/homepage-content.test.mjs scripts/tests/homepage-slide-policy.test.mjs
+./node_modules/.bin/tsc --noEmit --incremental false
+NEWERA_CMS_FIXTURE=1 DATABASE_URL='postgresql://unused@127.0.0.1:1/unreachable?schema=public' NODE_OPTIONS='--require=/workspace/thenewera/scripts/tests/homepage-cms-fixture.cjs' NEXT_TELEMETRY_DISABLED=1 npm run build
+NEWERA_CMS_FIXTURE=1 DATABASE_URL='postgresql://unused@127.0.0.1:1/unreachable?schema=public' NODE_OPTIONS='--require=/workspace/thenewera/scripts/tests/homepage-cms-fixture.cjs' NEXT_TELEMETRY_DISABLED=1 ./node_modules/.bin/next start -H 127.0.0.1 -p 3104
+NEWERA_CMS_FIXTURE=1 NEWERA_TEST_ORIGIN=http://127.0.0.1:3104 NEWERA_CHROMIUM=/usr/bin/chromium NEWERA_SCREENSHOT_DIR=/tmp/newera-supplied-screenshots node scripts/tests/homepage-browser.mjs
+```
+
+18 unit tests and 106 browser checks passed with zero page runtime errors. The
+fixture supplies stale CMS image/logo URLs; assertions prove the approved local
+assets render instead. All six viewport sizes were tested. Desktop screenshot
+was visually inspected with the actual supplied assets. Logs:
+`/tmp/newera-supplied-{unit,types,build,browser}.log`. An initial type/build attempt
+failed because the alias resolves to `src/lib`, not root `lib`; the new shared
+constant file was moved to `src/lib`, and both checks subsequently passed.
+No production data was accessed; no database operation or migration was run.
+The seven pre-existing Prisma files remain byte-for-byte unchanged. Standalone
+lint, physical-device and native-scrollbar-drag limitations remain as above.
+Only the UI preview branch is eligible for this change; no main merge or
+production deployment is part of asset integration. A Git push alone is not
+proof that an external Vercel deployment completed.

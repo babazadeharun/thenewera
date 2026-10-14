@@ -1,5 +1,7 @@
 'use client';
 
+import { BRAND_LOGO_URL } from '@/lib/brand-assets';
+
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -61,7 +63,7 @@ export default function Login() {
 
       <div className="authCard">
         <Link className="authBrand" href="/">
-          <img src="/new-era-logo.png" alt="New Era" />
+          <img src={BRAND_LOGO_URL} alt="New Era" />
         </Link>
 
         <div className="eyebrow">MÜŞTƏRİ PORTALI</div>

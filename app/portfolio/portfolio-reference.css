@@ -59,11 +59,6 @@
 .agencyPortfolioPage .portfolioCta .primary{background:linear-gradient(#292d2f,#090c0e)!important;color:#fff!important;border:1px solid #31373b!important;font-weight:500!important;border-radius:999px!important;padding:14px 24px!important;box-shadow:0 6px 13px #1c32342b!important}
 .agencyPortfolioPage a:focus-visible{outline:2px solid #008a98;outline-offset:5px}
 /* Recolor only the existing header on this route; keep every link and action. */
-body:has(.agencyPortfolioPage) .neSiteHeader{background:#f3f7fbd9!important;border-bottom-color:#fff!important;box-shadow:0 3px 15px #566f7f0b!important}
-body:has(.agencyPortfolioPage) .neSiteBrand img{filter:brightness(0)!important;object-fit:cover;object-position:center;height:28px}
-body:has(.agencyPortfolioPage) .neSiteNav a,body:has(.agencyPortfolioPage) .neSiteLogin,body:has(.agencyPortfolioPage) .neSiteSearch,body:has(.agencyPortfolioPage) .neSiteMenu{color:#455460!important;text-shadow:none!important}
-body:has(.agencyPortfolioPage) .neSiteNav a:hover,body:has(.agencyPortfolioPage) .neSiteNav a:focus-visible{color:#009ca9!important}
-body:has(.agencyPortfolioPage) .neSiteSignup{color:#1a2d35!important;border-color:#d2e0e7!important;background:linear-gradient(135deg,#fff,#e7eff5)!important;box-shadow:0 3px 8px #506c7c12!important}
 @media(max-width:1000px){
  .agencyPortfolioPage .portfolioIntro:before{width:57%;right:-12px;top:20px;height:290px}
  .agencyPortfolioPage .portfolioIntro h1{font-size:54px!important}
@@ -92,13 +87,6 @@ body:has(.agencyPortfolioPage) .neSiteSignup{color:#1a2d35!important;border-colo
 /* Route-scoped backdrop also keeps the translucent shared header light. */
 body:has(.agencyPortfolioPage){background:#f4f8fb;color:#12171b}
 @media(min-width:761px) and (max-width:1000px){
- body:has(.agencyPortfolioPage) .neSiteHeaderInner{gap:12px}
- body:has(.agencyPortfolioPage) .neSiteBrand{flex-basis:126px}
- body:has(.agencyPortfolioPage) .neSiteBrand img{width:126px}
- body:has(.agencyPortfolioPage) .neSiteNav{gap:10px}
- body:has(.agencyPortfolioPage) .neSiteNav a{font-size:9px}
- body:has(.agencyPortfolioPage) .neSiteActions{gap:7px}
- body:has(.agencyPortfolioPage) .neSiteSignup{padding-left:9px;padding-right:9px}
 }
 @media(max-width:760px){
  .agencyPortfolioPage .portfolioIntro:before{top:auto;bottom:83px;right:0;width:100%;height:190px;opacity:1}

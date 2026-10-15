@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './mobile-public.css';
 import { prisma } from '@/lib/prisma';
 import SiteHeader from './components-site-header';
 

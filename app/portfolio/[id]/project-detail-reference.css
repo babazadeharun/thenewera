@@ -1,0 +1,104 @@
+/* Detail-route presentation. Keep every existing CMS record, section and action. */
+.portfolioDetailPage{--detail-ink:#11171c;--detail-muted:#5c6d80;color:var(--detail-ink)!important;background:radial-gradient(ellipse at 86% 20%,#dcecf380,transparent 38%),linear-gradient(130deg,#f9fcfe,#edf6fa 50%,#fbfdfe)!important;min-height:100vh;overflow-x:clip;padding-bottom:34px}
+.portfolioDetailPage .container{min-width:0}
+.portfolioDetailPage .eyebrow{color:#00adbc!important;font-size:11px!important;font-weight:500!important;letter-spacing:.26em!important;text-shadow:none!important;line-height:1.5}
+.portfolioDetailPage .portfolioDetailHero{padding-top:38px;padding-bottom:32px}
+.portfolioDetailPage .portfolioBackLink{display:inline-flex;align-items:center;gap:12px;font-size:15px;line-height:1.5;color:#5c6d80;margin-bottom:28px;min-height:36px}
+.portfolioDetailPage .portfolioBackLink svg{width:23px;height:23px}
+.portfolioDetailPage .portfolioDetailHeroGrid{min-width:0}
+.portfolioDetailPage .portfolioDetailCover{position:relative;width:100%;padding:24px;margin-bottom:30px;border:1px solid #ffffffc9;border-radius:20px;background:linear-gradient(125deg,#ffffff90,#e8f2f75c);box-shadow:inset 0 0 0 1px #dbe8ef,0 16px 40px #496f8012;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.portfolioDetailPage .portfolioDetailCover:after{display:none}
+.portfolioDetailPage .portfolioDetailCover>img,.portfolioDetailPage .portfolioDetailCover>video{position:relative;display:block;width:100%;height:auto;max-height:78vh;object-fit:contain;border-radius:12px;background:transparent}
+.portfolioDetailPage .portfolioDetailCover>video{z-index:1}
+.portfolioDetailPage .portfolioDetailIntro{padding:14px 0 22px;min-width:0}
+.portfolioDetailPage .portfolioDetailIntro h1{font-size:clamp(46px,7.4vw,96px);font-weight:600;line-height:1.04;letter-spacing:-.065em;margin:10px 0 14px;color:#080d10;overflow-wrap:anywhere}
+.portfolioDetailPage .portfolioDetailIntro h1:after{content:'.';color:#00b9c8}
+.portfolioDetailPage .portfolioDetailClient{font-size:22px;line-height:1.4;color:#42576a;margin:0 0 12px;overflow-wrap:anywhere}
+.portfolioDetailPage .portfolioDetailIntro>p{color:var(--detail-muted);font-size:19px;line-height:1.6;max-width:860px;margin:12px 0 24px;overflow-wrap:anywhere}
+.portfolioDetailPage .portfolioDetailFacts{display:flex;flex-wrap:wrap;gap:0;max-width:740px;background:linear-gradient(120deg,#ffffffb3,#e9f2f780);border:1px solid #fff;border-radius:15px;box-shadow:inset 0 0 0 1px #dce8ee,0 8px 26px #587c8a0c;backdrop-filter:blur(14px);margin:20px 0}
+.portfolioDetailPage .portfolioDetailFacts:empty{display:none}
+.portfolioDetailPage .portfolioDetailFacts>div{flex:1 1 160px;padding:19px 24px;min-width:0;display:grid;gap:8px}
+.portfolioDetailPage .portfolioDetailFacts small{font-size:10px;color:#708296;letter-spacing:.16em;font-weight:400}
+.portfolioDetailPage .portfolioDetailFacts strong{color:#263b4c;font-size:16px;font-weight:400;line-height:1.6;overflow-wrap:anywhere}
+.portfolioDetailPage .primary{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:linear-gradient(#292e32,#090d0f)!important;color:white!important;border:1px solid #313a40;border-radius:999px!important;font-size:14px;font-weight:500!important;padding:15px 24px!important;box-shadow:0 7px 18px #16313b27!important;min-height:46px}
+.portfolioDetailPage .portfolioDetailDescription{padding-top:26px;padding-bottom:34px;border-top:1px solid #d6e4ed;min-width:0}
+.portfolioDetailPage .portfolioDetailDescription>p{color:var(--detail-muted);font-size:18px;line-height:1.75;max-width:1000px;margin:14px 0 0;white-space:pre-line;overflow-wrap:anywhere}
+.portfolioDetailPage .portfolioDetailGallery,.portfolioDetailPage .portfolioDetailVideos{padding-top:24px;padding-bottom:38px;min-width:0}
+.portfolioDetailPage .sectionHeading{display:flex;justify-content:space-between;align-items:end;gap:24px;border-bottom:1px solid #d6e4ed!important;padding-bottom:22px!important;margin-bottom:25px!important}
+.portfolioDetailPage .sectionHeading h2{color:var(--detail-ink)!important;font-size:clamp(25px,3.2vw,38px);font-weight:600;letter-spacing:-.045em;line-height:1.17;margin:8px 0 0}
+.portfolioDetailPage .sectionHeading>span{color:#667c90!important;font-size:14px!important;white-space:nowrap}
+.portfolioDetailPage .portfolioDetailMediaGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;min-width:0}
+.portfolioDetailPage .portfolioDetailMediaGrid figure{margin:0;min-width:0;display:grid;place-items:center;border:1px solid white;border-radius:16px;background:linear-gradient(120deg,#fff9,#e7f0f677);box-shadow:inset 0 0 0 1px #dfebf0,0 8px 24px #597e8f0c;padding:16px;overflow:hidden}
+.portfolioDetailPage .portfolioDetailMediaGrid img{width:100%;height:auto;max-height:720px;object-fit:contain;display:block;border-radius:8px}
+.portfolioDetailPage .portfolioDetailVideoGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.portfolioDetailPage .portfolioDetailVideoGrid video{display:block;width:100%;height:auto;max-height:720px;object-fit:contain;border:1px solid #d8e6ed;border-radius:14px;background:#e9f2f6}
+.portfolioDetailPage .portfolioDetailCta{display:flex;justify-content:space-between;align-items:center;gap:28px;position:relative;isolation:isolate;overflow:hidden;margin-top:24px;margin-bottom:30px;border:1px solid #fff;border-radius:18px;padding:35px 32px;background:linear-gradient(115deg,#ffffffb3,#e0edf4a1);box-shadow:inset 0 0 0 1px #d9e7ef,0 8px 24px #6b8a9a0d}
+.portfolioDetailPage .portfolioDetailCta:before{content:'';position:absolute;inset:0 12% 0 auto;width:44%;background:url('/project-detail-reference/cta-glass-accent.png') center/contain no-repeat;pointer-events:none;z-index:-1;opacity:.65}
+.portfolioDetailPage .portfolioDetailCta>div{min-width:0}
+.portfolioDetailPage .portfolioDetailCta h2{font-size:clamp(26px,3.4vw,44px);font-weight:600;line-height:1.14;letter-spacing:-.05em;color:#0c1419;margin:12px 0 0;overflow-wrap:anywhere}
+.portfolioDetailPage .portfolioDetailCta h2 span{background:none!important;color:inherit!important;-webkit-text-fill-color:currentColor!important}
+.portfolioDetailPage .portfolioDetailCta>.primary{flex:none;white-space:nowrap}
+.portfolioDetailPage a:focus-visible{outline:2px solid #008d9c;outline-offset:5px}
+body:has(.portfolioDetailPage){background:#f5fafd;color:#11171c}
+@media(min-width:761px) and (max-width:1000px){
+}
+@media(max-width:760px){
+ .portfolioDetailPage .portfolioDetailHero{padding-top:22px;padding-bottom:18px}
+ .portfolioDetailPage .portfolioBackLink{font-size:13px;margin-bottom:20px}
+ .portfolioDetailPage .portfolioDetailCover{aspect-ratio:auto;min-height:240px;margin-bottom:20px;background:none}
+ .portfolioDetailPage .portfolioDetailCover:after{display:none}
+ .portfolioDetailPage .portfolioDetailCover>img,.portfolioDetailPage .portfolioDetailCover>video{position:relative;inset:auto;width:100%;height:auto;max-height:75svh;min-height:180px;object-fit:contain;border-radius:12px}
+ .portfolioDetailPage .portfolioDetailIntro h1{font-size:clamp(38px,10vw,64px)}
+ .portfolioDetailPage .portfolioDetailClient{font-size:19px}
+ .portfolioDetailPage .portfolioDetailIntro>p,.portfolioDetailPage .portfolioDetailDescription>p{font-size:16px;line-height:1.65}
+ .portfolioDetailPage .portfolioDetailFacts>div{padding:16px 18px}
+ .portfolioDetailPage .portfolioDetailMediaGrid,.portfolioDetailPage .portfolioDetailVideoGrid{grid-template-columns:1fr;gap:16px}
+ .portfolioDetailPage .sectionHeading{align-items:flex-start;gap:14px}
+ .portfolioDetailPage .sectionHeading>span{font-size:12px!important}
+ .portfolioDetailPage .portfolioDetailCta{flex-direction:column;align-items:flex-start;padding:28px 22px;gap:24px}
+ .portfolioDetailPage .portfolioDetailCta:before{right:0;width:65%;opacity:.35}
+ .portfolioDetailPage .portfolioDetailCta>.primary{align-self:flex-start}
+}
+/* Compact previews; the original file is opened only when requested. */
+.portfolioDetailPage .portfolioDetailHeroGrid{display:grid;grid-template-columns:minmax(0,350px) minmax(0,1fr);gap:40px;align-items:start}
+.portfolioDetailPage .portfolioDetailCover{min-width:0;width:100%;min-height:0;max-width:350px;padding:10px;margin:0;border:1px solid #ffffffb3;border-radius:12px;background:#ffffff35;box-shadow:0 4px 14px #54778a0b;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.portfolioDetailPage .portfolioDetailIntro{padding-top:8px}
+.portfolioDetailPage .portfolioDetailIntro h1{font-size:clamp(32px,4.3vw,54px);line-height:1.1;margin:8px 0 12px}
+.portfolioDetailPage .portfolioDetailClient{font-size:18px}
+.portfolioDetailPage .portfolioDetailIntro>p{font-size:16px;line-height:1.6;margin:12px 0 18px}
+.portfolioDetailPage .portfolioDetailFacts{margin:16px 0;box-shadow:0 3px 12px #54778a08;background:#ffffff38;border-color:#e0eaf0;backdrop-filter:blur(10px)}
+.portfolioDetailPage .portfolioDetailFacts>div{padding:14px 18px}
+.portfolioDetailPage .portfolioDetailMediaGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.portfolioDetailPage .portfolioDetailMediaGrid figure{display:block;padding:9px;border:1px solid #ffffffb3;border-radius:12px;background:#ffffff38;box-shadow:0 4px 14px #54778a0b;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.portfolioDetailPage .portfolioImageLink{position:relative;display:block;min-width:0;width:100%;border-radius:7px;overflow:hidden;cursor:zoom-in;background:#edf4f750}
+.portfolioDetailPage .portfolioImageLink>img{position:static;display:block;inset:auto;width:100%;height:220px;max-height:none;object-fit:contain;border:0;border-radius:0;background:transparent}
+.portfolioDetailPage .portfolioDetailCover .portfolioImageLink>img{height:280px}
+.portfolioDetailPage .portfolioImageHint{position:absolute;right:7px;bottom:7px;display:flex;align-items:center;gap:5px;padding:5px 8px;color:#3d5969;background:#ffffffdd;border:1px solid #e0e8ec;border-radius:5px;font-size:11px;line-height:1.3;pointer-events:none}
+.portfolioDetailPage .portfolioDetailCover>video{position:relative;inset:auto;width:100%;height:280px;min-height:0;max-height:none;object-fit:contain;border:0;background:#e6eff3;border-radius:7px}
+.portfolioDetailPage .portfolioDetailVideoGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.portfolioDetailPage .portfolioDetailVideoGrid video{width:100%;height:220px;max-height:none;object-fit:contain;border-radius:10px;border:1px solid #dce7ed}
+.portfolioImageDialog{box-sizing:border-box;position:fixed;inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:24px;border:0;background:#0b1623de;color:#fff;overflow:auto}
+.portfolioImageDialog::backdrop{background:#0b162388;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.portfolioImageDialog:not([open]){display:none}
+.portfolioImageDialog[open]{display:grid;place-items:center}
+.portfolioImageViewer{width:min(1400px,100%);min-width:0}
+.portfolioImageToolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.portfolioImageToolbar>a{color:#fff;font-size:14px;text-decoration:underline;text-underline-offset:4px}
+.portfolioImageToolbar>button{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #ffffff66;border-radius:8px;background:#ffffff16;color:#fff;cursor:pointer}
+.portfolioImageDialog .portfolioImageViewer>img{display:block;width:100%;height:calc(100dvh - 120px);max-height:none!important;object-fit:contain;border-radius:0;background:transparent}
+.portfolioImageToolbar a:focus-visible,.portfolioImageToolbar button:focus-visible{outline:2px solid #8fe5ed;outline-offset:4px}
+body:has(.portfolioImageDialog[open]){overflow:hidden}
+@media(max-width:900px){
+ .portfolioDetailPage .portfolioDetailHeroGrid{grid-template-columns:minmax(0,280px) minmax(0,1fr);gap:26px}
+ .portfolioDetailPage .portfolioDetailMediaGrid,.portfolioDetailPage .portfolioDetailVideoGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .portfolioDetailPage .portfolioDetailHeroGrid{grid-template-columns:1fr;gap:20px}
+ .portfolioDetailPage .portfolioDetailCover{max-width:350px;min-height:0;margin:0 auto}
+ .portfolioDetailPage .portfolioDetailCover .portfolioImageLink>img,.portfolioDetailPage .portfolioDetailCover>video{height:230px;min-height:0}
+ .portfolioDetailPage .portfolioImageLink>img,.portfolioDetailPage .portfolioDetailVideoGrid video{height:170px}
+ .portfolioDetailPage .portfolioDetailMediaGrid,.portfolioDetailPage .portfolioDetailVideoGrid{gap:12px}
+ .portfolioDetailPage .portfolioDetailMediaGrid figure{padding:6px}
+ .portfolioImageDialog{padding:12px}
+ .portfolioImageDialog .portfolioImageViewer>img{height:calc(100dvh - 100px)}
+}

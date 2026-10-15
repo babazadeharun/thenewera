@@ -1,6 +1,5 @@
 import './home-glass.css';
 import './home-mobile-reference.css';
-import HomeMobileMenu from './components-home-mobile-menu';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { getAccountHomePath } from '@/lib/account-routing';
@@ -65,6 +64,20 @@ export default async function Home() {
   const portfolio = dynamicPortfolio.length ? dynamicPortfolio : fallbackPortfolio;
   const section = (key: string) => sections.find((item) => item.key === key);
   const showSection = (key: string) => section(key)?.enabled !== false;
+
+  // Keep the existing CMS editable, but migrate the old hard-coded About copy
+  // to the new approved wording without requiring a destructive DB migration.
+  const aboutSection = section('about');
+  const legacyAboutCopy =
+    !aboutSection ||
+    (
+      aboutSection.title.trim().toLocaleLowerCase('az-AZ') === 'new era yanaşması' &&
+      (aboutSection.description || '').trim().toLocaleLowerCase('az-AZ').startsWith('strategiya, kreativ və icranı vahid tərəfdaş kimi idarə edirik')
+    );
+  const aboutTitle = legacyAboutCopy ? 'Bir layihə. Bir tərəfdaş. Bütöv nəticə.' : aboutSection?.title;
+  const aboutDescription = legacyAboutCopy
+    ? 'Strategiyadan kreativə, dizayndan istehsala qədər layihənizin bütün mərhələlərini vahid sistemdə birləşdiririk. Siz isə ayrı-ayrı icraçıları deyil, nəticəni idarə edirsiniz.'
+    : aboutSection?.description;
   const heroes = await prisma.hero.findMany({ where: { active: true }, include: { desktopMedia: true, mobileMedia: true, videoMedia: true }, orderBy: { displayOrder: 'asc' }, take: 10 }).catch(() => []);
   const hero = heroes[0];
   // New design baseline: existing CMS media belongs to the previous skin.
@@ -83,29 +96,6 @@ export default async function Home() {
   return (
     <main className="glassHome">
       <section id="top" className="hero screenshotHero">
-        <nav className="nav container">
-          <a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a>
-          <HomeMobileMenu accountHref={currentUser ? getAccountHomePath(currentUser.role) : "/login"} signedIn={!!currentUser} />
-          <div className="navLinks">
-            <a href="#top">Ana səhifə</a>
-            <a href="#services">Xidmətlər</a>
-            <a href="#portfolio">İşlərimiz</a>
-            <a href="#about">Haqqımızda</a>
-            <a href="/analysis">Analiz</a>
-            <a href="/events">Tədbirlər</a>
-            <a href="/start-project">Layihəyə başla</a>
-          </div>
-          <div className="navActions">
-            {!currentUser ? (
-              <>
-                <a href="/login" className="pill">Daxil ol</a>
-                <a href="/register" className="primary">Hesab yarat</a>
-              </>
-            ) : (
-              <a href={getAccountHomePath(currentUser.role)} className="pill">Hesabım</a>
-            )}
-          </div>
-        </nav>
         <div className="heroArt" aria-hidden="true" style={{ ['--hero-desktop' as string]: `url(${heroImage})`, ['--hero-mobile' as string]: `url(${heroMobileImage})` } as React.CSSProperties}>
           {useCmsHero && hero?.videoMedia?.url && <video className="heroVideo" src={hero.videoMedia.url} autoPlay muted loop playsInline aria-hidden="true" />}
         </div>
@@ -141,7 +131,7 @@ export default async function Home() {
 
       {showSection('how') && <section id="how" className="howSection"><div className="container howBox"><div className="howVisual"><div className="howArt" style={section('how')?.image?.url ? ({ backgroundImage: `url(${section('how')?.image?.url})` } as React.CSSProperties) : undefined}/><div className="eyebrow">NECƏ İŞLƏYİR</div><h2>Biznesiniz üçün <span>vahid komanda.</span></h2><p>Brief-dən strategiyaya, kreativdən icraya qədər layihəni New Era idarə edir.</p></div><div className="steps"><div><b>01</b><span>Məqsədi paylaşın</span><small>Biznesinizi, hədəfinizi və ehtiyacınızı bizə danışın.</small></div><div><b>02</b><span>Strategiya quraq</span><small>Uyğun istiqaməti və kreativ həlli birlikdə müəyyənləşdirək.</small></div><div><b>03</b><span>İcra edək</span><small>New Era komandası işi həyata keçirir və nəticəni təqdim edir.</small></div><a className="stepArrow" href="/start-project">→</a></div></div></section>}
 
-      
+      {showSection('about') && <section id="about" className="finalCta container"><div className="glassAboutArt" aria-hidden="true" style={aboutSection?.image?.url ? { backgroundImage: `url(${aboutSection.image.url})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}/><div className="glassAboutCopy"><div className="eyebrow">NEW ERA YANAŞMASI</div><h2>{aboutTitle}</h2><p>{aboutDescription}</p></div></section>}
 
       <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 
@@ -149,8 +139,3 @@ export default async function Home() {
     </main>
   );
 }
-
-
-
-
-

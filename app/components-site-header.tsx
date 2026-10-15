@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import './public-navbar.css';
@@ -34,12 +34,12 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="neSiteHeader neUnifiedHeader">
-      <div className="neSiteHeaderInner">
-        <Link className="neSiteBrand" href="/" aria-label="New Era">
+    <header className="nePublicHeader">
+      <div className="nePublicInner">
+        <Link className="nePublicBrand" href="/" aria-label="Əlavə hesab və əlaqə keçidləri">
           <img src="/new-era-logo.png" alt="New Era Marketing Agency" />
         </Link>
-        <nav className="neSiteNav" aria-label="Əsas menyu">
+        <nav className="nePublicNav" aria-label="Əlavə hesab və əlaqə keçidləri">
           <Link href="/">Ana səhifə</Link>
           <Link href="/#services">Xidmətlər</Link>
           <Link href="/#portfolio">İşlərimiz</Link>
@@ -48,16 +48,16 @@ export default function SiteHeader() {
           <Link href="/events">Tədbirlər</Link>
           <Link href="/start-project">Layihəyə başla</Link>
         </nav>
-        <div className="neSiteActions">
-          {ready && <Link href={user ? getAccountHomePath(user.role) : '/login'} className="neSiteLogin">{user ? 'Hesabım' : 'Daxil ol'}</Link>}
-          <details className="neSiteMore" onKeyDown={(event) => {
+        <div className="nePublicActions">
+          {ready && <Link href={user ? getAccountHomePath(user.role) : '/login'} className="nePublicAccount">{user ? 'Hesabım' : 'Daxil ol'}</Link>}
+          <details className="nePublicMore" onKeyDown={(event) => {
             if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus(); }
           }}>
             <summary aria-label="Əlavə hesab və əlaqə keçidləri">•••</summary>
-            <div className="neSiteMorePanel">
+            <div className="nePublicMorePanel">
               <Link href="/#contact">Əlaqə</Link>
-              <button type="button" className="neSiteSearch" aria-label="Axtarış"><Search size={18} /> Axtarış</button>
-              {ready && user ? <button type="button" className="neSiteSignup" onClick={logout}>Çıxış</button> : ready ? <Link href="/register" className="neSiteSignup">Hesab yarat</Link> : null}
+              <button type="button" className="nePublicSearch" aria-label="Əlavə hesab və əlaqə keçidləri"><Search size={18} /> Axtarış</button>
+              {ready && user ? <button type="button" className="nePublicSecondary" onClick={logout}>Çıxış</button> : ready ? <Link href="/register" className="nePublicSecondary">Hesab yarat</Link> : null}
             </div>
           </details>
         </div>
@@ -65,3 +65,5 @@ export default function SiteHeader() {
     </header>
   );
 }
+
+

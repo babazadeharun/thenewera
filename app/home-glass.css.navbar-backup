@@ -1,0 +1,94 @@
+/* Reference-driven homepage skin. Scoped to keep account and admin interfaces intact. */
+.glassHome{--ink:#161a1e;--muted:#73777e;--cyan:#25d2df;background:#fafbfc;color:var(--ink);overflow:hidden}
+.glassHome .container{width:min(1320px,calc(100% - 96px))!important}
+.glassHome .screenshotHero{height:auto!important;min-height:620px!important;max-height:none!important;aspect-ratio:1.85;background:#eef0f3!important;border:0!important}
+.glassHome .screenshotHero .heroArt{inset:0!important;background-image:var(--hero-desktop)!important;background-position:center!important;background-size:cover!important;opacity:1!important;filter:none!important;transform:none!important}
+.glassHome .screenshotHero .heroArt:after{background:none!important}
+.glassHome .heroVideo{width:100%;height:100%;object-fit:cover}
+.glassHome .stars{display:none}
+.glassHome .nav{height:auto!important;min-height:90px!important;padding:16px 0!important;background:transparent!important;border:0!important;backdrop-filter:none!important;gap:24px}
+.glassHome .brand img{width:185px!important;height:52px!important;filter:brightness(0)!important}
+.glassHome .navLinks{display:flex!important;gap:19px!important;color:#24292e!important;font-size:12px!important;flex-wrap:wrap;justify-content:center}
+.glassHome .navLinks a{height:auto!important;font-weight:400!important}
+.glassHome .navLinks a:hover,.glassHome .navLinks a.active{color:#008a98!important}
+.glassHome .navLinks a.active:after{display:none}
+.glassHome .navActions{gap:12px!important;color:#24292e!important;font-size:12px!important;white-space:nowrap}
+.glassHome .iconBtn{color:#24292e!important}
+.glassHome .pill,.glassHome .secondary,.glassHome .outlineBtn{background:linear-gradient(135deg,rgba(255,255,255,.8),rgba(221,228,234,.45))!important;border:1px solid #fff!important;border-radius:7px!important;box-shadow:inset 0 0 0 1px #d4dbe1,0 3px 7px #64717b20!important;color:var(--ink)!important;font-weight:400!important}
+.glassHome .heroInner{padding-top:180px!important;padding-bottom:55px!important;position:relative!important;transform:none!important;top:auto!important;left:auto!important}
+.glassHome .heroInner .eyebrow{font-size:10px!important;letter-spacing:.18em!important;margin-bottom:17px!important}
+.glassHome .eyebrow{color:#697780!important;font-weight:400!important}
+.glassHome .hero h1{font-size:clamp(42px,4.6vw,68px)!important;line-height:1.07!important;letter-spacing:-.055em!important;font-weight:400!important;max-width:550px!important;color:var(--ink)!important;margin:0!important}
+.glassHome h2 span,.glassHome .hero h1 span{background:none!important;color:inherit!important;-webkit-text-fill-color:currentColor!important}
+.glassHome .hero p{font-size:18px!important;line-height:1.5!important;max-width:450px!important;color:#666c73!important;margin:23px 0!important}
+.glassHome .primary{background:#25d2df!important;color:#103438!important;border:1px solid #62e5ed!important;box-shadow:0 5px 13px #008d9a16!important;border-radius:7px!important;font-weight:400!important;padding:15px 23px!important}
+.glassHome .secondary{display:inline-flex;align-items:center;gap:10px;padding:15px 23px!important}
+.glassHome .auditCtaHero{width:390px!important;max-width:100%!important;background:rgba(255,255,255,.52)!important;border:1px solid #ffffff!important;color:#323d44!important;box-shadow:inset 0 0 0 1px #d4dde3,0 3px 12px #53657312!important;border-radius:9px!important;padding:10px 14px!important;margin-top:17px!important}
+.glassHome .auditCtaHero span{flex:1}.glassHome .auditCtaHero small{display:block;color:#737b82!important;margin-top:3px}.glassHome .auditCtaHero>svg{color:#159aa8!important}
+.glassHome .scrollHint{color:#68777e!important}
+.glassHome .section{padding:65px 0!important}
+.glassHome .servicesSection{background:radial-gradient(ellipse at 100% 0,#dce0e65c,transparent 65%)}
+.glassHome .sectionIntro{display:block!important;text-align:center!important;margin-bottom:36px!important}
+.glassHome .sectionIntro .eyebrow{display:none}
+.glassHome .sectionIntro h2,.glassHome .finalCta h2,.glassHome .howVisual h2,.glassHome .analysisTeaser h2{font-size:clamp(32px,3.5vw,48px)!important;font-weight:400!important;line-height:1.12!important;letter-spacing:-.045em!important;color:var(--ink)!important}
+.glassHome .sectionIntro>p{color:var(--muted)!important;font-size:15px!important;max-width:690px!important;margin:14px auto 0!important;line-height:1.6!important}
+.glassHome .serviceGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:24px!important}
+.glassHome .serviceCard{min-height:250px!important;padding:24px 28px!important;border:1px solid #fff!important;border-radius:13px!important;background:linear-gradient(135deg,#ffffffa8,#e4e9ee40 65%,#ffffffb0)!important;box-shadow:inset 0 0 0 1px #cbd3daa3,inset 3px 3px 4px #fff,inset -2px -2px 4px #b3bdc455,0 8px 18px #4655631a!important;backdrop-filter:blur(18px);position:relative}
+.glassHome .serviceCard:hover{transform:translateY(-4px)!important;box-shadow:inset 0 0 0 1px #91d7df,0 12px 24px #46556322!important}
+.glassHome .serviceIcon{width:88px!important;height:100px!important;background:linear-gradient(135deg,#fff8,#dce7ed55)!important;border:1px solid #fff!important;color:#19a8b7!important;border-radius:20px!important;margin:0 auto 22px!important;box-shadow:inset 2px 2px 5px white,inset -2px -2px 5px #849ca640,3px 5px 9px #4d738622!important;transform:perspective(300px) rotateY(-12deg)}
+.glassHome .serviceIcon svg{width:51px;height:51px;stroke-width:1.35;filter:drop-shadow(2px 3px 1px #46717b50)}
+.glassHome .serviceCard h3{color:var(--ink)!important;font-size:20px!important;font-weight:400!important;margin-bottom:8px!important}
+.glassHome .serviceCard p{color:var(--muted)!important;font-size:14px!important;max-width:calc(100% - 34px)!important;line-height:1.5!important}
+.glassHome .serviceCard:after{content:'→';position:absolute;right:20px;bottom:25px;border:1px solid #d4dbe1;background:#ffffffad;border-radius:50%;width:36px;height:36px;display:grid;place-items:center;box-shadow:0 2px 4px #52616b1c;color:#222;font-size:20px}
+.glassHome .outlineBtn{font-size:13px!important;padding:12px 19px!important;margin-top:28px!important}
+.glassHome .portfolioSection{background:#fff!important}
+.glassHome .agencyPortfolioGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:26px!important}
+.glassHome .agencyPortfolioCard{background:transparent!important;border:0!important;box-shadow:none!important;border-radius:0!important;overflow:visible!important}
+.glassHome .agencyPortfolioImage{height:auto!important;aspect-ratio:1.08;border-radius:9px!important;background:#edf0f3!important;overflow:hidden}
+.glassHome .agencyPortfolioImage img{width:100%;height:100%;object-fit:cover;filter:none!important}
+.glassHome .agencyPortfolioImage span{color:#263e43!important;background:#ffffffc7!important;border:1px solid #ffffff!important;backdrop-filter:blur(12px)}
+.glassHome .agencyPortfolioBody{padding:16px 3px!important;color:var(--ink)!important}
+.glassHome .agencyPortfolioBody strong{color:var(--ink)!important;font-size:19px!important;font-weight:400!important}
+.glassHome .agencyPortfolioBody small,.glassHome .agencyPortfolioBody p{color:var(--muted)!important;font-size:13px!important}
+.glassHome .agencyPortfolioBody>svg{color:#282e32!important}
+.glassHome .howSection{background:linear-gradient(125deg,#f7f9fb,#e8edf1)!important;padding:35px 0!important}
+.glassHome .howBox{background:#ffffff6b!important;border:1px solid white!important;box-shadow:inset 0 0 0 1px #d6dde3,0 5px 16px #56667015!important;border-radius:13px!important}
+.glassHome .howVisual{background:none!important}.glassHome .howArt{opacity:.14!important}
+.glassHome .howVisual p,.glassHome .steps small{color:var(--muted)!important}.glassHome .steps span{color:var(--ink)!important}.glassHome .steps b,.glassHome .stepArrow{color:#159da9!important;background:#ecfafb!important;border-color:#c6e5e9!important}
+.glassHome .finalCta{display:grid!important;grid-template-columns:1fr 1fr!important;gap:60px!important;align-items:center!important;text-align:left!important;padding:60px 0!important;margin:0 auto!important;background:transparent!important;border:0!important}
+.glassHome .glassAboutArt{min-height:410px;background-image:url('/glass-design-reference.png');background-size:200% auto;background-position:left 80.3%;border-radius:12px}
+.glassHome .finalCta p{font-size:17px!important;line-height:1.65!important;color:#72777e!important;max-width:560px!important}
+.glassHome .analysisTeaser{padding:20px 0 60px!important;background:linear-gradient(130deg,#f7f9fb,#e4e8ee)!important}
+.glassHome .analysisTeaserInner{padding:40px!important;border-radius:14px!important;background:#ffffff60!important;border:1px solid #fff!important;box-shadow:inset 0 0 0 1px #c4ced6,0 6px 16px #46556320!important}
+.glassHome .analysisTeaser p{color:var(--muted)!important;font-size:15px!important;line-height:1.6!important}
+.glassHome .footer{padding:27px 0!important;background:#fff!important;color:#747980!important;border:0!important;font-size:12px!important}
+.glassHome a:focus-visible,.glassHome button:focus-visible{outline:2px solid #087e8c;outline-offset:5px}
+@media(min-width:1600px){.glassHome .heroInner{padding-top:230px!important}}
+@media(max-width:1100px){.glassHome .container{width:calc(100% - 56px)!important}.glassHome .nav{flex-wrap:wrap;gap:8px}.glassHome .navLinks{order:3;width:100%;gap:20px!important}.glassHome .heroInner{padding-top:170px!important}.glassHome .hero h1{font-size:48px!important;max-width:430px!important}.glassHome .hero p{max-width:370px!important}.glassHome .serviceCard{padding:22px!important}.glassHome .serviceCard h3{font-size:17px!important}.glassHome .finalCta{gap:30px!important}}
+@media(max-width:760px){.glassHome .container{width:calc(100% - 36px)!important}.glassHome .screenshotHero{aspect-ratio:auto;min-height:820px!important;height:auto!important}.glassHome .screenshotHero .heroArt{background-image:var(--hero-mobile)!important;background-position:65% bottom!important;background-size:auto 460px!important;background-repeat:no-repeat!important}.glassHome .screenshotHero .heroArt:after{background:linear-gradient(#f8f9fb 0%,#f8f9fb 37%,transparent 68%)!important}.glassHome .nav{min-height:100px!important;padding:12px 0!important;gap:10px}.glassHome .brand img{width:135px!important;height:40px!important}.glassHome .navActions{font-size:11px!important;gap:9px!important}.glassHome .pill{padding:9px 12px!important}.glassHome .navLinks{display:flex!important;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;font-size:11px!important;gap:17px!important;padding:6px 0 12px}.glassHome .navLinks a{flex:none}.glassHome .heroInner{padding-top:145px!important;padding-bottom:380px!important}.glassHome .hero h1{font-size:43px!important;max-width:100%!important}.glassHome .hero p{font-size:15px!important;max-width:100%!important;margin:16px 0!important}.glassHome .heroInner .eyebrow{font-size:9px!important}.glassHome .heroCtas{gap:9px!important;flex-wrap:wrap}.glassHome .primary,.glassHome .secondary{font-size:12px!important;padding:12px 16px!important}.glassHome .auditCtaHero{width:100%!important}.glassHome .scrollHint{right:24px!important}.glassHome .section{padding:42px 0!important}.glassHome .serviceGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}.glassHome .serviceCard{padding:18px 15px!important;min-height:245px!important}.glassHome .serviceIcon{width:65px!important;height:72px!important;margin-bottom:18px!important}.glassHome .serviceIcon svg{width:40px;height:40px}.glassHome .serviceCard p{font-size:12px!important;max-width:100%!important;padding-bottom:28px}.glassHome .serviceCard:after{width:28px;height:28px;right:12px;bottom:12px}.glassHome .agencyPortfolioGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}.glassHome .agencyPortfolioBody strong{font-size:16px!important}.glassHome .finalCta{grid-template-columns:1fr!important;gap:25px!important;padding:35px 0!important}.glassHome .glassAboutArt{min-height:330px;background-size:200% auto}.glassHome .howBox{grid-template-columns:1fr!important}.glassHome .analysisTeaserInner{padding:25px!important;display:flex!important;flex-direction:column;align-items:flex-start!important;gap:20px}.glassHome .footer{flex-wrap:wrap!important;gap:18px!important}}
+@media(max-width:400px){.glassHome .serviceGrid,.glassHome .agencyPortfolioGrid{grid-template-columns:1fr!important}.glassHome .hero h1{font-size:37px!important}.glassHome .serviceCard{min-height:220px!important}.glassHome .navActions .iconBtn{display:none}}
+@media(prefers-reduced-motion:reduce){.glassHome *{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+/* Original high-resolution transparent icon assets supplied by the client. */
+.glassHome .serviceIcon{width:112px!important;height:112px!important;background:none!important;border:0!important;box-shadow:none!important;transform:none!important;border-radius:0!important;overflow:visible!important}
+.glassHome .serviceIcon img{display:block;width:100%;height:100%;object-fit:contain;filter:none!important}
+/* Remove inherited framed navbar and dark-theme text effects. */
+.glassHome .screenshotHero .nav{border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;background:none!important;backdrop-filter:none!important;top:0!important;max-width:1320px!important}
+.glassHome .screenshotHero .nav *, .glassHome .heroInner *, .glassHome .heroInner{ text-shadow:none!important;filter:none!important }
+.glassHome .screenshotHero .nav .brand img{filter:brightness(0)!important}
+.glassHome .screenshotHero .nav .navActions .login,.glassHome .screenshotHero .nav .navActions .iconBtn{color:#252b30!important}
+.glassHome .screenshotHero .heroArt:before,.glassHome .screenshotHero:before,.glassHome .screenshotHero:after{display:none!important}
+@media(max-width:760px){.glassHome .serviceIcon{width:94px!important;height:94px!important;margin-bottom:16px!important}}
+
+/* Client-supplied white logo becomes black on the light homepage. */
+.glassHome .brand img{width:220px!important;height:30px!important;object-fit:cover!important;object-position:center!important;filter:brightness(0)!important}
+.glassHome .footer .brand img{width:190px!important;height:27px!important}
+@media(max-width:760px){.glassHome .brand img{width:150px!important;height:24px!important}}
+
+.glassHome .navLinks{gap:36px!important;font-size:13px!important}
+.glassHome .glassMore{position:relative;font-size:12px}
+.glassHome .glassMore summary{cursor:pointer;list-style:none;padding:10px 0;color:#5b6268}
+.glassHome .glassMore summary::-webkit-details-marker{display:none}
+.glassHome .glassMoreMenu{position:absolute;right:0;top:100%;width:190px;padding:12px;display:grid;gap:4px;background:#fffffff2;border:1px solid #d8e0e5;border-radius:9px;box-shadow:0 9px 25px #40535e20}
+.glassHome .glassMoreMenu a,.glassHome .glassMoreMenu button{padding:9px;text-align:left;display:block;height:auto;color:#24292e!important}
+.glassHome .glassMoreMenu a:hover{background:#e9f8fa;border-radius:5px}
+@media(max-width:760px){.glassHome .navLinks{justify-content:center!important;gap:24px!important;font-size:12px!important}.glassHome .glassMore{font-size:11px}}

@@ -1,4 +1,6 @@
+import './project-detail-reference.css';
 import Link from 'next/link';
+import PortfolioImage from './PortfolioImage';
 import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
@@ -89,7 +91,7 @@ export default async function PortfolioDetailPage({
             {cover.mimeType.startsWith('video/') ? (
               <video src={cover.url} controls preload="metadata" />
             ) : (
-              <img src={cover.url} alt={coverMeta.title || cover.originalName} />
+              <PortfolioImage src={cover.url} alt={coverMeta.title || cover.originalName} />
             )}
           </div>
           <div className="portfolioDetailIntro">
@@ -126,7 +128,7 @@ export default async function PortfolioDetailPage({
           <div className="portfolioDetailMediaGrid">
             {allImages.map((item) => (
               <figure key={item.id}>
-                <img src={item.url} alt={coverMeta.title || item.originalName} loading="lazy" />
+                <PortfolioImage src={item.url} alt={coverMeta.title || item.originalName} loading="lazy" />
               </figure>
             ))}
           </div>

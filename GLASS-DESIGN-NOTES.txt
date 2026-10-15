@@ -1,0 +1,10 @@
+NEW ERA — corrected glass design
+
+Updated homepage navbar, high-resolution service icons and client-supplied logo.
+The six original 1254px PNG icon files are used directly; no screenshot crops. Eight existing services remain; available icons are reused for related services.
+Navbar: four main reference links; existing analysis, events, project and registration links retained in the More menu. Login/account destination remains unchanged. Contact link scrolls to the footer; no new submission form added.
+
+Hero design baseline: CMS hero/settings last edited before 2026-10-14 15:38:19 UTC use the new supplied portal image. Saving the hero again in the admin CMS restores normal desktop/mobile/video selection. Saving site settings again restores its hero-image selection when a desktop hero is not selected. Existing data is not modified.
+
+Setup: npm ci, npm run dev. Build: npm run build.
+TypeScript passed. Earlier Next compilation passed; full build was blocked by the imported Windows Prisma engine. Full browser verification was unavailable in this environment.

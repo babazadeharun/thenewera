@@ -1,0 +1,43 @@
+﻿import { prisma } from '@/lib/prisma';
+
+export type NotificationType =
+  | 'INVOICE_OVERDUE'
+  | 'FOLLOW_UP_DUE'
+  | 'NEW_EMAIL'
+  | 'PAYMENT_RECEIVED'
+  | 'PROMOTER_APPLICATION'
+  | 'PROJECT_DEADLINE'
+  | 'SYSTEM';
+
+export type NotificationPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+
+export type CreateNotificationInput = {
+  type: NotificationType;
+  title: string;
+  message: string;
+  userId: string;
+  link?: string | null;
+  priority?: NotificationPriority;
+};
+
+export async function createNotification(input: CreateNotificationInput) {
+  return prisma.customerNotification.create({
+    data: {
+      userId: input.userId,
+      type: input.type,
+      title: input.title.slice(0, 180),
+      message: input.message.slice(0, 2000),
+      link: input.link?.slice(0, 500) || null,
+    },
+  });
+}
+
+export async function processScheduledNotifications() {
+  return { created: 0, checkedAt: new Date().toISOString() };
+}
+
+export async function getUnreadNotificationCount(userId: string) {
+  return prisma.customerNotification.count({
+    where: { userId, isRead: false },
+  });
+}

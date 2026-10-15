@@ -114,7 +114,7 @@ export default function StartProjectClient() {
   }
 
   return (
-    <main className="innerPage">
+    <main className="innerPage briefReference">
       <div className="container formPage">
         <Link className="back" href="/">
           ← New Era

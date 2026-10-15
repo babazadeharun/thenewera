@@ -1,54 +1,48 @@
-﻿/* Single public navbar contract. Route skins must never replace this appearance. */
-.neSiteHeader.neUnifiedHeader.neUnifiedHeader{
- position:relative!important;z-index:100!important;box-sizing:border-box;width:calc(100% - 84px)!important;max-width:none!important;height:74px!important;min-height:0!important;margin:10px auto 16px!important;padding:0!important;overflow:visible!important;
- background:linear-gradient(115deg,rgba(255,255,255,.78),rgba(241,245,249,.51))!important;border:1px solid rgba(255,255,255,.95)!important;border-radius:18px!important;box-shadow:inset 0 1px 0 #fff,0 10px 30px #4053620b!important;backdrop-filter:blur(24px) saturate(1.15)!important;-webkit-backdrop-filter:blur(24px) saturate(1.15)!important;color:#282e33!important;
-}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteHeaderInner{width:100%!important;height:100%!important;display:grid!important;grid-template-columns:220px minmax(0,1fr) 150px!important;align-items:center!important;gap:24px!important;padding:0 20px 0 40px!important;margin:0!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand{display:flex!important;width:180px!important;height:30px!important;min-width:0!important;grid-column:1!important;grid-row:1!important;flex:none!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand img{display:block!important;width:180px!important;height:28px!important;max-width:100%!important;object-fit:cover!important;object-position:center!important;filter:brightness(0)!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav{display:flex!important;align-items:center!important;justify-content:center!important;gap:21px!important;flex-wrap:nowrap!important;height:100%!important;min-width:0!important;width:auto!important;grid-column:2!important;grid-row:1!important;overflow:visible!important;padding:0!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav a{display:flex!important;align-items:center!important;height:auto!important;min-height:44px!important;font-size:clamp(12px,.95vw,18px)!important;line-height:1.3!important;font-weight:600!important;white-space:nowrap!important;color:#2b3136!important;margin:0!important;padding:0!important;text-shadow:none!important;border:0!important;background:none!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav a:after{display:none!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav a:hover{color:#008e9c!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteActions{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;grid-column:3!important;grid-row:1!important;min-width:0!important;flex:none!important}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteLogin{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:46px!important;padding:0 18px!important;font-size:16px!important;font-weight:400!important;white-space:nowrap!important;color:#283239!important;background:linear-gradient(130deg,#ffffffb5,#e2e8ed70)!important;border:1px solid #fff!important;border-radius:9px!important;box-shadow:inset 0 0 0 1px #cbd5de,0 3px 7px #4356650f!important;text-shadow:none!important}
-.neUnifiedHeader .neSiteMore{position:relative}
-.neUnifiedHeader .neSiteMore>summary{display:grid;place-items:center;width:25px;min-height:44px;cursor:pointer;list-style:none;color:#647681;font-size:10px;letter-spacing:1px}
-.neUnifiedHeader .neSiteMore>summary::-webkit-details-marker{display:none}
-.neUnifiedHeader .neSiteMorePanel{position:absolute;right:0;top:calc(100% + 13px);width:190px;display:grid;gap:5px;padding:12px;background:rgba(248,252,255,.92);border:1px solid white;border-radius:12px;box-shadow:inset 0 0 0 1px #dbe6ed,0 10px 28px #37506321;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
-.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteMorePanel a,.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteMorePanel button{display:flex!important;align-items:center!important;gap:9px!important;border:0!important;background:none!important;box-shadow:none!important;color:#314754!important;text-align:left!important;min-height:44px!important;width:100%!important;padding:9px 12px!important;font:400 14px/1.5 'NewEraSans',sans-serif!important;border-radius:6px!important;cursor:pointer!important}
-.neUnifiedHeader .neSiteMorePanel a:hover,.neUnifiedHeader .neSiteMorePanel button:hover{background:#e6f5f8!important}
-.neUnifiedHeader a:focus-visible,.neUnifiedHeader button:focus-visible,.neUnifiedHeader summary:focus-visible{outline:2px solid #00899a;outline-offset:4px}
-/* The homepage header overlays its existing hero, as in the approved screenshot. */
-body:has(.glassHome)>.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader{position:absolute!important;top:0!important;left:42px!important;right:42px!important;margin-left:0!important;margin-right:0!important}
+/* One outer glass surface. Unique names isolate it from every legacy navbar skin. */
+.nePublicHeader{position:relative;z-index:100;box-sizing:border-box;width:calc(100% - 64px);height:76px;margin:16px auto 24px;padding:0;border:1px solid #ffffffa6;border-radius:13px;background:linear-gradient(115deg,#ffffff70,#f0f4f859);box-shadow:0 4px 18px #354f610b;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#2d343a}
+.nePublicHeader::before,.nePublicHeader::after,.nePublicInner::before,.nePublicInner::after{content:none!important;display:none!important}
+.nePublicInner{box-sizing:border-box;display:grid;grid-template-columns:210px minmax(0,1fr) 145px;align-items:center;gap:20px;width:100%;height:100%;padding:0 20px 0 32px;margin:0;border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.nePublicBrand{display:flex;align-items:center;width:180px;height:28px;min-width:0}
+.nePublicBrand img{display:block;width:180px;height:28px;max-width:100%;object-fit:cover;object-position:center;filter:brightness(0)}
+.nePublicNav{display:flex;align-items:center;justify-content:center;gap:20px;height:100%;min-width:0}
+.nePublicNav a{display:flex;align-items:center;min-height:44px;padding:0;font-size:clamp(12px,.95vw,18px);line-height:1.3;font-weight:600;white-space:nowrap;color:#30373d;background:none;border:0;text-shadow:none}
+.nePublicNav a:hover{color:#008b99}
+.nePublicActions{display:flex;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
+.nePublicAccount{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 17px;border:1px solid #d2dce3;border-radius:7px;background:#ffffff40;box-shadow:0 2px 5px #37526609;color:#30383e;font-size:14px;font-weight:400;white-space:nowrap}
+.nePublicMore{position:relative}
+.nePublicMore>summary{display:grid;place-items:center;width:25px;min-height:44px;cursor:pointer;list-style:none;color:#687881;font-size:10px;letter-spacing:1px}
+.nePublicMore>summary::-webkit-details-marker{display:none}
+.nePublicMorePanel{position:absolute;right:0;top:calc(100% + 10px);width:190px;display:grid;gap:5px;padding:12px;background:#f8fcfff2;border:1px solid #dfe9ef;border-radius:10px;box-shadow:0 7px 22px #37506318;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.nePublicMorePanel a,.nePublicMorePanel button{display:flex;align-items:center;gap:9px;border:0;background:none;box-shadow:none;color:#314754;text-align:left;min-height:44px;width:100%;padding:9px 12px;font:400 14px/1.5 'NewEraSans',sans-serif;border-radius:5px;cursor:pointer}
+.nePublicMorePanel a:hover,.nePublicMorePanel button:hover{background:#e9f5f7}
+.nePublicHeader a:focus-visible,.nePublicHeader button:focus-visible,.nePublicHeader summary:focus-visible{outline:2px solid #00899a;outline-offset:4px}
+body:has(>.nePublicHeader){background:#f5f8fb!important}
+body:has(.glassHome)>.nePublicHeader{position:absolute;top:0;left:32px;right:32px;margin-left:0;margin-right:0}
 @media(max-width:1250px) and (min-width:761px){
- .neSiteHeader.neUnifiedHeader.neUnifiedHeader{width:calc(100% - 40px)!important;height:74px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteHeaderInner{grid-template-columns:145px minmax(0,1fr) 120px!important;gap:12px!important;padding:0 16px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand,.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand img{width:140px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav{gap:12px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav a{font-size:11px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteLogin{font-size:13px!important;padding:0 12px!important}
- body:has(.glassHome)>.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader{left:20px!important;right:20px!important}
+ .nePublicHeader{width:calc(100% - 40px);height:72px}
+ .nePublicInner{grid-template-columns:145px minmax(0,1fr) 120px;gap:12px;padding:0 16px}
+ .nePublicBrand,.nePublicBrand img{width:140px}
+ .nePublicNav{gap:12px}.nePublicNav a{font-size:11px}
+ .nePublicAccount{font-size:13px;padding:0 12px}
+ body:has(.glassHome)>.nePublicHeader{left:20px;right:20px}
 }
 @media(max-width:950px) and (min-width:761px){
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteHeaderInner{grid-template-columns:120px minmax(0,1fr) 103px!important;gap:8px!important;padding:0 12px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand,.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand img{width:115px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav{gap:8px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav a{font-size:9px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteLogin{font-size:12px!important;padding:0 9px!important}
+ .nePublicInner{grid-template-columns:120px minmax(0,1fr) 103px;gap:8px;padding:0 12px}
+ .nePublicBrand,.nePublicBrand img{width:115px}
+ .nePublicNav{gap:8px}.nePublicNav a{font-size:9px}
+ .nePublicAccount{font-size:12px;padding:0 9px}
 }
 @media(max-width:760px){
- .neSiteHeader.neUnifiedHeader.neUnifiedHeader{width:calc(100% - 28px)!important;height:96px!important;margin:10px auto 14px!important;border-radius:14px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteHeaderInner{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:54px 42px!important;gap:0 10px!important;padding:0 14px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand,.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteBrand img{width:145px!important;height:24px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteActions{grid-column:2!important;grid-row:1!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteLogin{font-size:12px!important;min-height:38px!important;padding:0 12px!important}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav{grid-column:1/-1!important;grid-row:2!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;gap:20px!important;height:42px!important;width:100%!important;scrollbar-width:thin;scrollbar-color:#c2d7df transparent;overscroll-behavior-x:contain}
- .neUnifiedHeader.neUnifiedHeader.neUnifiedHeader .neSiteNav a{font-size:12px!important;min-height:42px!important;flex:none!important}
- body:has(.glassHome)>.neUnifiedHeader.neUnifiedHeader.neUnifiedHeader{position:relative!important;left:auto!important;right:auto!important;top:auto!important;margin-left:auto!important;margin-right:auto!important}
+ .nePublicHeader{width:calc(100% - 28px);height:104px;margin:12px auto 18px;border-radius:11px}
+ .nePublicInner{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:56px 46px;gap:0 10px;padding:0 14px}
+ .nePublicBrand,.nePublicBrand img{width:140px;height:24px}
+ .nePublicActions{grid-column:2;grid-row:1}
+ .nePublicAccount{font-size:12px;min-height:36px;padding:0 12px}
+ .nePublicNav{grid-column:1/-1;grid-row:2;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;gap:20px;height:46px;width:100%;scrollbar-width:thin;scrollbar-color:#c2d7df transparent;overscroll-behavior-x:contain}
+ .nePublicNav a{font-size:12px;min-height:42px;flex:none}
+ body:has(.glassHome)>.nePublicHeader{position:relative;left:auto;right:auto;top:auto;margin-left:auto;margin-right:auto}
  .glassHome .screenshotHero .heroInner{padding-top:36px!important}
- body:has(.glassHome){background:#f5f8fb}
 }
-/* Keep the glass header's surrounding canvas consistent on older dark routes. */
-body:has(>.neUnifiedHeader){background:#f5f8fb!important}
-
+@supports not (backdrop-filter:blur(1px)){.nePublicHeader{background:#f5f8fbe8}}
+/* Keep the first margin inside the light page canvas. */
+body:has(>.nePublicHeader){display:flow-root}

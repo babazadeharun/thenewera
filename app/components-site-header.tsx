@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Search, UserRound } from 'lucide-react';
+import './public-navbar.css';
+import { Search } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getAccountHomePath } from '@/lib/account-routing';
@@ -23,7 +24,7 @@ export default function SiteHeader() {
     return () => { active = false; };
   }, [pathname]);
 
-  if (pathname === '/' || pathname.startsWith('/admin') || pathname.startsWith('/app/admin') || pathname.startsWith('/promoter')) return null;
+  if (pathname === '/account' || pathname === '/projects' || pathname.startsWith('/admin') || pathname.startsWith('/app/admin') || pathname.startsWith('/promoter')) return null;
 
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -33,7 +34,7 @@ export default function SiteHeader() {
   }
 
   return (
-    <header className="neSiteHeader">
+    <header className="neSiteHeader neUnifiedHeader">
       <div className="neSiteHeaderInner">
         <Link className="neSiteBrand" href="/" aria-label="New Era">
           <img src="/new-era-logo.png" alt="New Era Marketing Agency" />
@@ -48,19 +49,17 @@ export default function SiteHeader() {
           <Link href="/start-project">Layihəyə başla</Link>
         </nav>
         <div className="neSiteActions">
-          <button type="button" className="neSiteSearch" aria-label="Axtarış"><Search size={18} /></button>
-          {ready && user ? (
-            <>
-              <Link href={getAccountHomePath(user.role)} className="neSiteLogin"><UserRound size={15} /> Hesabım</Link>
-              <button type="button" className="neSiteSignup" onClick={logout}>Çıxış</button>
-            </>
-          ) : ready ? (
-            <>
-              <Link href="/login" className="neSiteLogin">Daxil ol</Link>
-              <Link href="/register" className="neSiteSignup">Hesab yarat</Link>
-            </>
-          ) : null}
-          <button type="button" className="neSiteMenu" aria-label="Menyu"><Menu size={20} /></button>
+          {ready && <Link href={user ? getAccountHomePath(user.role) : '/login'} className="neSiteLogin">{user ? 'Hesabım' : 'Daxil ol'}</Link>}
+          <details className="neSiteMore" onKeyDown={(event) => {
+            if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus(); }
+          }}>
+            <summary aria-label="Əlavə hesab və əlaqə keçidləri">•••</summary>
+            <div className="neSiteMorePanel">
+              <Link href="/#contact">Əlaqə</Link>
+              <button type="button" className="neSiteSearch" aria-label="Axtarış"><Search size={18} /> Axtarış</button>
+              {ready && user ? <button type="button" className="neSiteSignup" onClick={logout}>Çıxış</button> : ready ? <Link href="/register" className="neSiteSignup">Hesab yarat</Link> : null}
+            </div>
+          </details>
         </div>
       </div>
     </header>

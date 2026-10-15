@@ -1,0 +1,106 @@
+/* Portfolio presentation only. Existing CMS content, DOM order and grid columns stay intact. */
+.agencyPortfolioPage{
+  --portfolio-ink:#12171b;--portfolio-muted:#687580;--portfolio-line:#d7e3e9;
+  color:var(--portfolio-ink)!important;
+  background:radial-gradient(ellipse at 82% 4%,#d9e7ec7a,transparent 26%),radial-gradient(ellipse at 3% 36%,#e8f3f780,transparent 45%),linear-gradient(140deg,#fafcfd,#eff5f8 55%,#f9fbfc)!important;
+  min-height:100vh;overflow-x:clip;
+}
+.agencyPortfolioPage .eyebrow{color:#00abb8!important;font-weight:600!important;letter-spacing:.26em!important;text-shadow:none!important}
+.agencyPortfolioPage .portfolioIntro{position:relative;isolation:isolate;min-height:380px;padding-top:58px!important;padding-bottom:22px!important}
+.agencyPortfolioPage .portfolioIntro:before{content:'';position:absolute;right:-34px;top:-18px;width:61%;height:350px;background:url('/portfolio-reference/portfolio-hero.png') center/contain no-repeat;z-index:-1;pointer-events:none}
+.agencyPortfolioPage .portfolioIntro>.eyebrow{max-width:43%;font-size:11px!important}
+.agencyPortfolioPage .portfolioIntro h1{color:var(--portfolio-ink)!important;font-size:clamp(48px,5.5vw,78px)!important;line-height:.98!important;letter-spacing:-.065em!important;max-width:43%;font-weight:600!important;margin:18px 0 23px!important}
+.agencyPortfolioPage .portfolioIntro h1 span{background:none!important;-webkit-text-fill-color:currentColor!important;color:inherit!important}
+.agencyPortfolioPage .portfolioIntro h1 span:after,.agencyPortfolioPage .sectionHeading h2:after,.agencyPortfolioPage .partnerSection h2:after{content:'.';color:#09bdc8}
+.agencyPortfolioPage .portfolioIntro h1 span:after{content:''}
+.agencyPortfolioPage .portfolioIntro>p{max-width:43%;color:#586773!important;font-size:16px!important;line-height:1.5!important;margin:0 0 25px!important}
+.agencyPortfolioPage .portfolioJumpNav{gap:34px!important;padding:18px 0 0;border-bottom:1px solid var(--portfolio-line);margin-top:38px!important;position:relative}
+.agencyPortfolioPage .portfolioJumpNav a{border:0!important;background:none!important;color:#52616d!important;border-radius:0!important;padding:10px 0 15px!important;font-size:14px!important;position:relative}
+.agencyPortfolioPage .portfolioJumpNav a:first-child{color:#11171b!important;font-weight:600;box-shadow:0 2px #0ccbd4}
+.agencyPortfolioPage .portfolioJumpNav a:hover,.agencyPortfolioPage .portfolioJumpNav a:focus-visible{color:#0096a3!important}
+.agencyPortfolioPage .portfolioSection{scroll-margin-top:24px}
+.agencyPortfolioPage .sectionHeading{border-bottom:0!important;padding-bottom:0!important;gap:24px!important;margin-bottom:22px!important}
+.agencyPortfolioPage .sectionHeading .eyebrow{font-size:9px!important;margin-bottom:9px!important}
+.agencyPortfolioPage .sectionHeading h2,.agencyPortfolioPage .partnerSection h2{color:var(--portfolio-ink)!important;font-size:clamp(28px,3.5vw,44px)!important;font-weight:600!important;letter-spacing:-.05em!important;line-height:1.1!important}
+.agencyPortfolioPage .sectionHeading>span{color:#687580!important;font-size:12px!important;line-height:1.45!important}
+.agencyPortfolioPage .agencyPortfolioCard,.agencyPortfolioPage .videoPortfolioCard,.agencyPortfolioPage .designPortfolioGrid article{border:1px solid #ffffff!important;border-radius:15px!important;background:linear-gradient(120deg,#fff,#ffffffa3)!important;box-shadow:0 8px 26px #66808e12!important;backdrop-filter:blur(14px);color:var(--portfolio-ink)!important}
+.agencyPortfolioPage .agencyPortfolioCard:hover{border-color:#c0e5e9!important;box-shadow:0 12px 30px #66808e23!important}
+.agencyPortfolioPage .agencyPortfolioImage{background:#e7eef2!important;border-radius:14px;isolation:isolate}
+.agencyPortfolioPage .agencyPortfolioImage:after{background:none!important}
+.agencyPortfolioPage .agencyPortfolioImage img,.agencyPortfolioPage .agencyPortfolioImage video{width:100%;height:100%;object-fit:cover;display:block}
+.agencyPortfolioPage .agencyPortfolioImage span{background:#f9fcfce8!important;border:1px solid #fff!important;color:#41616b!important;box-shadow:0 2px 8px #374e5c15}
+.agencyPortfolioPage .agencyPortfolioBody{padding:17px!important;min-width:0}
+.agencyPortfolioPage .agencyPortfolioBody>div{min-width:0}
+.agencyPortfolioPage .agencyPortfolioBody strong{color:var(--portfolio-ink)!important;font-size:21px!important;font-weight:600!important;letter-spacing:-.03em;overflow-wrap:anywhere}
+.agencyPortfolioPage .agencyPortfolioBody small{color:var(--portfolio-muted)!important;font-size:12px!important;margin-top:6px!important}
+.agencyPortfolioPage .agencyPortfolioBody p{color:var(--portfolio-muted)!important;font-size:12px!important;line-height:1.5!important}
+.agencyPortfolioPage .agencyPortfolioBody>svg{box-sizing:content-box;padding:9px;border:1px solid #d9e3e9;border-radius:50%;background:linear-gradient(140deg,#fff,#eaf0f4);color:#15232d!important;transform:rotate(-45deg);margin-top:0;flex-shrink:0}
+.agencyPortfolioPage .portfolioEmpty,.agencyPortfolioPage .partnerEmpty{color:#75838e!important;background:linear-gradient(120deg,#ffffffa6,#e8f0f580)!important;border:1px solid #dce6ec!important;box-shadow:inset 0 1px 0 white,0 7px 23px #5878870b!important;border-radius:15px!important}
+.agencyPortfolioPage .portfolioEmpty strong{color:#30404d!important;font-size:14px!important;font-weight:500}
+.agencyPortfolioPage .portfolioEmpty span{font-size:12px!important;color:#6c7e8b!important}
+.agencyPortfolioPage #videos,.agencyPortfolioPage #design{position:relative}
+.agencyPortfolioPage #videos>.sectionHeading,.agencyPortfolioPage #design>.sectionHeading{padding-left:105px!important;min-height:91px;justify-content:space-between}
+.agencyPortfolioPage #videos:before,.agencyPortfolioPage #design:before{content:'';position:absolute;left:0;top:12px;width:90px;height:100px;background:center/contain no-repeat;pointer-events:none}
+.agencyPortfolioPage #videos:before{background-image:url('/portfolio-reference/glass-video.png')}
+.agencyPortfolioPage #design:before{background-image:url('/portfolio-reference/glass-design.png')}
+.agencyPortfolioPage .videoPortfolioCard>div{background:#e2edf1!important}
+.agencyPortfolioPage .videoPortfolioCard strong,.agencyPortfolioPage .designPortfolioGrid strong{color:#1b2730!important;font-size:15px!important}
+.agencyPortfolioPage .videoPortfolioCard small,.agencyPortfolioPage .designPortfolioGrid small{color:#6b7b86!important;font-size:12px!important}
+.agencyPortfolioPage .partnerSection{border-color:#d9e4eb!important;scroll-margin-top:24px}
+.agencyPortfolioPage .partnerMarquee{background:linear-gradient(120deg,#ffffffaf,#eaf0f575);border:1px solid #fff;border-radius:19px;padding:14px 0;box-shadow:inset 0 0 0 1px #dde7ed,0 8px 24px #5978860a}
+.agencyPortfolioPage .partnerLogo{border:0!important;background:none!important}
+.agencyPortfolioPage .partnerLogo img{filter:grayscale(1)!important;opacity:.88}
+.agencyPortfolioPage .partnerLogo:hover img{filter:none!important;opacity:1}
+.agencyPortfolioPage .portfolioCta{position:relative;isolation:isolate;margin-bottom:36px;padding:32px!important;border:1px solid white!important;border-radius:17px;background:linear-gradient(120deg,#e5f0f5b3,#ffffffe0)!important;box-shadow:inset 0 0 0 1px #d5e3eb,0 8px 25px #6185940b;text-align:center!important;overflow:hidden}
+.agencyPortfolioPage .portfolioCta:before{content:'';position:absolute;right:3%;top:0;width:39%;height:100%;background:url('/portfolio-reference/cta-accent.png') center/contain no-repeat;z-index:-1;opacity:.38;pointer-events:none}
+.agencyPortfolioPage .portfolioCta h2{color:#10171b!important;font-size:clamp(28px,3.6vw,46px)!important;letter-spacing:-.05em!important;line-height:1.12!important}
+.agencyPortfolioPage .portfolioCta h2 span{background:none!important;color:inherit!important;-webkit-text-fill-color:currentColor!important}
+.agencyPortfolioPage .portfolioCta p{color:#5f707b!important;font-size:14px!important;line-height:1.6!important}
+.agencyPortfolioPage .portfolioCta .primary{background:linear-gradient(#292d2f,#090c0e)!important;color:#fff!important;border:1px solid #31373b!important;font-weight:500!important;border-radius:999px!important;padding:14px 24px!important;box-shadow:0 6px 13px #1c32342b!important}
+.agencyPortfolioPage a:focus-visible{outline:2px solid #008a98;outline-offset:5px}
+/* Recolor only the existing header on this route; keep every link and action. */
+body:has(.agencyPortfolioPage) .neSiteHeader{background:#f3f7fbd9!important;border-bottom-color:#fff!important;box-shadow:0 3px 15px #566f7f0b!important}
+body:has(.agencyPortfolioPage) .neSiteBrand img{filter:brightness(0)!important;object-fit:cover;object-position:center;height:28px}
+body:has(.agencyPortfolioPage) .neSiteNav a,body:has(.agencyPortfolioPage) .neSiteLogin,body:has(.agencyPortfolioPage) .neSiteSearch,body:has(.agencyPortfolioPage) .neSiteMenu{color:#455460!important;text-shadow:none!important}
+body:has(.agencyPortfolioPage) .neSiteNav a:hover,body:has(.agencyPortfolioPage) .neSiteNav a:focus-visible{color:#009ca9!important}
+body:has(.agencyPortfolioPage) .neSiteSignup{color:#1a2d35!important;border-color:#d2e0e7!important;background:linear-gradient(135deg,#fff,#e7eff5)!important;box-shadow:0 3px 8px #506c7c12!important}
+@media(max-width:1000px){
+ .agencyPortfolioPage .portfolioIntro:before{width:57%;right:-12px;top:20px;height:290px}
+ .agencyPortfolioPage .portfolioIntro h1{font-size:54px!important}
+ .agencyPortfolioPage .portfolioIntro>p{font-size:14px!important}
+}
+@media(max-width:760px){
+ .agencyPortfolioPage .portfolioIntro{padding-top:36px!important}
+ .agencyPortfolioPage .portfolioIntro:before{top:0;right:-12px;width:64%;height:245px;opacity:.33}
+ .agencyPortfolioPage .portfolioIntro>.eyebrow{max-width:100%;font-size:9px!important}
+ .agencyPortfolioPage .portfolioIntro h1{font-size:clamp(39px,8vw,56px)!important;max-width:85%}
+ .agencyPortfolioPage .portfolioIntro>p{max-width:88%;font-size:15px!important;position:relative}
+ .agencyPortfolioPage .portfolioJumpNav{gap:22px!important;margin-top:24px!important}
+ .agencyPortfolioPage .portfolioJumpNav a{font-size:13px!important}
+ .agencyPortfolioPage .sectionHeading h2,.agencyPortfolioPage .partnerSection h2{font-size:29px!important}
+ .agencyPortfolioPage #videos>.sectionHeading,.agencyPortfolioPage #design>.sectionHeading{padding-left:80px!important;gap:12px!important}
+ .agencyPortfolioPage #videos:before,.agencyPortfolioPage #design:before{width:68px;height:82px}
+ .agencyPortfolioPage .portfolioCta{padding:26px 20px!important}
+}
+@media(max-width:400px){
+ .agencyPortfolioPage .portfolioJumpNav{gap:16px!important}
+ .agencyPortfolioPage .portfolioJumpNav a{font-size:12px!important}
+ .agencyPortfolioPage .agencyPortfolioBody strong{font-size:19px!important}
+ .agencyPortfolioPage #videos>.sectionHeading,.agencyPortfolioPage #design>.sectionHeading{padding-left:68px!important}
+ .agencyPortfolioPage #videos:before,.agencyPortfolioPage #design:before{width:58px}
+}
+/* Route-scoped backdrop also keeps the translucent shared header light. */
+body:has(.agencyPortfolioPage){background:#f4f8fb;color:#12171b}
+@media(min-width:761px) and (max-width:1000px){
+ body:has(.agencyPortfolioPage) .neSiteHeaderInner{gap:12px}
+ body:has(.agencyPortfolioPage) .neSiteBrand{flex-basis:126px}
+ body:has(.agencyPortfolioPage) .neSiteBrand img{width:126px}
+ body:has(.agencyPortfolioPage) .neSiteNav{gap:10px}
+ body:has(.agencyPortfolioPage) .neSiteNav a{font-size:9px}
+ body:has(.agencyPortfolioPage) .neSiteActions{gap:7px}
+ body:has(.agencyPortfolioPage) .neSiteSignup{padding-left:9px;padding-right:9px}
+}
+@media(max-width:760px){
+ .agencyPortfolioPage .portfolioIntro:before{top:auto;bottom:83px;right:0;width:100%;height:190px;opacity:1}
+ .agencyPortfolioPage .portfolioIntro>p{max-width:100%;margin-bottom:210px!important}
+}

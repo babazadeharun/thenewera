@@ -1,5 +1,6 @@
 import './home-glass.css';
 import './home-mobile-reference.css';
+import './home-sculpture-reference.css';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { getAccountHomePath } from '@/lib/account-routing';
@@ -18,7 +19,7 @@ const services = [
   ['Marketinq strategiyası', 'Məqsəd, auditoriya, mövqeləndirmə və artım istiqaməti', Sparkles],
 ] as const;
 
-const serviceImages: Record<string, string> = { 'Brendinq': 'analytics', 'Kreativ dizayn': 'design', 'Video və foto': 'advertising', 'Sosial media': 'social', 'Rəqəmsal marketinq': 'analytics', 'Veb və rəqəmsal': 'browser', 'Reklam kampaniyaları': 'advertising', 'Marketinq strategiyası': 'automation' };
+const serviceImages: Record<string, string> = { 'Brendinq': 'branding', 'Kreativ dizayn': 'creative-design', 'Video və foto': 'video-photo', 'Sosial media': 'social-media', 'Rəqəmsal marketinq': 'digital-marketing', 'Veb və rəqəmsal': 'web-digital', 'Reklam kampaniyaları': 'advertising-campaigns', 'Marketinq strategiyası': 'marketing-strategy' };
 
 const fallbackPortfolio = [
   { image: 'lumiere', title: 'Lumière', client: 'Lumière Cosmetics', service: 'Brendinq', text: 'Premium gözəllik brendi üçün vizual kimlik və kampaniya istiqaməti.' },
@@ -85,7 +86,7 @@ export default async function Home() {
   const glassDesignDate = new Date('2026-10-14T15:38:19.000Z');
   const useCmsHero = !!hero && hero.updatedAt > glassDesignDate;
   const useCmsSettings = !!cms && cms.updatedAt > glassDesignDate;
-  const heroImage = (useCmsHero ? hero?.desktopMedia?.url : null) || (useCmsSettings ? cms?.heroImage : null) || '/hero-glass-portal.png';
+  const heroImage = (useCmsHero ? hero?.desktopMedia?.url : null) || (useCmsSettings ? cms?.heroImage : null) || '/redesign/backgrounds/hero-wide-3840x1600.jpg';
   const heroMobileImage = (useCmsHero ? hero?.mobileMedia?.url : null) || heroImage;
   const heroTitle = hero?.title && !['New Era Hero', 'New Era', 'Növbəti Era Buradan Başlayır.'].includes(hero.title) ? hero.title : 'Növbəti Era Buradan Başlayır.';
   const heroDescription = hero?.description && !['Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.', 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan'].includes(hero.description.trim())
@@ -102,7 +103,7 @@ export default async function Home() {
         <div className="stars" />
         <div className="container heroInner">
           <div className="eyebrow">B2B MARKETİNQ &amp; KREATİV AGENTLİYİ</div>
-          <h1>{hero ? (heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br/><span>Buradan Başlayır.</span></> : heroTitle) : <>Növbəti Era<br/><span>Buradan Başlayır.</span></>}</h1>
+          <h1>{hero ? (heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br/><span className="heroContinuation">Buradan <em>Başlayır.</em></span></> : heroTitle) : <>Növbəti Era<br/><span className="heroContinuation">Buradan <em>Başlayır.</em></span></>}</h1>
           <p>{heroDescription}</p>
           <div className="heroCtas"><a className="primary" href="/start-project">{heroCtaText} <ArrowRight size={17}/></a><a className="secondary" href="#portfolio">İşlərimizə baxın</a></div>
           <a className="auditCta auditCtaHero" href="/analysis"><span><strong>Biznes Audit</strong><small>Biznesiniz üçün real ekspert analizi və təkliflər</small></span><ArrowRight size={18}/></a>
@@ -112,7 +113,7 @@ export default async function Home() {
 
       {showSection('services') && <section id="services" className="section container servicesSection">
         <div className="sectionIntro"><div><div className="eyebrow">XİDMƏTLƏRİMİZ</div><h2>Brendinizi <span>böyütmək üçün.</span></h2></div><p>Strategiyadan kreativ istehsala, rəqəmsal marketinqdən veb həllərə qədər bütün əsas istiqamətləri bir komandada idarə edirik.</p></div>
-        <div className="serviceGrid">{services.map(([title, desc, Icon])=><a className="serviceCard" href="/services" key={title}><div className="serviceIcon"><img src={`/service-icons/${serviceImages[title]}.png`} alt="" aria-hidden="true" loading="lazy" width={1254} height={1254}/></div><h3>{title}</h3><p>{desc}</p></a>)}</div>
+        <div className="serviceGrid">{services.map(([title, desc, Icon])=><a className="serviceCard" href="/services" key={title}><div className="serviceIcon"><img src={`/redesign/icons/${serviceImages[title]}.svg`} alt="" aria-hidden="true" loading="lazy" width={40} height={40}/></div><h3>{title}</h3><p>{desc}</p></a>)}</div>
         <a className="outlineBtn" href="/services">Bütün xidmətlərə bax <ArrowRight size={16}/></a>
       </section>}
 

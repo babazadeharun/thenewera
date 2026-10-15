@@ -46,3 +46,41 @@ body:has(.glassHome)>.nePublicHeader{position:absolute;top:0;left:32px;right:32p
 @supports not (backdrop-filter:blur(1px)){.nePublicHeader{background:#f5f8fbe8}}
 /* Keep the first margin inside the light page canvas. */
 body:has(>.nePublicHeader){display:flow-root}
+
+/* Delicate reference glass in the existing homepage navigation. */
+body:has(.glassHome){background:#070807!important}
+body:has(.glassHome)>.nePublicHeader{position:absolute;top:0;left:3%;right:3%;width:94%;height:68px;margin:30px 0 0;border:1px solid #ffffff40;border-radius:10px;background:linear-gradient(115deg,#ffffff0e,#ffffff06 50%,#ffffff14);box-shadow:inset 0 1px 1px #ffffff1c,inset 0 -1px 1px #ffffff08,0 8px 24px #00000020;backdrop-filter:blur(18px) saturate(.85);-webkit-backdrop-filter:blur(18px) saturate(.85);color:#f2f0e9}
+body:has(.glassHome) .nePublicInner{grid-template-columns:230px minmax(0,1fr) 155px;padding:0 24px 0 32px;gap:20px}
+body:has(.glassHome) .nePublicBrand,body:has(.glassHome) .nePublicBrand img{width:185px;height:30px;object-fit:contain;filter:none}
+body:has(.glassHome) .nePublicNav{gap:clamp(14px,2vw,32px)}
+body:has(.glassHome) .nePublicNav a{font-size:13px;font-weight:500;color:#d0d0ca}
+body:has(.glassHome) .nePublicNav a:hover{color:#d7ff3f}
+body:has(.glassHome) .nePublicAccount{min-height:38px;padding:0 20px;font-size:13px;color:#eee;border:1px solid #ffffff4a;background:#ffffff05;border-radius:5px;box-shadow:inset 0 1px 1px #ffffff10}
+body:has(.glassHome) .nePublicMore>summary{color:#ddd}
+body:has(.glassHome) .nePublicMorePanel{background:#111410ed;border:1px solid #ffffff30;box-shadow:0 10px 25px #0005}
+body:has(.glassHome) .nePublicMorePanel a,body:has(.glassHome) .nePublicMorePanel button{color:#f2f0e9}
+body:has(.glassHome) .nePublicMorePanel a:hover,body:has(.glassHome) .nePublicMorePanel button:hover{background:#ffffff12}
+body:has(.glassHome) .nePublicHeader :focus-visible{outline-color:#d7ff3f}
+@media(min-width:761px) and (max-width:1200px){body:has(.glassHome) .nePublicInner{grid-template-columns:150px minmax(0,1fr) 120px;gap:12px;padding:0 18px}body:has(.glassHome) .nePublicBrand,body:has(.glassHome) .nePublicBrand img{width:145px}body:has(.glassHome) .nePublicNav{gap:14px}body:has(.glassHome) .nePublicNav a{font-size:11px}body:has(.glassHome) .nePublicAccount{padding:0 12px;font-size:12px}}
+@media(min-width:761px) and (max-width:950px){body:has(.glassHome) .nePublicInner{grid-template-columns:120px minmax(0,1fr) 100px;gap:8px;padding:0 12px}body:has(.glassHome) .nePublicBrand,body:has(.glassHome) .nePublicBrand img{width:115px}body:has(.glassHome) .nePublicNav{gap:9px}body:has(.glassHome) .nePublicNav a{font-size:9px}}
+@media(max-width:760px){body:has(.glassHome)>.nePublicHeader{left:14px;right:14px;top:0;width:calc(100% - 28px);height:104px;margin:12px 0 0;border-radius:9px}body:has(.glassHome) .nePublicInner{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:56px 46px;gap:0 10px;padding:0 14px}body:has(.glassHome) .nePublicBrand,body:has(.glassHome) .nePublicBrand img{width:140px;height:25px}body:has(.glassHome) .nePublicNav{gap:22px;scrollbar-width:thin;scrollbar-color:#ffffff30 transparent}body:has(.glassHome) .nePublicNav a{font-size:12px}body:has(.glassHome) .nePublicAccount{min-height:36px;padding:0 12px;font-size:12px}}
+@supports not (backdrop-filter:blur(1px)){body:has(.glassHome)>.nePublicHeader{background:#161915ed}}
+/* Crop only the logo file's transparent vertical margins; keep its pixels and ratio. */
+body:has(.glassHome) .nePublicBrand img{object-fit:cover}
+
+/* Mobile: reuse the existing details menu's open state for the existing links. */
+@media(max-width:760px){
+ body:has(.glassHome)>.nePublicHeader{left:clamp(20px,8.7vw,65px);right:clamp(20px,8.7vw,65px);width:auto;height:44px;margin:12px 0 0;border-radius:9px;backdrop-filter:blur(17px);-webkit-backdrop-filter:blur(17px);background:linear-gradient(110deg,#ffffff12,#ffffff06 55%,#ffffff12);border-color:#ffffff40;box-shadow:inset 0 1px 1px #ffffff1c,0 6px 18px #0003}
+ body:has(.glassHome) .nePublicInner{display:flex;justify-content:space-between;gap:12px;height:100%;padding:0 15px;position:relative}
+ body:has(.glassHome) .nePublicBrand,body:has(.glassHome) .nePublicBrand img{width:clamp(115px,19vw,150px);height:25px}
+ body:has(.glassHome) .nePublicActions{gap:14px}
+ body:has(.glassHome) .nePublicAccount{font-size:clamp(11px,1.9vw,14px);min-height:32px;padding:0 17px}
+ body:has(.glassHome) .nePublicMore>summary{width:30px;min-height:42px;font-size:14px;letter-spacing:2px}
+ body:has(.glassHome) .nePublicNav{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;width:auto;height:auto;max-height:calc(100svh - 82px);overflow:auto;padding:12px 14px;border:1px solid #ffffff30;border-radius:9px;background:#111410f2;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 12px 30px #0006;gap:2px;grid-column:auto;grid-row:auto}
+ body:has(.glassHome) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav{display:grid;padding-bottom:174px}
+ body:has(.glassHome) .nePublicNav a{font-size:14px;min-height:40px;padding:8px 12px;border-radius:5px}
+ body:has(.glassHome) .nePublicNav a:hover{background:#ffffff0e}
+ body:has(.glassHome) .nePublicMore{position:static}
+ body:has(.glassHome) .nePublicMorePanel{right:15px;left:15px;top:calc(100% + 306px);width:auto;z-index:1;background:none;box-shadow:none;border:0;border-top:1px solid #ffffff20;border-radius:0;padding:10px 0;backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+@media(max-width:380px){body:has(.glassHome) .nePublicInner{gap:7px;padding:0 10px}body:has(.glassHome) .nePublicActions{gap:6px}body:has(.glassHome) .nePublicAccount{padding:0 11px}}

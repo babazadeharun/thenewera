@@ -1,4 +1,5 @@
 'use client';
+import '../auth-reference.css';
 
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
@@ -56,7 +57,7 @@ export default function Login() {
   }
 
   return (
-    <main className="authPage">
+    <main className="authPage authReference authLogin">
       <div className="authGlow" />
 
       <div className="authCard">

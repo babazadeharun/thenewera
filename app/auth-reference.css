@@ -1,0 +1,128 @@
+/* Login and registration presentation only. No authentication behavior changes. */
+.authPage.authReference{position:relative;isolation:isolate;min-height:100svh!important;display:block!important;padding:188px 4.2vw 80px!important;overflow:hidden;background:#060706!important;color:#f2f0e9!important}
+.authPage.authReference:before,.authPage.authReference:after{content:none!important;display:none!important}
+.authPage.authReference .authGlow{position:absolute;inset:0!important;z-index:-1;pointer-events:none;background:url('/redesign/services/backgrounds/00-services-hero-3840x2160.jpg') right center/auto 100% no-repeat!important;transform:scaleX(-1);opacity:1}
+.authPage.authReference .authCard{position:relative;width:min(560px,43vw)!important;max-width:100%;margin:0 0 0 auto;padding:40px!important;border:1px solid #ffffff65!important;border-radius:14px!important;background:linear-gradient(125deg,#ffffff0d,#07080755 40%,#ffffff09)!important;box-shadow:inset 0 1px 1px #ffffff15,0 20px 60px #0003!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:#f2f0e9!important}
+.authPage.authReference .authBrand{display:inline-flex;align-items:center;width:180px;height:30px;margin:0 0 28px}
+.authPage.authReference .authBrand img{width:180px!important;height:30px!important;object-fit:cover;object-position:center;filter:none}
+.authPage.authReference .eyebrow{font-size:13px!important;font-weight:500;letter-spacing:.24em;color:#b5b5ae!important;margin:0 0 13px;text-shadow:none}
+.authPage.authReference .authCard h1{font-size:clamp(44px,4.65vw,68px)!important;line-height:.94!important;letter-spacing:-.05em;font-weight:800;margin:0;color:#f6f6f0!important}
+.authPage.authReference .authCard h1 span{display:block;background:none!important;color:#d7ff3f!important;-webkit-text-fill-color:currentColor!important}
+.authPage.authReference .authIntro{font-size:20px!important;color:#c8c8c2!important;line-height:1.3!important;margin:24px 0 35px;max-width:100%}
+.authPage.authReference .authForm{display:grid;gap:24px}
+.authPage.authReference .authForm label{position:relative;display:grid;gap:9px;font-size:15px;color:#eee!important;line-height:1.25}
+.authPage.authReference .authForm input,.authPage.authReference .authForm select{box-sizing:border-box;display:block;width:100%;min-width:0;min-height:56px;padding:14px 20px!important;border:1px solid #ffffff70!important;border-radius:9px!important;background:linear-gradient(115deg,#ffffff05,#ffffff0b)!important;box-shadow:inset 0 1px 1px #ffffff08!important;color:#f2f0e9!important;outline:none;font-size:17px;line-height:1.4}
+.authPage.authReference .authForm input::placeholder{color:#878983;opacity:1}
+.authPage.authReference .authForm select{color-scheme:dark}
+.authPage.authReference .authForm select option{background:#141613;color:#f2f0e9}
+.authPage.authReference .authForm input:focus,.authPage.authReference .authForm select:focus{border-color:#d7ff3f!important;box-shadow:0 0 0 3px #d7ff3f20!important}
+.authPage.authReference .authSubmit{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;gap:18px;border:1px solid #e5ff82!important;border-radius:10px!important;padding:15px 20px;font-size:20px;font-weight:600;line-height:1.3;background:linear-gradient(100deg,#d7ff3f,#dfff48)!important;color:#111804!important;box-shadow:0 0 20px #d7ff3f14!important;cursor:pointer;margin-top:0}
+.authPage.authReference .authSubmit:disabled{opacity:.6;cursor:wait}
+.authPage.authReference .authFoot{margin:2px 0 0;font-size:16px;line-height:1.5;color:#ccc!important;text-align:left}
+.authPage.authReference .authFoot a{color:#f0f0e9!important;text-decoration:underline;text-underline-offset:3px}
+.authPage.authReference .authPrivacy{margin-top:25px;padding-top:23px;border-top:1px solid #ffffff40!important;font-size:13px;line-height:1.4;color:#aaa!important}
+.authPage.authReference .authError{border-color:#ff9c9c70;background:#53131b66;color:#ffb7bf;font-size:14px;padding:12px 14px;line-height:1.4;overflow-wrap:anywhere}
+.authPage.authReference a:focus-visible,.authPage.authReference button:focus-visible{outline:2px solid #d7ff3f;outline-offset:4px}
+.authPage.authReference.authRegister{padding:260px 4.2vw 50px!important}
+.authPage.authReference.authRegister .authGlow{background-image:url('/redesign/services/backgrounds/09-cta-marble-glass-3840x1600.jpg')!important;background-size:auto 100%!important;background-position:68% top!important;transform:none}
+.authPage.authReference .authCard.authWide{width:min(950px,76vw)!important;margin:0 auto;padding:42px!important}
+.authPage.authReference.authRegister .authCard h1{font-size:clamp(40px,4vw,58px)!important;line-height:1.02!important}
+.authPage.authReference.authRegister .authCard h1 span{display:inline;color:#f2f0e9!important}
+.authPage.authReference.authRegister .authCard h1 em{font-style:normal;color:#d7ff3f}
+.authPage.authReference.authRegister .authIntro{max-width:750px;margin:26px 0 34px;font-size:22px!important;line-height:1.35!important}
+.authPage.authReference.authRegister .authForm{gap:24px}
+.authPage.authReference .authSectionTitle{display:flex;align-items:center;gap:18px;padding:8px 0 4px;margin:4px 0 0;border:0!important;font-size:23px;font-weight:700;color:#f2f0e9!important;line-height:1.3}
+.authPage.authReference .authSectionTitle:after{content:'';height:1px;flex:1;background:#ffffff50;margin-left:6px}
+.authPage.authReference .authSectionTitle svg{width:28px;height:28px;flex:none;stroke-width:1.5;color:#f2f0e9!important}
+.authPage.authReference .formSplit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:30px}
+.authPage.authReference .authForm label>span{position:absolute;right:0;top:0;color:#aaa;font-size:13px}
+.authPage.authReference.authRegister .authFoot{text-align:center}
+.authPage.authReference.authRegister .authFoot a{color:#d7ff3f!important}
+.authPage.authReference.authRegister .authPrivacy{text-align:center;padding:0;margin:22px 0 0;border:0!important}
+body:has(.authReference),html:has(.authReference){background:#060706!important}
+@media(min-width:801px) and (max-width:1100px){
+ .authPage.authReference{padding-top:155px!important}.authPage.authReference .authCard{padding:30px!important;width:46vw!important}.authPage.authReference .authCard h1{font-size:46px!important}.authPage.authReference .authIntro{font-size:17px!important}.authPage.authReference .authForm{gap:20px}.authPage.authReference .authForm input,.authPage.authReference .authForm select{font-size:16px;min-height:50px;padding:12px 15px!important}.authPage.authReference .authFoot{font-size:13px}.authPage.authReference .authPrivacy{font-size:11px}.authPage.authReference.authRegister{padding-top:180px!important}.authPage.authReference .authCard.authWide{width:82vw!important}.authPage.authReference.authRegister .authCard h1{font-size:43px!important}.authPage.authReference.authRegister .authIntro{font-size:19px!important}
+}
+@media(max-width:800px){
+ .authPage.authReference{padding:clamp(270px,72.5vw,560px) 7.2vw 30px!important;min-height:100svh!important}
+ .authPage.authReference .authGlow{background-size:auto clamp(630px,145vw,1150px)!important;background-position:77% top!important;transform:scaleX(-1);opacity:1}
+ .authPage.authReference .authCard{width:100%!important;margin:0;padding:clamp(22px,5.7vw,46px)!important;border-radius:11px!important;background:linear-gradient(125deg,#ffffff0d,#07080788 45%,#ffffff0a)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+ .authPage.authReference .authBrand{width:clamp(145px,27vw,230px);height:27px;margin-bottom:25px}.authPage.authReference .authBrand img{width:100%!important;height:27px!important}
+ .authPage.authReference .eyebrow{font-size:clamp(10px,2.4vw,17px)!important;letter-spacing:.22em;margin-bottom:12px}
+ .authPage.authReference .authCard h1{font-size:clamp(36px,9.7vw,70px)!important;line-height:.94!important}
+ .authPage.authReference .authIntro{font-size:clamp(14px,3.5vw,23px)!important;line-height:1.3!important;margin:20px 0 25px}
+ .authPage.authReference .authForm{gap:20px}.authPage.authReference .authForm label{font-size:clamp(14px,3vw,20px);gap:8px}
+ .authPage.authReference .authForm input,.authPage.authReference .authForm select{min-height:48px;padding:12px 14px!important;border-radius:8px!important;font-size:16px}
+ .authPage.authReference .authSubmit{font-size:17px;min-height:50px;border-radius:9px!important;padding:12px 15px}
+ .authPage.authReference .authFoot{font-size:13px;line-height:1.5;margin:0}
+ .authPage.authReference .authPrivacy{font-size:11px;line-height:1.4;margin-top:21px;padding-top:17px}
+ .authPage.authReference.authRegister{padding:clamp(140px,35vw,260px) 5.1vw 20px!important}
+ .authPage.authReference.authRegister .authGlow{background-size:auto 100%!important;background-position:66% top!important;transform:none}
+ .authPage.authReference .authCard.authWide{width:100%!important;padding:clamp(20px,5.1vw,40px)!important;margin:0}
+ .authPage.authReference.authRegister .authCard h1{font-size:clamp(32px,8.5vw,57px)!important;line-height:1.02!important}
+ .authPage.authReference.authRegister .authCard h1 em{display:block}
+ .authPage.authReference.authRegister .authIntro{font-size:clamp(14px,3.5vw,22px)!important;line-height:1.3!important;margin:20px 0 24px}
+ .authPage.authReference.authRegister .authForm{gap:16px}
+ .authPage.authReference .authSectionTitle{font-size:clamp(18px,4.2vw,27px);gap:12px;margin:5px 0 3px;padding-top:8px;line-height:1.2}
+ .authPage.authReference .authSectionTitle svg{width:23px;height:23px}
+ .authPage.authReference .formSplit{grid-template-columns:1fr!important;gap:16px}
+ .authPage.authReference .authForm label>span{font-size:11px}
+ .authPage.authReference.authRegister .authPrivacy{margin-top:16px;font-size:10px;line-height:1.4}
+ .authPage.authReference .authError{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.authPage.authReference *{transition:none!important;animation:none!important}}
+
+/* Existing shared header, scoped exclusively to the auth pages. */
+/* Existing shared navigation; changes apply exclusively on /services. */
+/* Delicate reference glass in the existing homepage navigation. */
+body:has(.authReference){background:#070807!important}
+body:has(.authReference)>.nePublicHeader{position:absolute;top:0;left:3%;right:3%;width:94%;height:68px;margin:30px 0 0;border:1px solid #ffffff40;border-radius:10px;background:linear-gradient(115deg,#ffffff0e,#ffffff06 50%,#ffffff14);box-shadow:inset 0 1px 1px #ffffff1c,inset 0 -1px 1px #ffffff08,0 8px 24px #00000020;backdrop-filter:blur(18px) saturate(.85);-webkit-backdrop-filter:blur(18px) saturate(.85);color:#f2f0e9}
+body:has(.authReference) .nePublicInner{grid-template-columns:230px minmax(0,1fr) 155px;padding:0 24px 0 32px;gap:20px}
+body:has(.authReference) .nePublicBrand,body:has(.authReference) .nePublicBrand img{width:185px;height:30px;object-fit:contain;filter:none}
+body:has(.authReference) .nePublicNav{gap:clamp(14px,2vw,32px)}
+body:has(.authReference) .nePublicNav a{font-size:13px;font-weight:500;color:#d0d0ca}
+body:has(.authReference) .nePublicNav a:hover{color:#d7ff3f}
+body:has(.authReference) .nePublicAccount{min-height:38px;padding:0 20px;font-size:13px;color:#eee;border:1px solid #ffffff4a;background:#ffffff05;border-radius:5px;box-shadow:inset 0 1px 1px #ffffff10}
+body:has(.authReference) .nePublicMore>summary{color:#ddd}
+body:has(.authReference) .nePublicMorePanel{background:#111410ed;border:1px solid #ffffff30;box-shadow:0 10px 25px #0005}
+body:has(.authReference) .nePublicMorePanel a,body:has(.authReference) .nePublicMorePanel button{color:#f2f0e9}
+body:has(.authReference) .nePublicMorePanel a:hover,body:has(.authReference) .nePublicMorePanel button:hover{background:#ffffff12}
+body:has(.authReference) .nePublicHeader :focus-visible{outline-color:#d7ff3f}
+@media(min-width:801px) and (max-width:1200px){body:has(.authReference) .nePublicInner{grid-template-columns:150px minmax(0,1fr) 120px;gap:12px;padding:0 18px}body:has(.authReference) .nePublicBrand,body:has(.authReference) .nePublicBrand img{width:145px}body:has(.authReference) .nePublicNav{gap:14px}body:has(.authReference) .nePublicNav a{font-size:11px}body:has(.authReference) .nePublicAccount{padding:0 12px;font-size:12px}}
+@media(min-width:801px) and (max-width:950px){body:has(.authReference) .nePublicInner{grid-template-columns:120px minmax(0,1fr) 100px;gap:8px;padding:0 12px}body:has(.authReference) .nePublicBrand,body:has(.authReference) .nePublicBrand img{width:115px}body:has(.authReference) .nePublicNav{gap:9px}body:has(.authReference) .nePublicNav a{font-size:9px}}
+@media(max-width:800px){body:has(.authReference)>.nePublicHeader{left:14px;right:14px;top:0;width:calc(100% - 28px);height:104px;margin:12px 0 0;border-radius:9px}body:has(.authReference) .nePublicInner{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:56px 46px;gap:0 10px;padding:0 14px}body:has(.authReference) .nePublicBrand,body:has(.authReference) .nePublicBrand img{width:140px;height:25px}body:has(.authReference) .nePublicNav{gap:22px;scrollbar-width:thin;scrollbar-color:#ffffff30 transparent}body:has(.authReference) .nePublicNav a{font-size:12px}body:has(.authReference) .nePublicAccount{min-height:36px;padding:0 12px;font-size:12px}}
+@supports not (backdrop-filter:blur(1px)){body:has(.authReference)>.nePublicHeader{background:#161915ed}}
+/* Crop only the logo file's transparent vertical margins; keep its pixels and ratio. */
+body:has(.authReference) .nePublicBrand img{object-fit:cover}
+
+/* Mobile: reuse the existing details menu's open state for the existing links. */
+@media(max-width:800px){
+ body:has(.authReference)>.nePublicHeader{left:clamp(20px,8.7vw,65px);right:clamp(20px,8.7vw,65px);width:auto;height:44px;margin:12px 0 0;border-radius:9px;backdrop-filter:blur(17px);-webkit-backdrop-filter:blur(17px);background:linear-gradient(110deg,#ffffff12,#ffffff06 55%,#ffffff12);border-color:#ffffff40;box-shadow:inset 0 1px 1px #ffffff1c,0 6px 18px #0003}
+ body:has(.authReference) .nePublicInner{display:flex;justify-content:space-between;gap:12px;height:100%;padding:0 15px;position:relative}
+ body:has(.authReference) .nePublicBrand,body:has(.authReference) .nePublicBrand img{width:clamp(115px,19vw,150px);height:25px}
+ body:has(.authReference) .nePublicActions{gap:14px}
+ body:has(.authReference) .nePublicAccount{font-size:clamp(11px,1.9vw,14px);min-height:32px;padding:0 17px}
+ body:has(.authReference) .nePublicMore>summary{width:30px;min-height:42px;font-size:14px;letter-spacing:2px}
+ body:has(.authReference) .nePublicNav{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;width:auto;height:auto;max-height:calc(100svh - 82px);overflow:auto;padding:12px 14px;border:1px solid #ffffff30;border-radius:9px;background:#111410f2;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 12px 30px #0006;gap:2px;grid-column:auto;grid-row:auto}
+ body:has(.authReference) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav{display:grid;padding-bottom:174px}
+ body:has(.authReference) .nePublicNav a{font-size:14px;min-height:40px;padding:8px 12px;border-radius:5px}
+ body:has(.authReference) .nePublicNav a:hover{background:#ffffff0e}
+ body:has(.authReference) .nePublicMore{position:static}
+ body:has(.authReference) .nePublicMorePanel{right:15px;left:15px;top:calc(100% + 306px);width:auto;z-index:1;background:none;box-shadow:none;border:0;border-top:1px solid #ffffff20;border-radius:0;padding:10px 0;backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+@media(max-width:380px){body:has(.authReference) .nePublicInner{gap:7px;padding:0 10px}body:has(.authReference) .nePublicActions{gap:6px}body:has(.authReference) .nePublicAccount{padding:0 11px}}
+
+
+body:has(.authReference)>.nePublicHeader{left:4.2%;right:4.2%;width:91.6%;height:68px;margin-top:28px}
+@media(max-width:800px){body:has(.authReference)>.nePublicHeader{left:7.2vw;right:7.2vw;width:auto;height:44px;margin-top:12px}}
+body:has(.authRegister)>.nePublicHeader{left:5.1vw;right:5.1vw;width:auto}
+/* Preserve the logo pixels while cropping its transparent vertical margins. */
+.authPage.authReference .authBrand img{object-fit:cover!important;filter:none!important}
+.authPage.authReference,.authPage.authReference input,.authPage.authReference select,.authPage.authReference button,.authPage.authReference label{font-family:'NewEraSans',sans-serif!important}
+@media(min-width:801px){.authPage.authReference.authLogin .authGlow{width:64%;left:0;right:auto!important;background-position:right center!important}}
+/* Keep the supplied marble visible through restrained, dark glass. */
+.authPage.authReference .authCard{background:linear-gradient(125deg,#171b16ce,#050705dc 55%,#10130fdb)!important}
+.authPage.authReference.authRegister .authGlow{background-size:auto max(1100px,100vh)!important;background-position:right -430px top!important}
+@media(max-width:800px){.authPage.authReference.authRegister .authGlow{background-size:auto 1100px!important;background-position:right -540px top!important}}
+@media(min-width:801px){.authPage.authReference.authLogin .authGlow{mask-image:linear-gradient(90deg,transparent,#000 12%,#000)}}
+body:has(.authRegister)>.nePublicHeader{background:linear-gradient(110deg,#171b1780,#080a08a6 70%,#111511a6)}

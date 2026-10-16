@@ -1,5 +1,7 @@
 'use client';
 
+import './analysis-reference.css';
+
 import { FormEvent, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check, Clock3, Globe2, Mail, ShieldCheck } from 'lucide-react';
@@ -102,10 +104,10 @@ export default function AnalysisPage() {
   }
 
   if (submitted) {
-    return <main className="innerPage auditPage"><div className="container auditSuccess"><div className="auditSuccessIcon"><Check size={28}/></div><div className="eyebrow">BİZNES AUDİT MÜRACİƏTİ</div><h1>Müraciətiniz <span>qəbul edildi.</span></h1><p>Məlumatlarınız New Era komandası tərəfindən nəzərdən keçiriləcək. <strong>3 iş günü ərzində sizə audit nəticəsi və təkliflər e-poçt vasitəsilə göndəriləcəkdir.</strong></p><div className="auditSuccessMeta"><span><Mail size={16}/> {form.email}</span><span><Clock3 size={16}/> Nəticə: 3 iş günü ərzində</span></div><Link className="primary" href="/">Əsas səhifəyə qayıt <ArrowRight size={17}/></Link></div></main>;
+    return <main className="innerPage auditPage auditReference auditSubmitted"><div className="container auditSuccess"><div className="auditSuccessIcon"><Check size={28}/></div><div className="eyebrow">BİZNES AUDİT MÜRACİƏTİ</div><h1>Müraciətiniz <span>qəbul edildi.</span></h1><p>Məlumatlarınız New Era komandası tərəfindən nəzərdən keçiriləcək. <strong>3 iş günü ərzində sizə audit nəticəsi və təkliflər e-poçt vasitəsilə göndəriləcəkdir.</strong></p><div className="auditSuccessMeta"><span><Mail size={16}/> {form.email}</span><span><Clock3 size={16}/> Nəticə: 3 iş günü ərzində</span></div><Link className="primary" href="/">Əsas səhifəyə qayıt <ArrowRight size={17}/></Link></div></main>;
   }
 
-  return <main className="innerPage auditPage">
+  return <main className="innerPage auditPage auditReference" data-audit-step={step}>
     <div className="container auditTop"><Link className="back" href="/"><ArrowLeft size={15}/> Əsas səhifə</Link><div className="auditTopMeta"><span><Clock3 size={15}/> Orta hesabla 2–3 dəqiqə</span><span><ShieldCheck size={15}/> Məlumatlarınız məxfi saxlanılır</span></div></div>
     <div className="container auditHero"><div className="eyebrow">NEW ERA · BİZNES AUDİT</div><h1>Biznesinizi <span>yeni baxışla</span> analiz edək.</h1><p>Qısa sorğunu cavablandırın. Bu məlumatlar avtomatik AI analizi üçün deyil — New Era-nın real mütəxəssisləri tərəfindən biznesinizin marketinq və kommunikasiya vəziyyətini qiymətləndirmək üçün istifadə olunacaq.</p></div>
 

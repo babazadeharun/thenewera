@@ -1,0 +1,608 @@
+/* NEW ERA business audit — supplied sculpture / glass reference.
+   This file changes presentation only. All selectors are page-scoped. */
+.innerPage.auditReference {
+  --audit-ink: #f5f5f0;
+  --audit-copy: #c1c2b9;
+  --audit-muted: #a0a299;
+  --audit-lime: #d7ff3f;
+  --audit-line: #ffffff40;
+  --audit-glass: linear-gradient(125deg, #20231ed9, #0b0d0bd9 65%, #171a14c9);
+  background: #080a08 !important;
+  color: var(--audit-ink) !important;
+  min-height: 100svh;
+  padding: 132px 0 64px !important;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: start;
+  overflow: clip;
+  color-scheme: dark;
+  font-family: 'NewEraSans', Arial, sans-serif;
+}
+.innerPage.auditReference::before {
+  content: '' !important;
+  position: absolute;
+  inset: 78px 0 auto;
+  height: min(850px, 100%);
+  background: linear-gradient(180deg, transparent 65%, #080a08 100%),
+    linear-gradient(90deg, #080a08 4%, #080a0866 40%, transparent 70%),
+    url('/redesign/business-audit/photos/audit-hero-apollo.png') right top / auto 100% no-repeat;
+  opacity: 1 !important;
+  mask-image: none;
+  mix-blend-mode: normal;
+  pointer-events: none;
+  z-index: -1;
+}
+.innerPage.auditReference::after { content: none; }
+.auditReference > .container {
+  width: min(1240px, 92%) !important;
+  max-width: none !important;
+  min-width: 0;
+  background: none !important;
+}
+.auditReference .auditHero {
+  grid-row: 1;
+  padding: 0 !important;
+  margin: 0 auto !important;
+}
+.auditReference .auditHero .eyebrow {
+  color: #c5c7bc !important;
+  font-size: 11px !important;
+  letter-spacing: .2em;
+  font-weight: 500;
+  margin: 0 0 14px;
+  text-shadow: none !important;
+}
+.auditReference .auditHero h1 {
+  max-width: 650px;
+  font-size: clamp(40px, 4.3vw, 64px) !important;
+  font-weight: 800;
+  line-height: 1.01 !important;
+  letter-spacing: -.05em !important;
+  margin: 0 0 18px !important;
+  color: var(--audit-ink) !important;
+}
+.auditReference :is(.auditHero h1, .auditSuccess h1) span {
+  color: var(--audit-lime) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+.auditReference .auditHero > p {
+  max-width: 610px !important;
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  color: var(--audit-copy) !important;
+}
+.auditReference .auditTop {
+  grid-row: 2;
+  padding: 18px 0 20px !important;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.auditReference .auditTop .back {
+  color: #c1c2b9 !important;
+  font-size: 12px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.auditReference .auditTopMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-right: auto;
+}
+.auditReference .auditTopMeta span {
+  padding: 9px 12px;
+  min-height: 36px;
+  border: 1px solid var(--audit-line);
+  border-radius: 6px;
+  background: #ffffff09;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #d5d7ce !important;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.auditReference .auditTopMeta svg { color: #e3e5da !important; flex: none; }
+.auditReference .auditLayout {
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr) !important;
+  align-items: start;
+  gap: 18px !important;
+  padding: 0 !important;
+}
+.auditReference :is(.auditProgress, .auditForm) {
+  background: var(--audit-glass) !important;
+  border: 1px solid #ffffff55 !important;
+  border-radius: 10px !important;
+  box-shadow: inset 0 1px 0 #ffffff12, 0 18px 50px #0003 !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  min-width: 0;
+}
+.auditReference .auditProgress {
+  padding: 16px !important;
+  position: sticky;
+  top: 24px;
+}
+.auditReference .auditProgressHead {
+  margin: 0 0 12px;
+  padding: 4px 4px 12px;
+  border-bottom: 1px solid #ffffff18;
+}
+.auditReference .auditProgressHead strong {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d8dacf !important;
+}
+.auditReference .auditProgressHead > span { font-size: 11px; color: #b6b9ac !important; }
+.auditReference .auditProgressList { display: grid; grid-template-columns: 1fr; gap: 5px; }
+.auditReference .auditProgressList button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  min-width: 0;
+  min-height: 68px;
+  padding: 11px 9px;
+  gap: 12px;
+  border: 1px solid transparent !important;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--audit-ink) !important;
+  font-family: inherit;
+}
+.auditReference .auditProgressList button > i {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #d4d7c48c;
+  border-radius: 50%;
+  color: #f5f5f0;
+  background: #080a0866;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.auditReference .auditProgressList button > span { display: grid; gap: 4px; min-width: 0; }
+.auditReference .auditProgressList b {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--audit-ink) !important;
+  font-weight: 500;
+}
+.auditReference .auditProgressList small {
+  font-size: 10px;
+  line-height: 1.35;
+  color: #afb2a6 !important;
+}
+.auditReference .auditProgressList button.active {
+  background: linear-gradient(100deg, #d7ff3f12, #ffffff0a) !important;
+  border-color: #ffffff30 !important;
+}
+.auditReference .auditProgressList button.active i {
+  color: #131805 !important;
+  background: var(--audit-lime) !important;
+  border-color: var(--audit-lime) !important;
+  font-weight: 700;
+  box-shadow: 0 0 18px #d7ff3f12;
+}
+.auditReference .auditProgressList button.active b { color: var(--audit-lime) !important; }
+.auditReference .auditProgressList button.done i {
+  color: var(--audit-lime) !important;
+  background: transparent !important;
+  border-color: #d7ff3f99 !important;
+}
+.auditReference .auditProgressList button.done i svg { width: 16px; height: 16px; }
+.auditReference .auditProgressList button.done:hover { background: #ffffff0b; }
+.auditReference .auditTime {
+  margin-top: 16px;
+  padding: 13px 8px 0;
+  border: 0 !important;
+  border-top: 1px solid #ffffff20 !important;
+  background: none !important;
+  border-radius: 0;
+  color: #d8dacf;
+}
+.auditReference .auditTime svg { color: var(--audit-lime) !important; }
+.auditReference .auditTime strong { color: #e2e5da !important; font-size: 12px; }
+.auditReference .auditTime small { color: var(--audit-muted) !important; font-size: 10px; }
+.auditReference .auditForm { padding: 28px !important; }
+.auditReference .auditFormHead {
+  margin: 0 0 22px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid #ffffff20 !important;
+  gap: 16px;
+}
+.auditReference .auditFormHead small {
+  color: #bdc1b1 !important;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+}
+.auditReference .auditFormHead h2 {
+  color: var(--audit-ink) !important;
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+  font-weight: 600;
+  margin: 7px 0 7px;
+}
+.auditReference .auditFormHead p { font-size: 13px; line-height: 1.5; color: var(--audit-copy) !important; }
+.auditReference .auditCounter {
+  color: var(--audit-lime) !important;
+  border-color: #ffffff30;
+  background: #ffffff06;
+  border-radius: 5px;
+  font-size: 11px;
+  padding: 7px 10px;
+  white-space: nowrap;
+}
+.auditReference .auditFields { display: grid; gap: 18px; }
+.auditReference .auditGrid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.auditReference .auditField { display: grid; min-width: 0; gap: 8px; }
+.auditReference .auditField > span {
+  color: #eeeFE7 !important;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.auditReference .auditField em { color: var(--audit-lime) !important; }
+.auditReference .auditField :is(input, textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid #ffffff4a !important;
+  border-radius: 6px !important;
+  background: linear-gradient(110deg, #ffffff08, #ffffff0f) !important;
+  color: var(--audit-ink) !important;
+  box-shadow: inset 0 1px 1px #ffffff08;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px 14px;
+  line-height: 1.5;
+  outline: none;
+}
+.auditReference .auditField input { height: 46px; }
+.auditReference .auditField textarea { min-height: 108px; resize: vertical; }
+.auditReference .auditField :is(input, textarea)::placeholder { color: #a0a397; opacity: 1; }
+.auditReference .auditField :is(input, textarea):focus {
+  border-color: #d7ff3f !important;
+  box-shadow: 0 0 0 3px #d7ff3f16 !important;
+}
+.auditReference .auditField input:-webkit-autofill {
+  -webkit-text-fill-color: #f5f5f0;
+  box-shadow: inset 0 0 0 100px #252922;
+  caret-color: #f5f5f0;
+}
+.auditReference .auditSocialIntro {
+  background: #ffffff05;
+  border-color: #ffffff26;
+  border-radius: 6px;
+  color: #c5c9bb;
+  padding: 13px;
+}
+.auditReference .auditSocialIntro svg { color: #d7ff3f; }
+.auditReference .auditSocialIntro p { color: var(--audit-copy); font-size: 12px; line-height: 1.6; }
+.auditReference .auditFormActions {
+  margin: 24px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid #ffffff20 !important;
+  gap: 12px;
+}
+.auditReference :is(.auditFormActions, .auditSuccess) .primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 22px;
+  border: 1px solid #e3ff7c !important;
+  border-radius: 6px;
+  background: linear-gradient(100deg, #d7ff3f, #dfff55) !important;
+  color: #141904 !important;
+  box-shadow: 0 4px 20px #d7ff3f0a !important;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+  cursor: pointer;
+}
+.auditReference .auditFormActions .secondary {
+  min-height: 44px;
+  padding: 11px 18px;
+  border: 1px solid #ffffff55 !important;
+  border-radius: 6px;
+  background: #ffffff04 !important;
+  box-shadow: none;
+  color: #f5f5f0;
+  font: 500 13px/1.4 'NewEraSans', Arial, sans-serif;
+}
+.auditReference .auditFormActions button:disabled { opacity: .55; cursor: not-allowed; }
+.auditReference .auditFormActions .primary:not(:disabled):hover,
+.auditReference .auditSuccess .primary:hover { filter: brightness(1.06); }
+.auditReference :is(a, button):focus-visible { outline: 2px solid #d7ff3f; outline-offset: 4px; }
+.auditReference .auditReview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.auditReference .auditReviewBlock {
+  background: linear-gradient(120deg, #ffffff09, #ffffff03);
+  border: 1px solid #ffffff36;
+  border-radius: 7px;
+  padding: 18px;
+  gap: 7px;
+  align-content: start;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.auditReference .auditReviewBlock > small {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #e1e4d8;
+  font-size: 11px;
+  letter-spacing: .07em;
+  margin-bottom: 4px;
+}
+.auditReference .auditReviewBlock > small::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background: url('/redesign/business-audit/icons/ivory/user.svg') center / contain no-repeat;
+}
+.auditReference .auditReviewBlock:nth-child(2) > small::before { background-image: url('/redesign/business-audit/icons/ivory/clipboard-list.svg'); }
+.auditReference .auditReviewBlock:nth-child(3) > small::before { background-image: url('/redesign/business-audit/icons/ivory/share-2.svg'); }
+.auditReference .auditReviewBlock:nth-child(4) > small::before { background-image: url('/redesign/business-audit/icons/ivory/info.svg'); }
+.auditReference .auditReviewBlock > strong { color: #f5f5f0; font-size: 14px; line-height: 1.5; }
+.auditReference .auditReviewBlock :is(span, p) { color: #c5c9bb; font-size: 12px; line-height: 1.6; }
+.auditReference .auditReviewNotice {
+  grid-column: 1 / -1;
+  padding: 14px 0 0;
+  border: 0;
+  border-top: 1px solid #ffffff20;
+  background: none;
+  border-radius: 0;
+  color: #d7ff3f;
+}
+.auditReference .auditReviewNotice p { color: #c1c2b9; font-size: 12px; line-height: 1.6; }
+.auditReference .auditReviewNotice strong { color: #f5f5f0; font-weight: 500; }
+.auditReference .auditError {
+  background: #481f26c4;
+  color: #ffd5dc;
+  border-color: #ff94aa70;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px 14px;
+  border-radius: 6px;
+}
+
+/* Successful submission keeps the existing copy, email and home link. */
+.innerPage.auditReference.auditSubmitted { display: block; padding-top: 150px !important; }
+.innerPage.auditReference.auditSubmitted::before {
+  top: 0;
+  height: 100%;
+  min-height: 800px;
+  background: linear-gradient(90deg, #080a08 2%, #080a0844 45%, transparent 75%),
+    url('/redesign/business-audit/photos/audit-success-apollo.png') right center / auto 100% no-repeat;
+}
+.auditReference .auditSuccess {
+  width: min(1240px, 92%) !important;
+  padding: 45px 0 80px;
+  min-height: calc(100svh - 214px);
+  align-items: center;
+  text-align: center;
+  padding-right: min(41vw, 560px);
+  position: relative;
+}
+.auditReference .auditSuccessIcon {
+  width: 82px;
+  height: 82px;
+  margin: 0 0 26px;
+  color: #d7ff3f;
+  background: #ffffff03;
+  border: 1px solid #ffffff9c;
+  border-radius: 50%;
+  box-shadow: 0 0 34px #d7ff3f08;
+}
+.auditReference .auditSuccessIcon svg { width: 36px; height: 36px; stroke-width: 2; }
+.auditReference .auditSuccess .eyebrow { font-size: 11px; color: #c5c9bb; letter-spacing: .16em; }
+.auditReference .auditSuccess h1 {
+  color: #f5f5f0;
+  font-size: clamp(38px, 4.5vw, 60px);
+  line-height: 1.02;
+  font-weight: 800;
+  letter-spacing: -.045em;
+  margin: 14px 0 0;
+}
+.auditReference .auditSuccess h1 span { display: block; }
+.auditReference .auditSuccess > p { color: #d2d5c8; font-size: 14px; line-height: 1.7; margin: 20px 0; }
+.auditReference .auditSuccess > p strong { color: #d7ff3f; font-weight: 500; }
+.auditReference .auditSuccessMeta {
+  width: 100%;
+  padding: 18px;
+  margin: 8px 0 24px;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 18px;
+  background: var(--audit-glass);
+  border: 1px solid #ffffff55;
+  border-radius: 8px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.auditReference .auditSuccessMeta span { color: #e1e4d8; font-size: 12px; line-height: 1.5; min-width: 0; overflow-wrap: anywhere; }
+.auditReference .auditSuccessMeta span + span { padding-left: 18px; border-left: 1px solid #ffffff30; }
+.auditReference .auditSuccessMeta svg { color: #f5f5f0; flex: none; }
+
+/* Existing shared navbar: only page-local glass and colors, no new navigation. */
+html:has(.auditReference), body:has(.auditReference) { background: #080a08 !important; }
+body:has(.auditReference) > .nePublicHeader {
+  position: absolute;
+  top: 0;
+  left: 4%;
+  right: 4%;
+  width: 92%;
+  height: 68px;
+  margin: 28px 0 0;
+  border: 1px solid #ffffff40;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #ffffff0e, #ffffff06 50%, #ffffff14);
+  box-shadow: inset 0 1px 1px #ffffff1c, 0 8px 24px #0003;
+  backdrop-filter: blur(18px) saturate(.85);
+  -webkit-backdrop-filter: blur(18px) saturate(.85);
+  color: #f5f5f0;
+}
+body:has(.auditReference) .nePublicBrand img { filter: none; }
+body:has(.auditReference) .nePublicNav a { color: #d0d2c7; }
+body:has(.auditReference) .nePublicNav a:hover { color: #d7ff3f; }
+body:has(.auditReference) .nePublicNav a[href='/analysis'] { color: #d7ff3f; text-decoration: underline; text-underline-offset: 9px; text-decoration-thickness: 2px; }
+body:has(.auditReference) :is(.nePublicAccount, .nePublicDesktopAction) { color: #f5f5f0; border-color: #ffffff4a; background: #ffffff05; }
+body:has(.auditReference) .nePublicMore > summary { color: #ddd; }
+body:has(.auditReference) .nePublicMorePanel { background: #111410f5; border-color: #ffffff30; box-shadow: 0 10px 25px #0005; }
+body:has(.auditReference) .nePublicMorePanel :is(a, button) { color: #f5f5f0; }
+body:has(.auditReference) .nePublicMorePanel :is(a, button):hover { background: #ffffff12; }
+
+/* The long question stage uses the reference's side-by-side desktop composition. */
+@media (min-width: 1101px) {
+  .innerPage.auditReference[data-audit-step='3'] {
+    grid-template-columns: 290px minmax(0, 1fr);
+    grid-template-rows: max-content max-content 1fr;
+    gap: 0 24px;
+    padding-left: max(4%, calc((100% - 1240px) / 2)) !important;
+    padding-right: max(4%, calc((100% - 1240px) / 2)) !important;
+  }
+  .auditReference[data-audit-step='3'] > .auditHero {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100% !important;
+  }
+  .auditReference[data-audit-step='3'] .auditHero h1 { font-size: 42px !important; }
+  .auditReference[data-audit-step='3'] .auditHero > p { font-size: 12px !important; }
+  .auditReference[data-audit-step='3'] > .auditTop { grid-column: 1; grid-row: 2; width: 100% !important; }
+  .auditReference[data-audit-step='3'] .auditTopMeta { display: grid; width: 100%; }
+  .auditReference[data-audit-step='3'] > .auditLayout { display: contents; }
+  .auditReference[data-audit-step='3'] .auditProgress { grid-column: 1; grid-row: 3; position: static; }
+  .auditReference[data-audit-step='3'] .auditForm { grid-column: 2; grid-row: 1 / 4; }
+}
+@media (min-width: 761px) and (max-width: 1200px) {
+  /* Accommodate the user's existing two-row tablet navbar, when present. */
+  body:has(.auditReference) > .nePublicHeader { height: 104px; }
+  .innerPage.auditReference { padding-top: 160px !important; }
+  .auditReference .auditLayout { grid-template-columns: 240px minmax(0, 1fr) !important; }
+  .auditReference .auditHero h1 { max-width: 570px; font-size: 52px !important; }
+  .auditReference .auditHero > p { max-width: 55% !important; font-size: 13px !important; }
+  .auditReference .auditForm { padding: 22px !important; }
+  .auditReference .auditGrid2 { gap: 14px; }
+  .auditReference .auditProgress { padding: 12px !important; }
+  .auditReference .auditProgressList button { padding: 9px 5px; gap: 9px; }
+  .auditReference .auditProgressList b { font-size: 11px; }
+  .auditReference .auditProgressList small { font-size: 9px; }
+}
+@media (max-width: 1000px) {
+  .auditReference .auditLayout { grid-template-columns: 1fr !important; }
+  .auditReference .auditProgress { position: static; }
+  .auditReference .auditProgressList { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+  .auditReference .auditProgressList button { flex-direction: column; text-align: center; gap: 8px; padding: 10px 4px; min-height: 100px; }
+  .auditReference .auditProgressList button > span { display: grid; }
+  .auditReference .auditProgressList small { display: none; }
+  .auditReference .auditProgressList b { font-size: 10px; }
+  .auditReference .auditTime { display: none; }
+}
+@media (max-width: 760px) {
+  .innerPage.auditReference { padding: 112px 0 40px !important; }
+  .innerPage.auditReference::before {
+    top: 58px;
+    height: 520px;
+    background: linear-gradient(180deg, #080a0822, #080a0888 65%, #080a08 100%),
+      linear-gradient(90deg, #080a08a6, #080a0860 60%, #080a0820),
+      url('/redesign/business-audit/photos/audit-hero-apollo.png') 68% top / auto 100% no-repeat;
+  }
+  .auditReference > .container { width: calc(100% - 36px) !important; max-width: 660px !important; }
+  .auditReference .auditHero .eyebrow { font-size: 10px !important; margin-bottom: 14px; max-width: 85%; }
+  .auditReference .auditHero h1 { font-size: clamp(35px, 8.8vw, 58px) !important; max-width: 92%; margin-bottom: 16px !important; }
+  .auditReference .auditHero > p { max-width: 100% !important; font-size: 13px !important; line-height: 1.65 !important; }
+  .auditReference .auditTop { padding: 16px 0 20px !important; gap: 8px; }
+  .auditReference .auditTop .back { width: 100%; font-size: 11px; }
+  .auditReference .auditTopMeta { width: 100%; gap: 7px; }
+  .auditReference .auditTopMeta span { font-size: 10px; padding: 8px; min-height: 34px; gap: 6px; }
+  .auditReference .auditTopMeta svg { width: 14px; height: 14px; }
+  .auditReference .auditLayout { gap: 14px !important; }
+  .auditReference .auditProgress { padding: 12px !important; border-radius: 9px !important; }
+  .auditReference .auditProgressHead { padding: 0 2px 10px; margin-bottom: 8px; }
+  .auditReference .auditProgressList button { padding: 9px 2px; min-height: 88px; gap: 8px; }
+  .auditReference .auditProgressList button > i { width: 28px; height: 28px; font-size: 12px; }
+  .auditReference .auditProgressList b { font-size: 9px; line-height: 1.3; font-weight: 500; }
+  .auditReference .auditForm { padding: 22px 18px !important; border-radius: 9px !important; }
+  .auditReference .auditFormHead { margin-bottom: 20px; gap: 8px; }
+  .auditReference .auditFormHead h2 { font-size: 25px; }
+  .auditReference .auditFormHead p { font-size: 12px; }
+  .auditReference .auditFormHead small { font-size: 9px; }
+  .auditReference .auditCounter { padding: 6px 7px; font-size: 10px; }
+  .auditReference .auditGrid2 { grid-template-columns: 1fr; gap: 18px; }
+  .auditReference .auditField > span { font-size: 13px; }
+  .auditReference .auditField :is(input, textarea) { font-size: 16px; padding: 12px; }
+  .auditReference .auditField input { height: 48px; }
+  .auditReference .auditField textarea { min-height: 116px; }
+  .auditReference .auditField :is(input, textarea)::placeholder { font-size: 13px; }
+  .auditReference .auditFormActions { gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+  .auditReference .auditFormActions .primary { flex: 1; padding: 12px; font-size: 13px; }
+  .auditReference .auditFormActions .secondary { padding: 12px; font-size: 12px; }
+  .auditReference .auditFormActions .primary[type='submit'] { flex-basis: 100%; }
+  .auditReference .auditReview { grid-template-columns: 1fr; }
+  .auditReference .auditReviewBlock { padding: 16px; }
+  .auditReference .auditReviewNotice { padding-top: 14px; }
+  .innerPage.auditReference.auditSubmitted { padding-top: 120px !important; }
+  .innerPage.auditReference.auditSubmitted::before {
+    top: 44px;
+    min-height: 0;
+    height: 100%;
+    background: linear-gradient(180deg, #080a0820, #080a08b8 45%, #080a08 95%),
+      url('/redesign/business-audit/photos/audit-success-apollo.png') 66% top / auto 580px no-repeat;
+  }
+  .auditReference .auditSuccess { width: calc(100% - 36px) !important; min-height: calc(100svh - 160px); padding: 55px 0 30px; }
+  .auditReference .auditSuccessIcon { width: 70px; height: 70px; margin-bottom: 24px; background: #080a0880; }
+  .auditReference .auditSuccess h1 { font-size: clamp(36px, 9.5vw, 54px); max-width: 100%; }
+  .auditReference .auditSuccess .eyebrow { font-size: 9px; }
+  .auditReference .auditSuccess > p { font-size: 14px; }
+  .auditReference .auditSuccessMeta { flex-direction: column; text-align: left; padding: 18px; gap: 14px; }
+  .auditReference .auditSuccessMeta span + span { border: 0; border-top: 1px solid #ffffff25; padding: 14px 0 0; }
+  .auditReference .auditSuccess .primary { width: 100%; }
+  body:has(.auditReference) > .nePublicHeader { left: 18px; right: 18px; width: auto; height: 44px; margin: 14px 0 0; }
+  body:has(.auditReference) .nePublicInner { display: flex; justify-content: space-between; gap: 8px; padding: 0 12px; position: relative; }
+  body:has(.auditReference) :is(.nePublicBrand, .nePublicBrand img) { width: 120px; height: 24px; }
+  body:has(.auditReference) .nePublicAccount { min-height: 30px; font-size: 11px; padding: 0 10px; }
+  body:has(.auditReference) .nePublicMore > summary { min-height: 42px; width: 28px; font-size: 13px; }
+  body:has(.auditReference) .nePublicNav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+    max-height: calc(100svh - 82px);
+    overflow: auto;
+    padding: 12px 14px 126px;
+    border: 1px solid #ffffff30;
+    border-radius: 9px;
+    background: #111410f5;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 12px 30px #0006;
+    gap: 2px;
+  }
+  body:has(.auditReference) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav { display: grid; }
+  body:has(.auditReference) .nePublicNav a { font-size: 14px; min-height: 40px; padding: 8px 12px; border-radius: 5px; }
+  body:has(.auditReference) .nePublicNav .nePublicDesktopContact { display: none !important; }
+  body:has(.auditReference) .nePublicMore { position: static; }
+  body:has(.auditReference) .nePublicMorePanel { right: 14px; left: 14px; top: calc(100% + 266px); width: auto; z-index: 1; background: none; box-shadow: none; border: 0; border-top: 1px solid #ffffff20; border-radius: 0; padding: 10px 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auditReference *, .auditReference *::before { transition: none !important; animation: none !important; }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .auditReference :is(.auditProgress, .auditForm, .auditSuccessMeta) { background: #151813f5 !important; }
+}

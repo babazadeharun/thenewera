@@ -39,7 +39,7 @@ export default function PromoterApplyForm({ eventSlug, eventName, verified = fal
     finally { setLoading(false); }
   }
 
-  if (success) return <div className="promoterSuccess"><div className="promoterSuccessMark">✓</div><div className="eventsEyebrow">APPLICATION RECEIVED</div><h2>Müraciətin qəbul edildi.</h2><p><strong>{eventName}</strong> üçün müraciətin və e-poçt təsdiqin uğurla tamamlandı. New Era komandası müraciətini nəzərdən keçirəcək. Təsdiqdən sonra promoter hesabın aktivləşdiriləcək.</p><button onClick={()=>router.push('/events')} className="eventPrimaryCta">Tədbirlərə qayıt <span>→</span></button></div>;
+  if (success) return <div className="promoterSuccess"><div className="promoterSuccessMark">✓</div><div className="eventsEyebrow">APPLICATION RECEIVED</div><h2><span>Müraciətin</span> qəbul edildi.</h2><p><strong>{eventName}</strong> üçün müraciətin və e-poçt təsdiqin uğurla tamamlandı. New Era komandası müraciətini nəzərdən keçirəcək. Təsdiqdən sonra promoter hesabın aktivləşdiriləcək.</p><button onClick={()=>router.push('/events')} className="eventPrimaryCta">Tədbirlərə qayıt <span>→</span></button></div>;
 
   return <form className="promoterForm" onSubmit={submit}>
     <section className="promoterFormSection"><div className="promoterFormTitle"><span>01</span><div><strong>Personal information</strong><small>Əlaqə və əsas məlumatların</small></div></div><div className="promoterFormGrid">

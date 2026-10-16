@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import './promoter-apply-reference.css';
 import { ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
@@ -10,7 +11,7 @@ export default async function PromoterApplyPage({ params, searchParams }: { para
   const event = await prisma.event.findUnique({ where: { slug }, select: { id: true, slug: true, name: true, artist: true, status: true, startsAt: true } });
   if (!event || event.status !== 'APPLICATION_OPEN') notFound();
   return (
-    <main className="promoterApplyPage">
+    <main className="promoterApplyPage promoterApplyReference">
       <div className="promoterApplyContainer">
         <Link href={`/events/${event.slug}`} className="eventDetailBack"><ArrowLeft size={15} /> Tədbirə qayıt</Link>
         <div className="promoterApplyHeader">

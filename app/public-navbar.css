@@ -113,3 +113,9 @@ body:has(.glassHome) .nePublicBrand img{object-fit:cover}
 @media(max-width:760px){
   body:has(.glassHome) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav{padding-bottom:126px}
 }
+/* Hide the desktop-only contact link on mobile. */
+@media(max-width:760px){
+  .nePublicHeader .nePublicNav .nePublicDesktopContact{
+    display:none!important;
+  }
+}

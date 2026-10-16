@@ -1,0 +1,241 @@
+/* /events presentation only. Event queries, data and destinations are unchanged. */
+.eventsPublicPage.eventsReference {
+  --events-lime: #d7ff3f;
+  --events-ink: #f5f5f0;
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  background: #080a08 !important;
+  color: var(--events-ink) !important;
+  font-family: 'NewEraSans', Arial, sans-serif;
+  color-scheme: dark;
+  padding-bottom: 24px;
+}
+.eventsReference::before, .eventsReference::after { content: none !important; }
+.eventsReference .eventsPublicContainer { width: min(1320px, calc(100% - 96px)) !important; }
+.eventsReference .eventsPublicHero {
+  padding: 132px 0 76px !important;
+  min-height: 650px;
+  border: 0 !important;
+  background: linear-gradient(90deg, #080a0820, transparent 70%),
+    url('/redesign/events/photos/events-hero-apollo-glass.png') center center / cover no-repeat !important;
+}
+.eventsReference .eventsPublicHeroGlow { display: none; }
+.eventsReference .eventsPublicHero .eventsPublicContainer { position: relative; z-index: 1; }
+.eventsReference .eventsBackLink { display: inline-flex; color: #d5d7cf; font-size: 14px; margin-bottom: 52px; }
+.eventsReference .eventsEyebrow { color: #e3e4dc !important; font-size: 12px; font-weight: 500; letter-spacing: .24em; }
+.eventsReference .eventsPublicHero h1 {
+  font-size: clamp(48px, 5.4vw, 78px) !important;
+  font-weight: 800;
+  line-height: .99;
+  letter-spacing: -.055em !important;
+  max-width: 850px;
+  margin: 20px 0 22px;
+  color: var(--events-ink) !important;
+}
+.eventsReference .eventsPublicHero h1 span {
+  color: var(--events-lime) !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+}
+.eventsReference .eventsPublicHero p { max-width: 620px; color: #dedfd8 !important; font-size: 20px; line-height: 1.4; }
+.eventsReference .eventsHeroActions { gap: 24px; margin-top: 30px !important; }
+.eventsReference .eventsHeroActions > span { color: #e0e1da; font-size: 13px; gap: 12px; }
+.eventsReference .eventsHeroActions > span svg { width: 23px; height: 23px; color: var(--events-lime); }
+.eventsReference .eventPrimaryCta {
+  min-height: 52px;
+  padding: 15px 28px;
+  border: 1px solid #e7ff8299 !important;
+  border-radius: 6px;
+  background: var(--events-lime) !important;
+  box-shadow: inset 0 1px 2px #ffffff80, 0 0 24px #d7ff3f0c !important;
+  color: #080a08 !important;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  gap: 16px;
+}
+.eventsReference .eventPrimaryCta svg { width: 18px; height: 18px; flex: none; }
+.eventsReference .eventsGridSection { padding: 38px 0 30px; scroll-margin-top: 30px; }
+.eventsReference .eventsSectionLabel { gap: 16px; margin-bottom: 22px; font-size: 12px; font-weight: 500; letter-spacing: .2em; }
+.eventsReference .eventsSectionLabel span { color: #dedfd9 !important; }
+.eventsReference .eventsSectionLabel i { background: #d5d8cd80 !important; }
+.eventsReference .eventsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 20px !important; align-items: stretch; }
+.eventsReference .eventCard {
+  position: relative;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #d5d8cd99 !important;
+  border-radius: 11px !important;
+  background: radial-gradient(ellipse at 100% 65%, #b0ab7330, transparent 65%),
+    linear-gradient(130deg, #24272199, #090b0af2 60%, #262923b3) !important;
+  box-shadow: inset 0 1px 2px #ffffff15;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.eventsReference .eventCard:hover { border-color: #d7ff3fbb !important; box-shadow: 0 16px 40px #0006; }
+.eventsReference .eventCardImage { height: auto !important; aspect-ratio: 1.43; border: 1px solid #ffffff14; border-radius: 7px; flex: none; }
+.eventsReference .eventCardImage::after { background: linear-gradient(180deg, #0001, transparent 45%, #0002); }
+.eventsReference .eventCardImageFallback { background: radial-gradient(ellipse at 70% 20%, #68662a55, transparent 65%), #0f130f; color: #d7ff3f; }
+.eventsReference .eventStatus {
+  left: 8px;
+  top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100% - 16px);
+  padding: 8px 12px;
+  border-color: #d7ff3f99 !important;
+  background: #080a08d9 !important;
+  color: #f5f5f0 !important;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.eventsReference .eventStatus::before { content: ''; width: 9px; height: 9px; flex: none; border-radius: 50%; background: #b7ff23; }
+.eventsReference .eventStatus-sold_out { border-color: #ff4b49b3 !important; }
+.eventsReference .eventStatus-sold_out::before { background: #ff3838; }
+.eventsReference .eventCardBody { padding: 18px 12px 12px; display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.eventsReference .eventCardMeta { color: #c0c3b9 !important; font-size: 10px; font-weight: 500; letter-spacing: .17em; overflow-wrap: anywhere; }
+.eventsReference .eventCardTitle { color: var(--events-ink) !important; font-size: clamp(24px, 2.5vw, 34px); font-weight: 800; line-height: 1.1; letter-spacing: -.04em; min-height: 0; margin: 10px 0 16px; padding-bottom: 16px; border-bottom: 1px solid #ffffff40; overflow-wrap: anywhere; }
+.eventsReference .eventCardInfo { color: #e2e4db !important; font-size: 14px; line-height: 1.4; gap: 12px; margin: 0 0 12px; white-space: normal; overflow: visible; }
+.eventsReference .eventCardInfo svg { width: 20px; height: 20px; color: #f5f5f0 !important; }
+.eventsReference .eventCardFooter { border-top: 1px solid #ffffff50 !important; margin-top: auto; padding-top: 14px; align-items: flex-end; gap: 10px; }
+.eventsReference .eventCardFooter > div { min-width: 0; }
+.eventsReference .eventCardFooter small { font-size: 9px; letter-spacing: .1em; color: #c5c8bc; }
+.eventsReference .eventCardFooter strong { color: var(--events-ink) !important; font-size: 23px; line-height: 1.15; font-weight: 800; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.eventsReference .eventCardArrow { color: var(--events-lime) !important; font-size: 15px; font-weight: 700; white-space: nowrap; padding: 8px 0; }
+.eventsReference .eventsEmptyState { padding: 70px 22px; background: linear-gradient(130deg, #24272199, #090b0af2) !important; border-color: #d5d8cd66 !important; color: #bfc4b8; }
+.eventsReference .eventsEmptyState svg { color: var(--events-lime); }
+.eventsReference .eventsEmptyState strong { color: var(--events-ink); font-size: 18px; }
+.eventsReference .eventsEmptyState span { font-size: 14px; }
+.eventsReference .eventsPromoterCtaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 26px;
+  min-height: 420px;
+  margin: 0 auto 0;
+  padding: 52px 40px;
+  border: 1px solid #d5d8cd99 !important;
+  border-radius: 8px !important;
+  background: linear-gradient(90deg, #080a0833, transparent 70%),
+    url('/redesign/events/photos/promoter-marble-glass-ticket.png') center / cover no-repeat !important;
+  box-shadow: inset 0 1px 2px #ffffff15;
+}
+.eventsReference .eventsPromoterCtaSection > div { max-width: 610px; }
+.eventsReference .eventsPromoterCtaSection h2 { font-size: clamp(34px, 4.2vw, 58px); font-weight: 800; line-height: 1.02; letter-spacing: -.05em; color: var(--events-ink); margin: 18px 0 16px; }
+.eventsReference .eventsPromoterCtaSection h2 span { color: var(--events-lime); }
+.eventsReference .eventsPromoterCtaSection p { max-width: 520px; color: #e2e3dc; font-size: 18px; line-height: 1.45; }
+.eventsReference a:focus-visible { outline: 2px solid #d7ff3f; outline-offset: 4px; }
+@media (max-width: 1100px) and (min-width: 761px) {
+  .eventsReference .eventsPublicContainer { width: calc(100% - 56px) !important; }
+  .eventsReference .eventsPublicHero { padding-top: 160px !important; min-height: 640px; }
+  .eventsReference .eventsPublicHero p { max-width: 53%; font-size: 17px; }
+  .eventsReference .eventsHeroActions { max-width: 60%; gap: 18px; }
+  .eventsReference .eventsGrid { gap: 14px !important; }
+  .eventsReference .eventCardBody { padding: 16px 6px 8px; }
+  .eventsReference .eventCardInfo { font-size: 12px; gap: 8px; }
+  .eventsReference .eventCardFooter strong { font-size: 18px; }
+  .eventsReference .eventCardArrow { font-size: 12px; }
+  .eventsReference .eventsPromoterCtaSection { padding: 36px 28px; }
+  .eventsReference .eventsPromoterCtaSection > div { max-width: 55%; }
+  .eventsReference .eventsPromoterCtaSection p { font-size: 16px; }
+}
+@media (max-width: 760px) {
+  .eventsReference .eventsPublicContainer { width: calc(100% - 36px) !important; }
+  .eventsReference .eventsPublicHero {
+    min-height: 0;
+    padding: 94px 0 30px !important;
+    background: linear-gradient(180deg, transparent 40%, #080a0870 70%, #080a08 100%),
+      linear-gradient(90deg, #080a0838, transparent),
+      url('/redesign/events/photos/events-hero-apollo-glass.png') 67% 45px / auto 610px no-repeat !important;
+  }
+  .eventsReference .eventsBackLink { margin: 0 0 46px; font-size: 13px; }
+  .eventsReference .eventsPublicHero .eventsEyebrow { font-size: 10px; letter-spacing: .2em; }
+  .eventsReference .eventsPublicHero h1 { font-size: clamp(42px, 10.5vw, 68px) !important; max-width: 75%; line-height: 1.01; margin: 17px 0 24px; }
+  .eventsReference .eventsPublicHero p { font-size: 18px; max-width: 90%; line-height: 1.4; text-shadow: 0 2px 12px #0008; }
+  .eventsReference .eventsHeroActions { flex-direction: column; align-items: flex-start; gap: 24px; margin-top: 26px !important; }
+  .eventsReference .eventPrimaryCta { min-height: 50px; padding: 14px 24px; font-size: 16px; }
+  .eventsReference .eventsHeroActions > span { font-size: 12px; gap: 10px; }
+  .eventsReference .eventsGridSection { padding: 20px 0 22px; }
+  .eventsReference .eventsSectionLabel { font-size: 11px; margin-bottom: 20px; gap: 12px; }
+  .eventsReference .eventsGrid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .eventsReference .eventCardImage { aspect-ratio: 1.8; }
+  .eventsReference .eventCardBody { padding: 16px 12px 10px; }
+  .eventsReference .eventCardTitle { font-size: 29px; margin: 9px 0 14px; padding-bottom: 12px; }
+  .eventsReference .eventCardInfo { font-size: 14px; margin-bottom: 13px; }
+  .eventsReference .eventCardFooter { padding-top: 12px; }
+  .eventsReference .eventCardFooter strong { font-size: 24px; }
+  .eventsReference .eventCardArrow { font-size: 16px; }
+  .eventsReference .eventsPromoterCtaSection {
+    min-height: 360px;
+    padding: 26px 22px 18px;
+    justify-content: space-between;
+    gap: 18px;
+    background: linear-gradient(90deg, #080a08b0, #080a0840 65%, transparent),
+      url('/redesign/events/photos/promoter-marble-glass-ticket.png') 65% center / auto 100% no-repeat !important;
+  }
+  .eventsReference .eventsPromoterCtaSection > div { max-width: 100%; }
+  .eventsReference .eventsPromoterCtaSection .eventsEyebrow { font-size: 10px; letter-spacing: .2em; }
+  .eventsReference .eventsPromoterCtaSection h2 { font-size: clamp(30px, 7.8vw, 50px); max-width: 80%; margin: 14px 0 12px; }
+  .eventsReference .eventsPromoterCtaSection p { font-size: 14px; max-width: 85%; text-shadow: 0 2px 10px #000; }
+  .eventsReference .eventsPromoterCtaSection .eventPrimaryCta { width: 100%; padding-inline: 10px; font-size: 14px; gap: 10px; }
+}
+@media (max-width: 360px) {
+  .eventsReference .eventsPublicContainer { width: calc(100% - 28px) !important; }
+  .eventsReference .eventsPublicHero h1 { font-size: 40px !important; max-width: 90%; }
+  .eventsReference .eventsPublicHero p { font-size: 16px; max-width: 100%; }
+  .eventsReference .eventStatus { font-size: 11px; }
+  .eventsReference .eventsPromoterCtaSection { padding: 24px 16px 16px; }
+  .eventsReference .eventsPromoterCtaSection .eventPrimaryCta { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eventsReference *, .eventsReference *::after { animation: none !important; transition: none !important; }
+  .eventsReference .eventCard:hover { transform: none; }
+}
+
+/* Page-local public navbar skin; existing navigation and account actions stay intact. */
+html:has(.eventsReference), body:has(.eventsReference) { background: #080a08 !important; }
+body:has(.eventsReference) > .nePublicHeader {
+  position: absolute;
+  top: 0;
+  left: 4.2%;
+  right: 4.2%;
+  width: 91.6%;
+  height: 68px;
+  margin: 26px 0 0;
+  border-color: #ffffff40;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #ffffff0e, #ffffff06 50%, #ffffff14);
+  box-shadow: inset 0 1px 1px #ffffff1c, 0 8px 24px #0003;
+  backdrop-filter: blur(18px) saturate(.85);
+  -webkit-backdrop-filter: blur(18px) saturate(.85);
+}
+body:has(.eventsReference) .nePublicBrand img { filter: none; }
+body:has(.eventsReference) .nePublicNav a { color: #d0d2c7; }
+body:has(.eventsReference) .nePublicNav a:hover { color: #d7ff3f; }
+body:has(.eventsReference) :is(.nePublicAccount, .nePublicDesktopAction) { color: #f5f5f0; border-color: #ffffff4a; background: #ffffff05; }
+body:has(.eventsReference) .nePublicMore > summary { color: #ddd; }
+body:has(.eventsReference) .nePublicMorePanel { background: #111410f5; border-color: #ffffff30; box-shadow: 0 10px 25px #0005; }
+body:has(.eventsReference) .nePublicMorePanel :is(a, button) { color: #f5f5f0; }
+body:has(.eventsReference) .nePublicMorePanel :is(a, button):hover { background: #ffffff12; }
+
+@media (min-width: 761px) and (max-width: 1200px) {
+ body:has(.eventsReference) > .nePublicHeader { height: 104px; }
+}
+@media (max-width: 760px) {
+  body:has(.eventsReference) > .nePublicHeader { left: 18px; right: 18px; width: auto; height: 44px; margin: 14px 0 0; }
+  body:has(.eventsReference) .nePublicInner { display: flex; justify-content: space-between; gap: 8px; padding: 0 12px; position: relative; }
+  body:has(.eventsReference) :is(.nePublicBrand, .nePublicBrand img) { width: 120px; height: 24px; }
+  body:has(.eventsReference) .nePublicAccount { min-height: 30px; font-size: 11px; padding: 0 10px; }
+  body:has(.eventsReference) .nePublicMore > summary { min-height: 42px; width: 28px; font-size: 13px; }
+  body:has(.eventsReference) .nePublicNav { display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; width: auto; height: auto; max-height: calc(100svh - 82px); overflow: auto; padding: 12px 14px 126px; border: 1px solid #ffffff30; border-radius: 9px; background: #111410f5; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 12px 30px #0006; gap: 2px; }
+  body:has(.eventsReference) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav { display: grid; }
+  body:has(.eventsReference) .nePublicNav a { font-size: 14px; min-height: 40px; padding: 8px 12px; border-radius: 5px; }
+  body:has(.eventsReference) .nePublicNav .nePublicDesktopContact { display: none !important; }
+  body:has(.eventsReference) .nePublicMore { position: static; }
+  body:has(.eventsReference) .nePublicMorePanel { right: 14px; left: 14px; top: calc(100% + 266px); width: auto; z-index: 1; background: none; box-shadow: none; border: 0; border-top: 1px solid #ffffff20; border-radius: 0; padding: 10px 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

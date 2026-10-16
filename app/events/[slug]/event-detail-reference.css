@@ -1,0 +1,224 @@
+/* Event details: presentation only; all data, visibility rules and links stay intact. */
+.eventDetailPage.eventDetailReference {
+  --detail-lime: #d7ff3f;
+  --detail-white: #f5f5f0;
+  --detail-line: #d5d8cd80;
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  color: var(--detail-white);
+  color-scheme: dark;
+  background: #080a08;
+  font-family: 'NewEraSans', Arial, sans-serif;
+}
+.eventDetailReference::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 850px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #080a0800 15%, #080a0860 55%, #080a08 100%),
+    url('/redesign/event-detail/photos/event-detail-marble-glass-background.png') right top / auto 850px no-repeat;
+}
+.eventDetailReference .eventDetailContainer { width: min(1320px, calc(100% - 96px)); padding: 132px 0 34px; }
+.eventDetailReference .eventDetailBack { color: #d5d8ce; font-size: 14px; gap: 12px; margin-bottom: 26px; }
+.eventDetailReference .eventDetailBack svg { width: 19px; height: 19px; }
+.eventDetailReference .eventDetailBack:hover { color: var(--detail-lime); }
+.eventDetailReference .eventDetailHero { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.eventDetailReference .eventDetailCover {
+  position: relative;
+  min-height: 450px;
+  border: 1px solid var(--detail-line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #10150e;
+  box-shadow: inset 0 1px 1px #ffffff1a;
+}
+.eventDetailReference .eventDetailCover > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.eventDetailReference .eventCardImageFallback { position: absolute; inset: 0; color: var(--detail-lime); background: radial-gradient(ellipse at 70% 20%, #68662a55, transparent 65%), #0f130f; }
+.eventDetailReference .eventDetailStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  left: 20px;
+  top: 20px;
+  max-width: calc(100% - 40px);
+  padding: 9px 14px;
+  font-size: 13px;
+  line-height: 1.2;
+  border: 1px solid #d7ff3f99;
+  border-radius: 999px;
+  color: var(--detail-white);
+  background: #080a08db;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.eventDetailReference .eventDetailStatus::before { content: ''; width: 10px; height: 10px; flex: none; border-radius: 50%; background: #b7ff23; }
+.eventDetailReference[data-event-status='SOLD_OUT'] .eventDetailStatus { border-color: #ff4b49b3; }
+.eventDetailReference[data-event-status='SOLD_OUT'] .eventDetailStatus::before { background: #ff3838; }
+.eventDetailReference .eventDetailContent {
+  min-width: 0;
+  padding: 28px 30px;
+  border: 1px solid var(--detail-line);
+  border-radius: 10px;
+  background: linear-gradient(125deg, #161a1399, #080b0899 65%, #24282055);
+  box-shadow: inset 0 1px 1px #ffffff1a, 0 12px 45px #0002;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+.eventDetailReference .eventsEyebrow { color: #d8dbd0 !important; font-size: 11px; font-weight: 500; line-height: 1.5; letter-spacing: .2em; overflow-wrap: anywhere; }
+.eventDetailReference .eventDetailContent h1 { font-size: clamp(40px, 4.2vw, 64px); font-weight: 800; color: var(--detail-white) !important; line-height: 1.02; letter-spacing: -.05em; margin: 15px 0 24px; overflow-wrap: anywhere; }
+.eventDetailReference .eventDetailFacts { padding: 0 0 18px; gap: 16px; border-top: 0; border-bottom: 1px solid var(--detail-line); }
+.eventDetailReference .eventDetailFacts div { align-items: flex-start; color: #e6e7e0; gap: 16px; font-size: 16px; line-height: 1.4; min-width: 0; }
+.eventDetailReference .eventDetailFacts span { overflow-wrap: anywhere; }
+.eventDetailReference .eventDetailFacts svg { width: 22px; height: 22px; margin-top: 1px; color: var(--detail-white); flex: none; }
+.eventDetailReference .eventDetailPrice { margin: 17px 0 0; padding-bottom: 16px; border-bottom: 1px solid var(--detail-line); }
+.eventDetailReference .eventDetailPrice small { color: #c9cdc0; font-size: 10px; letter-spacing: .12em; }
+.eventDetailReference .eventDetailPrice strong { color: var(--detail-white); font-size: 30px; font-weight: 800; letter-spacing: -.035em; line-height: 1.15; margin-top: 7px; overflow-wrap: anywhere; }
+.eventDetailReference .eventDetailDescription { font-size: 17px; line-height: 1.5; color: #e0e3d8; margin: 16px 0 20px; overflow-wrap: anywhere; }
+.eventDetailReference .eventPrimaryCta {
+  min-height: 48px;
+  max-width: 100%;
+  margin-top: 18px;
+  padding: 13px 26px;
+  border: 1px solid #e7ff8299 !important;
+  border-radius: 6px;
+  background: var(--detail-lime) !important;
+  color: #080a08 !important;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+  gap: 16px;
+  box-shadow: inset 0 1px 2px #ffffff80, 0 0 24px #d7ff3f0c !important;
+}
+.eventDetailReference .eventDetailDescription + .eventPrimaryCta { margin-top: 0; }
+.eventDetailReference .eventPrimaryCta svg { flex: none; width: 18px; height: 18px; }
+.eventDetailReference .eventClosedNotice { margin-top: 18px; padding: 14px 18px; border: 1px solid #d5d8cd60; border-radius: 6px; color: #d4d7ca; background: #080a0860; font-size: 14px; }
+.eventDetailReference .eventDetailGallerySection { margin-top: 26px; }
+.eventDetailReference .eventsSectionLabel { gap: 16px; margin-bottom: 16px; font-size: 12px; font-weight: 500; letter-spacing: .2em; }
+.eventDetailReference .eventsSectionLabel span { color: #e4e6df !important; }
+.eventDetailReference .eventsSectionLabel i { background: #d5d8cd80 !important; }
+.eventDetailReference .eventsSectionLabel svg { order: -1; width: 23px; height: 23px; color: var(--detail-white); flex: none; }
+.eventDetailReference .eventGallery { margin-top: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.eventDetailReference .eventGallery figure { height: auto; aspect-ratio: 2.05; border: 1px solid var(--detail-line); border-radius: 9px; overflow: hidden; margin: 0; min-width: 0; background: #10150e; }
+.eventDetailReference .eventGallery img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.eventDetailReference .eventInfoCards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.eventDetailReference .eventInfoCards > div {
+  position: relative;
+  min-width: 0;
+  padding: 22px 24px;
+  border: 1px solid var(--detail-line);
+  border-radius: 9px;
+  background: radial-gradient(ellipse at 100% 100%, #a6a45c26, transparent 60%), linear-gradient(120deg, #262b2199, #0c100bc9 60%, #2c302488);
+  box-shadow: inset 0 1px 1px #ffffff18;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.eventDetailReference .eventInfoCards small { display: flex; align-items: center; gap: 14px; min-height: 23px; color: #d8dbd0; font-size: 11px; font-weight: 500; letter-spacing: .18em; }
+.eventDetailReference .eventInfoCards small::before { content: ''; display: block; width: 23px; height: 23px; flex: none; background: url('/redesign/event-detail/icons/calendar-days.svg') center / contain no-repeat; }
+.eventDetailReference .eventInfoCards > div:nth-child(2) small::before { background-image: url('/redesign/event-detail/icons/map-pin.svg'); }
+.eventDetailReference .eventInfoCards > div:nth-child(3) small::before { background-image: url('/redesign/event-detail/icons/ticket.svg'); }
+.eventDetailReference .eventInfoCards strong { display: block; font-size: 26px; font-weight: 800; line-height: 1.15; letter-spacing: -.035em; color: var(--detail-white); margin-top: 12px; overflow-wrap: anywhere; }
+.eventDetailReference .eventInfoCards span { display: block; color: #d8dbd0; font-size: 16px; line-height: 1.4; margin-top: 7px; overflow-wrap: anywhere; }
+.eventDetailReference .eventOrganizerNote { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--detail-line); color: #c0c6b6; font-size: 14px; line-height: 1.5; }
+.eventDetailReference .eventOrganizerNote strong { color: var(--detail-white); overflow-wrap: anywhere; }
+.eventDetailReference a:focus-visible { outline: 2px solid var(--detail-lime); outline-offset: 4px; }
+@media (min-width: 761px) and (max-width: 1200px) {
+  .eventDetailReference .eventDetailContainer { width: calc(100% - 56px); padding-top: 162px; }
+  .eventDetailReference .eventDetailHero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 14px; }
+  .eventDetailReference .eventDetailContent { padding: 24px; }
+  .eventDetailReference .eventDetailContent h1 { font-size: 42px; }
+  .eventDetailReference .eventDetailFacts div { font-size: 14px; gap: 12px; }
+  .eventDetailReference .eventDetailDescription { font-size: 15px; }
+  .eventDetailReference .eventPrimaryCta { font-size: 14px; gap: 10px; padding-inline: 16px; }
+  .eventDetailReference .eventInfoCards > div { padding: 20px 18px; }
+  .eventDetailReference .eventInfoCards strong { font-size: 22px; }
+}
+@media (max-width: 760px) {
+  .eventDetailReference::before { height: 690px; background: linear-gradient(180deg, #080a0800 10%, #080a0870 55%, #080a08 100%), url('/redesign/event-detail/photos/event-detail-marble-glass-background.png') 70% top / auto 600px no-repeat; }
+  .eventDetailReference .eventDetailContainer { width: calc(100% - 36px); padding: 94px 0 28px; }
+  .eventDetailReference .eventDetailBack { font-size: 13px; gap: 10px; margin-bottom: 28px; }
+  .eventDetailReference .eventDetailHero { grid-template-columns: minmax(0, 1fr); gap: 0; border: 1px solid var(--detail-line); border-radius: 10px; background: linear-gradient(120deg, #252a2088, #0b0f0bd4 65%, #2c302088); overflow: hidden; }
+  .eventDetailReference .eventDetailCover { min-height: 0; aspect-ratio: 1.65; margin: 0; border: 0; border-radius: 9px 9px 0 0; }
+  .eventDetailReference .eventDetailStatus { top: 12px; left: 12px; max-width: calc(100% - 24px); font-size: 12px; padding: 8px 12px; gap: 9px; }
+  .eventDetailReference .eventDetailContent { padding: 22px 18px 20px; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .eventDetailReference .eventsEyebrow { font-size: 10px; letter-spacing: .18em; }
+  .eventDetailReference .eventDetailContent h1 { font-size: clamp(34px, 10vw, 62px); margin: 13px 0 22px; }
+  .eventDetailReference .eventDetailFacts { gap: 0; padding: 0; border: 0; }
+  .eventDetailReference .eventDetailFacts div { align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--detail-line); font-size: 15px; }
+  .eventDetailReference .eventDetailFacts svg { width: 22px; height: 22px; margin: 0; }
+  .eventDetailReference .eventDetailPrice { border: 0; padding-bottom: 0; margin-top: 18px; }
+  .eventDetailReference .eventDetailPrice small { font-size: 10px; }
+  .eventDetailReference .eventDetailPrice strong { font-size: 27px; }
+  .eventDetailReference .eventDetailDescription { font-size: 15px; line-height: 1.5; margin: 18px 0; }
+  .eventDetailReference .eventPrimaryCta { width: 100%; padding: 14px 12px; font-size: 14px; gap: 12px; min-height: 50px; }
+  .eventDetailReference .eventClosedNotice { display: block; font-size: 14px; text-align: center; }
+  .eventDetailReference .eventDetailGallerySection { margin-top: 30px; }
+  .eventDetailReference .eventsSectionLabel { gap: 12px; font-size: 11px; letter-spacing: .17em; margin-bottom: 16px; }
+  .eventDetailReference .eventGallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .eventDetailReference .eventGallery figure { aspect-ratio: 1.35; border-radius: 8px; }
+  .eventDetailReference .eventGallery figure:first-child { grid-column: 1 / -1; aspect-ratio: 2.4; }
+  .eventDetailReference .eventInfoCards { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 20px; }
+  .eventDetailReference .eventInfoCards > div { padding: 18px 18px 18px 88px; min-height: 100px; }
+  .eventDetailReference .eventInfoCards small { font-size: 10px; min-height: 0; line-height: 1.4; }
+  .eventDetailReference .eventInfoCards small::before { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 55px; height: 62px; border: 1px solid var(--detail-line); border-radius: 9px; background-size: 27px; background-color: #080a0833; box-shadow: inset 0 1px 2px #ffffff12; }
+  .eventDetailReference .eventInfoCards strong { font-size: 23px; margin-top: 5px; }
+  .eventDetailReference .eventInfoCards span { font-size: 14px; margin-top: 4px; }
+  .eventDetailReference .eventOrganizerNote { font-size: 13px; margin-top: 22px; padding-top: 18px; gap: 6px 12px; }
+}
+@media (max-width: 360px) {
+  .eventDetailReference .eventDetailContainer { width: calc(100% - 28px); }
+  .eventDetailReference .eventDetailContent { padding-inline: 15px; }
+  .eventDetailReference .eventDetailContent h1 { font-size: 34px; }
+  .eventDetailReference .eventPrimaryCta { font-size: 12px; gap: 8px; }
+  .eventDetailReference .eventInfoCards > div { padding-left: 80px; padding-right: 12px; }
+  .eventDetailReference .eventInfoCards small::before { width: 50px; left: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eventDetailReference * { animation: none !important; transition: none !important; }
+}
+
+/* Existing public navbar, page-local colors only. */
+
+html:has(.eventDetailReference), body:has(.eventDetailReference) { background: #080a08 !important; }
+body:has(.eventDetailReference) > .nePublicHeader {
+  position: absolute;
+  top: 0;
+  left: 4.2%;
+  right: 4.2%;
+  width: 91.6%;
+  height: 68px;
+  margin: 26px 0 0;
+  border-color: #ffffff40;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #ffffff0e, #ffffff06 50%, #ffffff14);
+  box-shadow: inset 0 1px 1px #ffffff1c, 0 8px 24px #0003;
+  backdrop-filter: blur(18px) saturate(.85);
+  -webkit-backdrop-filter: blur(18px) saturate(.85);
+}
+body:has(.eventDetailReference) .nePublicBrand img { filter: none; }
+body:has(.eventDetailReference) .nePublicNav a { color: #d0d2c7; }
+body:has(.eventDetailReference) .nePublicNav a:hover { color: #d7ff3f; }
+body:has(.eventDetailReference) :is(.nePublicAccount, .nePublicDesktopAction) { color: #f5f5f0; border-color: #ffffff4a; background: #ffffff05; }
+body:has(.eventDetailReference) .nePublicMore > summary { color: #ddd; }
+body:has(.eventDetailReference) .nePublicMorePanel { background: #111410f5; border-color: #ffffff30; box-shadow: 0 10px 25px #0005; }
+body:has(.eventDetailReference) .nePublicMorePanel :is(a, button) { color: #f5f5f0; }
+body:has(.eventDetailReference) .nePublicMorePanel :is(a, button):hover { background: #ffffff12; }
+
+@media (min-width: 761px) and (max-width: 1200px) {
+ body:has(.eventDetailReference) > .nePublicHeader { height: 104px; }
+}
+@media (max-width: 760px) {
+  body:has(.eventDetailReference) > .nePublicHeader { left: 18px; right: 18px; width: auto; height: 44px; margin: 14px 0 0; }
+  body:has(.eventDetailReference) .nePublicInner { display: flex; justify-content: space-between; gap: 8px; padding: 0 12px; position: relative; }
+  body:has(.eventDetailReference) :is(.nePublicBrand, .nePublicBrand img) { width: 120px; height: 24px; }
+  body:has(.eventDetailReference) .nePublicAccount { min-height: 30px; font-size: 11px; padding: 0 10px; }
+  body:has(.eventDetailReference) .nePublicMore > summary { min-height: 42px; width: 28px; font-size: 13px; }
+  body:has(.eventDetailReference) .nePublicNav { display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; width: auto; height: auto; max-height: calc(100svh - 82px); overflow: auto; padding: 12px 14px 126px; border: 1px solid #ffffff30; border-radius: 9px; background: #111410f5; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 12px 30px #0006; gap: 2px; }
+  body:has(.eventDetailReference) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav { display: grid; }
+  body:has(.eventDetailReference) .nePublicNav a { font-size: 14px; min-height: 40px; padding: 8px 12px; border-radius: 5px; }
+  body:has(.eventDetailReference) .nePublicNav .nePublicDesktopContact { display: none !important; }
+  body:has(.eventDetailReference) .nePublicMore { position: static; }
+  body:has(.eventDetailReference) .nePublicMorePanel { right: 14px; left: 14px; top: calc(100% + 266px); width: auto; z-index: 1; background: none; box-shadow: none; border: 0; border-top: 1px solid #ffffff20; border-radius: 0; padding: 10px 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

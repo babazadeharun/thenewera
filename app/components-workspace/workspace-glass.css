@@ -75,3 +75,288 @@
 .workspaceShell :is(.mailTop,.mailSidebar){position:relative!important;inset:auto!important;max-width:100%}
 @media(max-width:1000px){.workspaceShell :is(.salesKpiGrid,.financeKpis){grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:600px){.workspaceShell :is(.financeGrid2,.salesOverviewGrid,.collaborationsGrid,.portfolioGridAdmin,.eventsAdminGrid,.mailComposeGrid){grid-template-columns:1fr!important}.workspaceShell .mailShell{grid-template-columns:1fr!important}.workspaceShell .mailBody{grid-template-columns:1fr!important}.workspaceShell .mailSidebar{display:flex!important;flex-wrap:wrap;gap:7px;padding:14px!important;height:auto!important}.workspaceShell .mailSidebar .mailBrand,.workspaceShell .mailSidebar .mailSideHint{display:none}.workspaceShell :is(.financeModal,.salesModal,.mailCompose){width:calc(100vw - 24px)!important;margin:0!important}.workspaceShell .workspaceChart{padding:18px}.workspaceShell .salesTable,.workspaceShell .financeTable{width:100%!important}.workspaceShell .eventsAdminGrid>*{min-width:0}}
+
+/*
+ * NEW ERA — shared light glass reference adaptation.
+ * Presentation only: existing role-specific markup and behavior are untouched.
+ * Keep every selector inside .workspaceShell to protect the public website.
+ */
+.workspaceShell {
+  --wg-ink: #172732;
+  --wg-muted: #5c7282;
+  --wg-accent: #008f9d;
+  --wg-line: #d8e4eb;
+  --wg-glass: linear-gradient(135deg, #ffffffd4, #f4f8fbbb);
+  --wg-shadow: inset 0 0 0 1px #d9e3eb70, 0 8px 24px #68808d0d;
+  font-family: 'NewEraSans', Arial, sans-serif;
+  color-scheme: light;
+  line-height: 1.5;
+}
+
+/* The same reference palette also reaches legacy admin module variables. */
+.workspaceShell .adminPage {
+  --admin-bg: #f2f6f9;
+  --admin-panel: #f9fcfd;
+  --admin-panel-2: #eef5f8;
+  --admin-line: #d8e4eb;
+  --admin-line-strong: #bdd4df;
+  --admin-muted: #627584;
+  --admin-soft: #4d697a;
+  --admin-text: #172732;
+  --admin-accent: #008f9d;
+  --admin-accent-2: #008f9d;
+}
+
+/* These inner containers also receive the public site's dark page background. */
+.workspaceShell :is(.accountPage, .projectsPage) {
+  background: none !important;
+  color: var(--wg-ink) !important;
+}
+.workspaceShell .accountProject > span { color: #087f8c !important; }
+
+.workspaceShell .workspaceSidebar {
+  scrollbar-width: thin;
+  scrollbar-color: #bbcbd3 transparent;
+}
+.workspaceShell .workspaceNavGroup a { min-height: 40px; }
+.workspaceShell .workspaceNavGroup a.active { color: #007e8a; }
+.workspaceShell .workspaceNavGroup > small {
+  color: #627b8b !important;
+  font-size: 10px !important;
+  letter-spacing: .13em;
+}
+.workspaceShell .workspaceProfile summary { min-height: 38px; }
+.workspaceShell .workspaceProfile > div { z-index: 1; }
+.workspaceShell .workspaceSearch:focus-within {
+  border-color: #3cb6c2;
+  box-shadow: 0 0 0 3px #6cdee722;
+}
+.workspaceShell .workspaceSearch input:focus { outline: none !important; }
+.workspaceShell .workspaceContent { scroll-margin-top: 90px; }
+.workspaceShell #notifications { scroll-margin-top: 96px; }
+
+/* Keep each panel's existing headings and controls, with common spacing. */
+.workspaceShell :is(.accountTop, .promoterTopbar, .projectsTop) h1 {
+  margin: 10px 0 14px;
+  overflow-wrap: anywhere;
+}
+.workspaceShell :is(.adminLead, .accountTop p, .promoterTopbar p, .projectsTop p) {
+  max-width: 680px;
+  line-height: 1.75 !important;
+}
+.workspaceShell :is(.back, .promoterBack, .deliveryLink, .accountSectionHead > a) {
+  color: #087f8c !important;
+  font-size: 12px;
+}
+.workspaceShell :is(.accountTop, .promoterTopbar, .projectsTop) .eyebrow {
+  display: block;
+  font-weight: 700;
+}
+.workspaceShell :is(.accountTop, .promoterTopbar, .projectsTop) .back,
+.workspaceShell .promoterBack { margin-bottom: 16px; }
+
+/* KPI cards use the reference's quiet labels, large numbers and teal icons. */
+.workspaceShell :is(.overviewCard, .promoterStat, .promoterWorkspaceStat) {
+  min-width: 0;
+  min-height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+.workspaceShell :is(.overviewCard, .promoterStat, .promoterWorkspaceStat) > small {
+  color: #5c7282 !important;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.workspaceShell :is(.overviewCard, .promoterStat, .promoterWorkspaceStat) > strong {
+  display: block;
+  margin: auto 0 0;
+  font-size: 34px !important;
+  line-height: 1.2;
+  font-weight: 500 !important;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.workspaceShell :is(.overviewCard, .promoterStat, .promoterWorkspaceStat) > span {
+  color: #617f8e !important;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.workspaceShell .promoterStatIcon {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0 0 2px;
+  color: #159fad !important;
+}
+.workspaceShell .customerMetrics { align-items: stretch; }
+.workspaceShell .customerMetrics .overviewCard { min-height: 155px; }
+
+/* Customer account, project details and promoter information surfaces. */
+.workspaceShell :is(.accountWelcome, .accountCard, .accountSection,
+  .promoterProfileCard, .promoterRuleCard, .promoterFinanceCard,
+  .promoterWorkspacePanel, .promoterWorkspaceHeader, .projectDetail) {
+  background: var(--wg-glass) !important;
+  border: 1px solid #fff !important;
+  box-shadow: var(--wg-shadow) !important;
+  border-radius: 16px !important;
+  min-width: 0;
+}
+.workspaceShell :is(.accountWelcome, .promoterProfileCard, .promoterRuleCard) {
+  padding: 24px;
+}
+.workspaceShell .accountAction > svg,
+.workspaceShell :is(.nextStepCard, .workspaceNote, .briefFacts) svg {
+  color: #159fad !important;
+  flex-shrink: 0;
+}
+.workspaceShell :is(.accountAction span, .accountBrief small, .profileMeta span,
+  .promoterProfileRows span, .promoterMeta, .promoterDiscountNote,
+  .promoterTicketCard span, .promoterFinanceCard > span, .detailHead > div > span,
+  .detailGrid dt, .messageBoxHead > span, .activityRow small, .timeline span) {
+  color: #5c7282 !important;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.workspaceShell :is(.profileMeta b, .promoterProfileRows b, .detailGrid dd,
+  .briefFacts strong, .messageBubble span) {
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.workspaceShell .detailGrid dd { color: var(--wg-ink) !important; }
+.workspaceShell .projectListItem > div > span { color: #5c7282 !important; }
+.workspaceShell .activityRow > i { background: #159fad; }
+.workspaceShell .usersTableWrap table { min-width: 560px; }
+.workspaceShell :is(.profileMeta, .promoterProfileRows > div) { padding: 13px 0; }
+.workspaceShell :is(.accountStatusNotice, .accountBrief, .clientReviewGate,
+  .revisionComposer, .briefFacts > div, .promoterWorkspacePrice,
+  .promoterEventNumbers > div, .promoterFinanceRows > div) {
+  background: #eef7f9 !important;
+  border-color: #d3e6ed !important;
+  color: #35596a !important;
+  border-radius: 12px;
+}
+.workspaceShell :is(.accountStatusNotice span, .accountBrief span) {
+  color: #436b7c !important;
+  line-height: 1.65;
+}
+.workspaceShell :is(.accountBrief a, .promoterEventWorkspaceLink) {
+  color: #007e8a !important;
+  font-size: 12px;
+}
+.workspaceShell .promoterTabs {
+  gap: 7px;
+  padding: 16px 0;
+  border-color: #dbe6ed;
+  overflow-x: auto;
+}
+.workspaceShell .promoterTabs button { flex: none; white-space: nowrap; }
+.workspaceShell :is(.promoterEventList, .promoterApplicationList) {
+  padding: 18px 0 0;
+  gap: 16px;
+}
+.workspaceShell .promoterTicketList { padding: 18px 0 0; }
+.workspaceShell .promoterEventBody { min-width: 0; padding: 20px; }
+.workspaceShell :is(.promoterFinanceCard, .promoterTicketPrice) strong {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.workspaceShell .promoterFinanceCard > strong {
+  color: #172732 !important;
+  font-weight: 500;
+}
+.workspaceShell .promoterEventNumbers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.workspaceShell .promoterEventNumbers > div { min-width: 0; }
+.workspaceShell .promoterEventNumbers strong { font-size: 15px; }
+.workspaceShell .promoterProfileRows .profileActive { color: #217252 !important; }
+.workspaceShell .applicationApproved {
+  background: #e7f5ef;
+  color: #217252;
+}
+.workspaceShell .applicationReason {
+  background: #fff1f3;
+  color: #a23548;
+}
+.workspaceShell .application-cancelled {
+  background: #edf1f5 !important;
+  color: #586b7a !important;
+}
+.workspaceShell .promoterEmpty > svg { color: #159fad; }
+.workspaceShell .promoterPrimary { color: #fff !important; }
+.workspaceShell :is(.timeline > div, .timeline i) {
+  color: #627584;
+  border-color: #d4e2e9;
+}
+.workspaceShell .timeline i { background: #f1f6f9; }
+.workspaceShell .starRow button.on {
+  color: #946a12 !important;
+  background: #fff6dc !important;
+  border-color: #edd9a4 !important;
+}
+
+/* Form controls retain their native types and existing interactions. */
+.workspaceShell input:is([type='checkbox'], [type='radio']) {
+  accent-color: #008f9d;
+  min-height: 0;
+  width: 16px;
+  height: 16px;
+  padding: 0 !important;
+  flex-shrink: 0;
+}
+.workspaceShell input[type='color'] { padding: 4px !important; }
+.workspaceShell :is(input, textarea, select):disabled { opacity: .65; }
+.workspaceShell :is(.accountProject, .accountAction, .projectListItem,
+  .promoterEventCard, .promoterTicketCard, .promoterApplicationCard):hover {
+  border-color: #b9dce2 !important;
+}
+.workspaceShell :is(.accountGrid, .accountMain, .accountSide,
+  .projectsLayout, .projectList, .promoterPortalGrid, .promoterSidePanel,
+  .promoterApplicationBody, .promoterTicketCard > div) { min-width: 0; }
+.workspaceShell :is(.accountProject, .promoterTicketCard, .detailHead) {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1200px) {
+  .workspaceShell .customerMetrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 1000px) {
+  .workspaceShell .workspaceSidebar { width: min(290px, calc(100vw - 48px)); }
+  .workspaceShell .workspaceMenuButton,
+  .workspaceShell .workspaceClose { min-height: 40px; min-width: 40px; }
+}
+@media (max-width: 600px) {
+  .workspaceShell :is(.accountTop, .promoterTopbar, .projectsTop) h1 {
+    font-size: clamp(27px, 7.5vw, 31px) !important;
+  }
+  .workspaceShell .workspaceTopbar { min-height: 68px; }
+  .workspaceShell .workspaceBreadcrumb { flex: 1; gap: 6px; }
+  .workspaceShell .workspaceTopActions { flex-shrink: 0; }
+  .workspaceShell .workspaceProfile summary { min-height: 40px; }
+  .workspaceShell :is(.overviewCard, .promoterStat, .promoterWorkspaceStat) {
+    min-height: 150px;
+  }
+  .workspaceShell .customerMetrics .overviewCard { min-height: 145px; }
+  .workspaceShell :is(.overviewCard, .promoterStat) > small { letter-spacing: .08em; }
+  .workspaceShell .promoterMainPanel { padding: 0 14px 16px !important; }
+  .workspaceShell :is(.promoterProfileCard, .promoterRuleCard, .accountWelcome) {
+    padding: 19px;
+  }
+  .workspaceShell .promoterEventBody { padding: 16px; }
+  .workspaceShell .promoterEventNumbers { gap: 8px; }
+  .workspaceShell .promoterEventCover { height: 180px; }
+  .workspaceShell :is(.accountWelcome, .accountProject) { gap: 12px; }
+  .workspaceShell .accountWelcome .companyIcon { flex-shrink: 0; }
+  .workspaceShell .accountProject { flex-wrap: wrap; }
+  .workspaceShell .messageComposer { min-width: 0; }
+  .workspaceShell .messageComposer input { min-width: 0; }
+  .workspaceShell .messageComposer button { flex-shrink: 0; }
+  .workspaceShell .promoterTicketPrice { width: 100%; text-align: left; }
+  .workspaceShell .promoterTicketPrice strong { font-size: 23px; }
+  .workspaceShell .promoterFinanceCard > strong { font-size: 30px; }
+}

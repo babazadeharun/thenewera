@@ -21,11 +21,43 @@ export async function POST(request: Request) {
     const country = String(body.country ?? '').trim();
     const website = String(body.website ?? '').trim();
 
-    if (!firstName || !lastName || !email || password.length < 8 || !phone || !company || !jobTitle || !industry || !companySize) {
-      return NextResponse.json({ error: 'Bütün tələb olunan sahələri doldurun.' }, { status: 400 });
-    }
-    if (!looksLikeEmail(email)) return NextResponse.json({ error: 'Düzgün e-poçt ünvanı daxil edin.' }, { status: 400 });
+    const requiredFields = [
+      [firstName, 'Adınızı daxil edin.'],
+      [lastName, 'Soyadınızı daxil edin.'],
+      [email, 'E-poçt ünvanınızı daxil edin.'],
+      [phone, 'Telefon nömrənizi daxil edin.'],
+      [company, 'Şirkətin adını daxil edin.'],
+      [jobTitle, 'Vəzifənizi daxil edin.'],
+      [industry, 'Fəaliyyət sahəsini seçin.'],
+      [companySize, 'Şirkətin ölçüsünü seçin.'],
+    ];
 
+    for (const [value, message] of requiredFields) {
+      if (!value) {
+        return NextResponse.json({ error: message }, { status: 400 });
+      }
+    }
+
+    if (!looksLikeEmail(email)) {
+      return NextResponse.json(
+        { error: 'Düzgün e-poçt ünvanı daxil edin.' },
+        { status: 400 }
+      );
+    }
+
+    if (!password) {
+      return NextResponse.json(
+        { error: 'Şifrənizi daxil edin.' },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json(
+        { error: 'Şifrə ən azı 8 simvoldan ibarət olmalıdır.' },
+        { status: 400 }
+      );
+    }
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       if (!existing.verifiedAt) {
@@ -38,7 +70,23 @@ export async function POST(request: Request) {
         }
         return NextResponse.json({ ok: true, verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email });
       }
-      return NextResponse.json({ error: 'Bu email ünvanı artıq qeydiyyatdan keçib.' }, { status: 409 });
+      return NextResponse.json({ error: 'Bu e-poçt ünvanı ilə artıq qeydiyyatdan keçmisiniz.' }, { status: 409 });
+    }
+
+    const existingPhoneUser = await prisma.user.findUnique({
+      where: { phone },
+      select: { id: true },
+    });
+    const existingPhoneClient = await prisma.client.findFirst({
+      where: { phone },
+      select: { id: true },
+    });
+
+    if (existingPhoneUser || existingPhoneClient) {
+      return NextResponse.json(
+        { error: 'Bu telefon nömrəsi ilə artıq hesab mövcuddur.' },
+        { status: 409 }
+      );
     }
 
     const user = await prisma.user.create({
@@ -68,6 +116,26 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true, verificationRequired: true, target: maskIdentifier(email, 'EMAIL'), identifier: email }, { status: 201 });
   } catch (error) {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      error.code === 'P2002'
+    ) {
+      const meta = 'meta' in error
+        ? error.meta as { target?: unknown } | undefined
+        : undefined;
+      const target = JSON.stringify(meta?.target ?? '').toLowerCase();
+
+      const message = target.includes('phone')
+        ? 'Bu telefon nömrəsi ilə artıq hesab mövcuddur.'
+        : target.includes('email')
+          ? 'Bu e-poçt ünvanı ilə artıq qeydiyyatdan keçmisiniz.'
+          : 'Daxil etdiyiniz məlumatlarla artıq hesab mövcuddur. E-poçt və telefon nömrənizi yoxlayın.';
+
+      return NextResponse.json({ error: message }, { status: 409 });
+    }
+
     console.error('register error', error instanceof Error ? error.message : 'unknown error');
     return NextResponse.json({ error: 'Hesab yaratmaq mümkün olmadı. Zəhmət olmasa bir neçə dəqiqə sonra yenidən cəhd edin.' }, { status: 500 });
   }

@@ -1,8 +1,7 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import './public-navbar.css';
-import { Search } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getAccountHomePath } from '@/lib/account-routing';
@@ -47,16 +46,19 @@ export default function SiteHeader() {
           <Link href="/analysis">Analiz</Link>
           <Link href="/events">Tədbirlər</Link>
           <Link href="/start-project">Layihəyə başla</Link>
+          <Link href="/#contact" className="nePublicDesktopContact">Əlaqə</Link>
         </nav>
         <div className="nePublicActions">
           {ready && <Link href={user ? getAccountHomePath(user.role) : '/login'} className="nePublicAccount">{user ? 'Hesabım' : 'Daxil ol'}</Link>}
+          {ready && (user
+            ? <button type="button" className="nePublicDesktopAction" onClick={logout}>Çıxış</button>
+            : <Link href="/register" className="nePublicDesktopAction">Hesab yarat</Link>)}
           <details className="nePublicMore" onKeyDown={(event) => {
             if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus(); }
           }}>
             <summary aria-label="Əlavə hesab və əlaqə keçidləri">•••</summary>
             <div className="nePublicMorePanel">
               <Link href="/#contact">Əlaqə</Link>
-              <button type="button" className="nePublicSearch" aria-label="Əlavə hesab və əlaqə keçidləri"><Search size={18} /> Axtarış</button>
               {ready && user ? <button type="button" className="nePublicSecondary" onClick={logout}>Çıxış</button> : ready ? <Link href="/register" className="nePublicSecondary">Hesab yarat</Link> : null}
             </div>
           </details>

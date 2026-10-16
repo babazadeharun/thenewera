@@ -45,7 +45,6 @@ export default function SiteHeader() {
           <Link href="/#about">Haqqımızda</Link>
           <Link href="/analysis">Analiz</Link>
           <Link href="/events">Tədbirlər</Link>
-          <Link href="/start-project">Layihəyə başla</Link>
           <Link href="/#contact" className="nePublicDesktopContact">Əlaqə</Link>
         </nav>
         <div className="nePublicActions">

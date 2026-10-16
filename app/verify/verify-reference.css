@@ -1,0 +1,303 @@
+/* /verify presentation only. Authentication, resend and routing are unchanged. */
+.authPage.verifyReference {
+  --verify-ink: #f5f5f0;
+  --verify-copy: #c7c9c0;
+  --verify-lime: #d7ff3f;
+  position: relative;
+  isolation: isolate;
+  display: block !important;
+  min-height: 100svh !important;
+  padding: 156px 4.2% 64px !important;
+  background: #080a08 !important;
+  color: var(--verify-ink) !important;
+  overflow: clip;
+  font-family: 'NewEraSans', Arial, sans-serif;
+  color-scheme: dark;
+}
+.authPage.verifyReference::before,
+.authPage.verifyReference::after { content: none !important; }
+.verifyReference .authGlow {
+  position: absolute;
+  inset: 0 !important;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  z-index: -1;
+  pointer-events: none;
+  transform: none;
+  background: linear-gradient(90deg, transparent 50%, #080a0840 75%, #080a08a6),
+    url('/redesign/verify/photos/verify-desktop-apollo-mail.png') left center / auto 100% no-repeat !important;
+}
+.verifyReference .verifyBrand {
+  position: absolute;
+  top: 125px;
+  left: 4.2%;
+  display: inline-flex;
+  align-items: center;
+  width: 220px;
+  height: 36px;
+  margin: 0 !important;
+  z-index: 1;
+}
+.verifyReference .verifyBrand img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center;
+  filter: none !important;
+}
+.verifyReference .authCard {
+  position: relative;
+  width: min(630px, 49%) !important;
+  max-width: 100%;
+  margin: 0 0 0 auto;
+  padding: 42px !important;
+  border: 1px solid #ffffff70 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(125deg, #22241fd4, #090b09df 60%, #151812c9) !important;
+  box-shadow: inset 0 1px 1px #ffffff15, 0 20px 65px #0004 !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: var(--verify-ink);
+  min-width: 0;
+}
+.verifyReference .authCard .eyebrow {
+  color: #c8c9c0 !important;
+  font-size: 11px !important;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-shadow: none !important;
+  margin: 0 0 14px;
+}
+.verifyReference .authCard h1 {
+  color: var(--verify-ink) !important;
+  font-size: clamp(38px, 4.2vw, 58px) !important;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.05em;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.verifyReference .authCard h1 span {
+  background: none !important;
+  color: var(--verify-lime) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+.verifyReference .authIntro {
+  margin: 18px 0 16px !important;
+  max-width: none;
+  color: var(--verify-copy) !important;
+  font-size: 17px !important;
+  line-height: 1.5;
+}
+.verifyReference .verifyTarget {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 15px 18px;
+  border: 1px solid #ffffff3d;
+  border-radius: 8px;
+  background: linear-gradient(110deg, #ffffff06, #ffffff0f);
+  margin-bottom: 24px;
+  overflow-wrap: anywhere;
+}
+.verifyReference .verifyTarget strong { color: #f5f5f0; font-size: 15px; line-height: 1.5; font-weight: 600; }
+.verifyReference .verifyTarget span { color: #c7c9c0; font-size: 12px; line-height: 1.5; }
+.verifyReference .authForm { display: grid; gap: 16px; min-width: 0; }
+.verifyReference .authForm label {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+  color: #f5f5f0 !important;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.verifyReference .authForm input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 62px;
+  padding: 14px 22px !important;
+  border: 1px solid #ffffffa6 !important;
+  border-radius: 8px !important;
+  background: linear-gradient(110deg, #ffffff05, #ffffff0b) !important;
+  color: #f5f5f0 !important;
+  font-family: inherit;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: .34em;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  caret-color: #d7ff3f;
+  box-shadow: inset 0 1px 1px #ffffff08;
+}
+.verifyReference .authForm input::placeholder { color: #90948a; opacity: 1; }
+.verifyReference .authForm input:focus {
+  border-color: #d7ff3f !important;
+  box-shadow: 0 0 0 3px #d7ff3f15 !important;
+}
+.verifyReference .authSubmit {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 18px;
+  border: 1px solid #e4ff83 !important;
+  border-radius: 8px;
+  background: linear-gradient(100deg, #d7ff3f, #dfff55) !important;
+  color: #141904 !important;
+  box-shadow: 0 4px 20px #d7ff3f0b !important;
+  font: 600 17px/1.4 'NewEraSans', Arial, sans-serif;
+  cursor: pointer;
+  margin: 4px 0 0;
+}
+.verifyReference .authSubmit svg { width: 22px; height: 22px; flex: none; }
+.verifyReference .authResend {
+  width: 100%;
+  min-height: 52px;
+  border: 1px solid #ffffff8c !important;
+  border-radius: 8px;
+  background: #ffffff04 !important;
+  color: #f5f5f0 !important;
+  padding: 14px 18px;
+  font: 500 15px/1.5 'NewEraSans', Arial, sans-serif;
+  box-shadow: none;
+  cursor: pointer;
+  white-space: normal;
+}
+.verifyReference .authResend:disabled { opacity: 1; color: #a7aaa1 !important; border-color: #ffffff40 !important; background: #ffffff0b !important; cursor: not-allowed; }
+.verifyReference .authSubmit:disabled { opacity: .55; cursor: not-allowed; }
+.verifyReference :is(.authResend, .authSubmit):not(:disabled):hover { filter: brightness(1.08); }
+.verifyReference :is(a, button):focus-visible { outline: 2px solid #d7ff3f; outline-offset: 4px; }
+.verifyReference :is(.authNotice, .authError) {
+  padding: 13px 15px;
+  border-radius: 7px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+.verifyReference .authNotice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #d7ff3f60;
+  background: #d7ff3f0b;
+  color: #e3ff7b;
+  font-weight: 500;
+}
+.verifyReference .authNotice::before {
+  content: '';
+  display: block;
+  width: 23px;
+  height: 23px;
+  flex: none;
+  background: url('/redesign/verify/icons/check-circle-lime.svg') center / contain no-repeat;
+}
+.verifyReference .authError { color: #ffd5dc; background: #481f26c4; border: 1px solid #ff94aa70; }
+.verifyReference .verificationHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 0;
+  margin: 26px 0 0;
+  color: #c7c9c0;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.verifyReference .verificationHint svg { flex: none; width: 28px; height: 28px; color: #f5f5f0; margin-top: 1px; }
+.verifyReference .authFoot {
+  border-top: 1px solid #ffffff35;
+  padding-top: 22px;
+  margin: 25px 0 0;
+  color: #b9bdb0 !important;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.verifyReference .authFoot a { color: #f5f5f0 !important; text-decoration: underline; text-underline-offset: 4px; margin-left: 5px; white-space: nowrap; }
+
+/* Keep every existing public navbar link and action. Only its local skin changes. */
+html:has(.verifyReference), body:has(.verifyReference) { background: #080a08 !important; }
+body:has(.verifyReference) > .nePublicHeader {
+  position: absolute;
+  top: 0;
+  left: 4.2%;
+  right: 4.2%;
+  width: 91.6%;
+  height: 68px;
+  margin: 26px 0 0;
+  border-color: #ffffff40;
+  border-radius: 10px;
+  background: linear-gradient(115deg, #ffffff0e, #ffffff06 50%, #ffffff14);
+  box-shadow: inset 0 1px 1px #ffffff1c, 0 8px 24px #0003;
+  backdrop-filter: blur(18px) saturate(.85);
+  -webkit-backdrop-filter: blur(18px) saturate(.85);
+}
+body:has(.verifyReference) .nePublicBrand img { filter: none; }
+body:has(.verifyReference) .nePublicNav a { color: #d0d2c7; }
+body:has(.verifyReference) .nePublicNav a:hover { color: #d7ff3f; }
+body:has(.verifyReference) :is(.nePublicAccount, .nePublicDesktopAction) { color: #f5f5f0; border-color: #ffffff4a; background: #ffffff05; }
+body:has(.verifyReference) .nePublicMore > summary { color: #ddd; }
+body:has(.verifyReference) .nePublicMorePanel { background: #111410f5; border-color: #ffffff30; box-shadow: 0 10px 25px #0005; }
+body:has(.verifyReference) .nePublicMorePanel :is(a, button) { color: #f5f5f0; }
+body:has(.verifyReference) .nePublicMorePanel :is(a, button):hover { background: #ffffff12; }
+@media (min-width: 761px) and (max-width: 1200px) {
+  body:has(.verifyReference) > .nePublicHeader { height: 104px; }
+  .authPage.verifyReference { padding-top: 190px !important; }
+  .verifyReference .verifyBrand { top: 155px; width: 185px; height: 30px; }
+  .verifyReference .authCard { width: 54% !important; padding: 30px !important; }
+  .verifyReference .authCard h1 { font-size: 42px !important; }
+  .verifyReference .authIntro { font-size: 15px !important; }
+}
+@media (max-width: 760px) {
+  .authPage.verifyReference { padding: clamp(310px, 78vw, 440px) 18px 36px !important; }
+  .verifyReference .authGlow {
+    background: linear-gradient(180deg, #080a0800 30%, #080a0840 60%, #080a08 100%),
+      url('/redesign/verify/photos/verify-mobile-apollo-mail.png') center 55px / 100% auto no-repeat !important;
+  }
+  .verifyReference .verifyBrand { top: 90px; left: 26px; width: 180px; height: 29px; }
+  .verifyReference .authCard { width: 100% !important; padding: 28px 22px !important; border-radius: 11px !important; background: linear-gradient(125deg, #20231dd4, #090b09eb 60%, #151812df) !important; }
+  .verifyReference .authCard .eyebrow { font-size: 10px !important; letter-spacing: .2em; margin-bottom: 13px; }
+  .verifyReference .authCard h1 { font-size: clamp(32px, 8.9vw, 54px) !important; line-height: 1.02; }
+  .verifyReference .authIntro { font-size: 15px !important; line-height: 1.5; margin: 16px 0 !important; }
+  .verifyReference .verifyTarget { padding: 13px 14px; margin-bottom: 23px; }
+  .verifyReference .verifyTarget strong { font-size: 14px; }
+  .verifyReference .verifyTarget span { font-size: 12px; }
+  .verifyReference .authForm { gap: 14px; }
+  .verifyReference .authForm label { font-size: 14px; }
+  .verifyReference .authForm input { height: 58px; font-size: 24px; padding: 14px 18px !important; letter-spacing: .28em; }
+  .verifyReference .authSubmit { min-height: 52px; font-size: 16px; gap: 14px; padding: 13px 14px; }
+  .verifyReference .authResend { min-height: 52px; padding: 13px 12px; font-size: 14px; }
+  .verifyReference .verificationHint { font-size: 12px; gap: 12px; margin-top: 24px; }
+  .verifyReference .verificationHint svg { color: #d7ff3f; width: 25px; height: 25px; }
+  .verifyReference .authFoot { font-size: 12px; margin-top: 22px; padding-top: 20px; }
+  .verifyReference :is(.authNotice, .authError) { font-size: 12px; padding: 12px; }
+  body:has(.verifyReference) > .nePublicHeader { left: 18px; right: 18px; width: auto; height: 44px; margin: 14px 0 0; }
+  body:has(.verifyReference) .nePublicInner { display: flex; justify-content: space-between; gap: 8px; padding: 0 12px; position: relative; }
+  body:has(.verifyReference) :is(.nePublicBrand, .nePublicBrand img) { width: 120px; height: 24px; }
+  body:has(.verifyReference) .nePublicAccount { min-height: 30px; font-size: 11px; padding: 0 10px; }
+  body:has(.verifyReference) .nePublicMore > summary { min-height: 42px; width: 28px; font-size: 13px; }
+  body:has(.verifyReference) .nePublicNav { display: none; position: absolute; top: calc(100% + 8px); left: 0; right: 0; width: auto; height: auto; max-height: calc(100svh - 82px); overflow: auto; padding: 12px 14px 126px; border: 1px solid #ffffff30; border-radius: 9px; background: #111410f5; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 12px 30px #0006; gap: 2px; }
+  body:has(.verifyReference) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav { display: grid; }
+  body:has(.verifyReference) .nePublicNav a { font-size: 14px; min-height: 40px; padding: 8px 12px; border-radius: 5px; }
+  body:has(.verifyReference) .nePublicNav .nePublicDesktopContact { display: none !important; }
+  body:has(.verifyReference) .nePublicMore { position: static; }
+  body:has(.verifyReference) .nePublicMorePanel { right: 14px; left: 14px; top: calc(100% + 266px); width: auto; z-index: 1; background: none; box-shadow: none; border: 0; border-top: 1px solid #ffffff20; border-radius: 0; padding: 10px 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (max-width: 360px) {
+  .verifyReference .authCard { padding: 25px 18px !important; }
+  .verifyReference .authCard h1 { font-size: 31px !important; }
+  .verifyReference .authSubmit { font-size: 14px; gap: 10px; }
+  .verifyReference .authForm input { font-size: 23px; letter-spacing: .24em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .verifyReference * { transition: none !important; animation: none !important; }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .verifyReference .authCard { background: #11150fee !important; }
+}

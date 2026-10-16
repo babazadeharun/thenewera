@@ -1,5 +1,7 @@
 'use client';
 
+import './verify-reference.css';
+
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
@@ -90,17 +92,22 @@ export default function VerifyPage() {
   }
 
   return (
-    <main className="authPage">
+    <main className="authPage verifyReference">
       <div className="authGlow" />
+      <Link className="authBrand verifyBrand" href="/">
+        <img src="/new-era-logo.png" alt="New Era" />
+      </Link>
       <div className="authCard">
-        <Link className="authBrand" href="/">
-          <img src="/new-era-logo.png" alt="New Era" />
-        </Link>
         <div className="eyebrow">E-POÇT TƏSDİQİ</div>
         <h1>{flow === 'promoter' ? <>Müraciəti <span>təsdiqləyin.</span></> : <>Bir addım <span>qalıb.</span></>}</h1>
         <p className="authIntro">
-          Email ünvanınıza göndərdiyimiz 6 rəqəmli kodu <strong>{target || 'e-poçtunuza'}</strong> daxil edin. Bu kod e-poçt ünvanına çıxışınız olduğunu təsdiqləyir.
+          Email ünvanınıza göndərdiyimiz 6 rəqəmli kodu daxil edin.
         </p>
+        <div className="verifyTarget">
+          <strong>{target || 'e-poçtunuza'}</strong>
+          <span>Bu kod e-poçt ünvanına çıxışınız olduğunu təsdiqləyir.</span>
+        </div>
+
 
         <form onSubmit={submit} className="authForm">
           <label>

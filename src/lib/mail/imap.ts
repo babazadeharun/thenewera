@@ -145,7 +145,7 @@ class ImapConnection {
     const marker = Buffer.from(`\r\n${tag} `);
 
     while (true) {
-      const index = this.buffer.indexOf(marker);
+      const index = this.buffer.subarray(0, tag.length + 1).equals(Buffer.from(`${tag} `)) ? 0 : this.buffer.indexOf(marker);
 
       if (index >= 0) {
         const end = this.buffer.indexOf('\r\n', index + marker.length);
@@ -176,7 +176,7 @@ class ImapConnection {
     const text = response.toString('utf8');
 
     const final = text.match(
-      new RegExp(`\\r?\\n${tag}\\s+(OK|NO|BAD)\\b[^\\r\\n]*`, 'i'),
+      new RegExp(`(?:^|\\r?\\n)${tag}\\s+(OK|NO|BAD)\\b[^\\r\\n]*`, 'i'),
     )?.[0] || '';
 
     if (!/\bOK\b/i.test(final)) {

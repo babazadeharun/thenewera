@@ -4,6 +4,7 @@ import '../auth-reference.css';
 import { FormEvent, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { safeNext } from '@/lib/crm/policy';
 import { getAccountHomePath } from '@/lib/account-routing';
 
 export default function Login() {
@@ -32,7 +33,7 @@ export default function Login() {
       const data = await res.json();
 
       if (data.verificationRequired) {
-        window.location.href = `/verify?identifier=${encodeURIComponent(data.identifier)}&target=${encodeURIComponent(data.target || '')}&flow=client`;
+        window.location.href = `/verify?identifier=${encodeURIComponent(data.identifier)}&target=${encodeURIComponent(data.target || '')}&flow=client${safeNext(new URLSearchParams(window.location.search).get('next')) ? '&next=' + encodeURIComponent(safeNext(new URLSearchParams(window.location.search).get('next'))!) : ''}`;
         return;
       }
 
@@ -48,7 +49,7 @@ export default function Login() {
         );
       }
 
-      window.location.href = getAccountHomePath(data.user?.role);
+      window.location.href = safeNext(new URLSearchParams(window.location.search).get('next')) || getAccountHomePath(data.user?.role);
     } catch {
       setError('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     } finally {
@@ -111,7 +112,7 @@ export default function Login() {
 
           <div className="authFoot">
             New Era-da yenisiniz?{' '}
-            <Link href="/register">Müştəri hesabı yaradın</Link>
+            <Link href="/register" onClick={e=>{const next=safeNext(new URLSearchParams(location.search).get('next'));if(next){e.preventDefault();location.href='/register?next='+encodeURIComponent(next)}}}>Müştəri hesabı yaradın</Link>
           </div>
         </form>
 

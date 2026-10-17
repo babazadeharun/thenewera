@@ -12,7 +12,7 @@ const promoter:Item[]=[{label:'Ümumi baxış',href:'/promoter',group:'Əməkda�
 
 export default function WorkspaceShell({role,email,children}:{role:string;email:string;children:React.ReactNode}){
  const path=usePathname(),params=useSearchParams();const [open,setOpen]=useState(false),[query,setQuery]=useState(''),[compact,setCompact]=useState(false);const drawer=useRef<HTMLElement>(null),trigger=useRef<HTMLButtonElement>(null);
- const isOwner=['ADMIN','SUPER_ADMIN'].includes(role);const items=isOwner?owner:role==='EVENTS_ADMIN'?owner.filter(i=>i.href==='/admin/events'):role==='EVENTS_FINANCE'?owner.filter(i=>i.href==='/admin/events/finance'):role==='PROMOTER'?promoter:customer;
+ const isOwner=['ADMIN','SUPER_ADMIN'].includes(role);const items=isOwner?(role==='SUPER_ADMIN'?[...owner,{label:'Workspace idarəetməsi',href:'/admin/company-workspaces',group:'İdarəetmə',icon:Building2}]:owner):role==='EVENTS_ADMIN'?owner.filter(i=>i.href==='/admin/events'):role==='EVENTS_FINANCE'?owner.filter(i=>i.href==='/admin/events/finance'):role==='PROMOTER'?promoter:customer;
  const section=params.get('section'),panel=params.get('panel');
  const active=(i:Item)=>{const u=new URL(i.href,'https://new-era.invalid');if(u.hash)return false;if(u.pathname!==path)return false;return u.searchParams.get('section')===(section||null)&&u.searchParams.get('panel')===(panel||null)};
  const current=items.find(active)?.label||'İş məkanı';const title=isOwner?'İdarəetmə mərkəzi':role==='PROMOTER'?'Promouter iş məkanı':role.startsWith('EVENTS')?'Tədbir idarəetməsi':'Şirkət iş məkanı';

@@ -23,7 +23,7 @@ export default function SiteHeader() {
     return () => { active = false; };
   }, [pathname]);
 
-  if (pathname === '/account' || pathname === '/projects' || pathname.startsWith('/admin') || pathname.startsWith('/app/admin') || pathname.startsWith('/promoter')) return null;
+  if (pathname === '/account' || pathname === '/projects' || pathname.startsWith('/admin') || pathname.startsWith('/app/admin') || pathname.startsWith('/promoter') || pathname === '/workspace' || pathname.startsWith('/workspace/')) return null;
 
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -45,13 +45,12 @@ export default function SiteHeader() {
           <Link href="/#about">Haqqımızda</Link>
           <Link href="/analysis">Analiz</Link>
           <Link href="/events">Tədbirlər</Link>
+          <Link href="/workspace">Workspace</Link>
           <Link href="/#contact" className="nePublicDesktopContact">Əlaqə</Link>
         </nav>
         <div className="nePublicActions">
           {ready && <Link href={user ? getAccountHomePath(user.role) : '/login'} className="nePublicAccount">{user ? 'Hesabım' : 'Daxil ol'}</Link>}
-          {ready && (user
-            ? <button type="button" className="nePublicDesktopAction" onClick={logout}>Çıxış</button>
-            : <Link href="/register" className="nePublicDesktopAction">Hesab yarat</Link>)}
+          {ready && (user ? <button type="button" className="nePublicDesktopAction" onClick={logout}>Çıxış</button> : <Link href="/register" className="nePublicDesktopAction">Hesab yarat</Link>)}
           <details className="nePublicMore" onKeyDown={(event) => {
             if (event.key === 'Escape') { event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus(); }
           }}>

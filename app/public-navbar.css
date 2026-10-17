@@ -84,38 +84,7 @@ body:has(.glassHome) .nePublicBrand img{object-fit:cover}
  body:has(.glassHome) .nePublicMorePanel{right:15px;left:15px;top:calc(100% + 306px);width:auto;z-index:1;background:none;box-shadow:none;border:0;border-top:1px solid #ffffff20;border-radius:0;padding:10px 0;backdrop-filter:none;-webkit-backdrop-filter:none}
 }
 @media(max-width:380px){body:has(.glassHome) .nePublicInner{gap:7px;padding:0 10px}body:has(.glassHome) .nePublicActions{gap:6px}body:has(.glassHome) .nePublicAccount{padding:0 11px}}
-
-
-/* NEW ERA: inline desktop actions, existing mobile dropdown retained. */
-.nePublicDesktopAction,.nePublicDesktopContact{display:none}
-
-@media(min-width:761px){
-  .nePublicHeader .nePublicInner{grid-template-columns:180px minmax(0,1fr) auto!important;gap:16px!important}
-  .nePublicHeader .nePublicNav{gap:clamp(10px,1.2vw,22px)!important}
-  .nePublicHeader .nePublicDesktopContact{display:inline-flex}
-  .nePublicHeader .nePublicMore{display:none}
-  .nePublicHeader .nePublicActions{gap:10px}
-  .nePublicHeader .nePublicDesktopAction{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border:1px solid #d2dce3;border-radius:7px;background:#ffffff40;color:#30383e;font:inherit;font-size:13px;text-decoration:none;white-space:nowrap;cursor:pointer}
-  body:has(.glassHome) .nePublicDesktopAction{color:#eee;border-color:#ffffff4a;border-radius:5px;background:#ffffff05}
-  .nePublicHeader .nePublicDesktopAction:hover{border-color:#008b99}
-  body:has(.glassHome) .nePublicDesktopAction:hover{border-color:#d7ff3f}
-}
-
-@media(min-width:761px) and (max-width:1200px){
-  .nePublicHeader,body:has(.glassHome)>.nePublicHeader{height:104px}
-  .nePublicHeader .nePublicInner{grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:54px 48px;gap:0 16px!important}
-  .nePublicHeader .nePublicBrand{grid-column:1;grid-row:1}
-  .nePublicHeader .nePublicActions{grid-column:2;grid-row:1}
-  .nePublicHeader .nePublicNav{grid-column:1/-1;grid-row:2;justify-content:space-between;width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
-  .nePublicHeader .nePublicNav a{font-size:12px;flex-shrink:0}
-}
-
-@media(max-width:760px){
-  body:has(.glassHome) .nePublicHeader:has(.nePublicMore[open]) .nePublicNav{padding-bottom:126px}
-}
-/* Hide the desktop-only contact link on mobile. */
-@media(max-width:760px){
-  .nePublicHeader .nePublicNav .nePublicDesktopContact{
-    display:none!important;
-  }
-}
+/* Workspace link: keep the existing glass header and account actions. */
+@media(min-width:761px){.nePublicHeader .nePublicMore{display:none}.nePublicHeader .nePublicActions{gap:9px}.nePublicDesktopAction{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border:1px solid #d0dfe5;border-radius:6px;background:#ffffff40;color:#30383e;font:inherit;font-size:13px;text-decoration:none;white-space:nowrap;cursor:pointer}body:has(.glassHome) .nePublicDesktopAction{color:#eee;border-color:#ffffff4a;background:#ffffff05}}
+@media(min-width:761px) and (max-width:1200px){.nePublicHeader,body:has(.glassHome)>.nePublicHeader{height:104px}.nePublicHeader .nePublicInner{grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:54px 48px;gap:0 16px!important}.nePublicHeader .nePublicBrand{grid-column:1;grid-row:1}.nePublicHeader .nePublicActions{grid-column:2;grid-row:1}.nePublicHeader .nePublicNav{grid-column:1/-1;grid-row:2;justify-content:space-between;width:100%;overflow-x:auto}.nePublicHeader .nePublicNav a{font-size:12px;flex-shrink:0}}
+@media(max-width:760px){.nePublicHeader .nePublicDesktopAction,.nePublicHeader .nePublicNav .nePublicDesktopContact{display:none!important}}

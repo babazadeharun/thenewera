@@ -1,0 +1,7 @@
+import { Prisma } from '@prisma/client';
+import { CRMError,fail } from './policy';
+export const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+export function origin(r:Request){if(r.headers.get('origin')!==new URL(r.url).origin)fail('Sorğunun mənbəyi təsdiqlənmədi.',403);}
+export async function bytes(r:Request,max:number){const reader=r.body?.getReader();if(!reader)return Buffer.alloc(0);const parts:Uint8Array[]=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>max){await reader.cancel();fail('Sorğu çox böyükdür.',413);}parts.push(value);}return Buffer.concat(parts);}
+export async function body(r:Request){origin(r);try{const b=JSON.parse((await bytes(r,524288)).toString());if(!b||typeof b!=='object'||Array.isArray(b))fail('JSON düzgün deyil.');return b as Record<string,unknown>}catch(e){if(e instanceof CRMError)throw e;fail('JSON düzgün deyil.')}}
+export async function handled(fn:()=>Promise<Response>){try{return await fn()}catch(e){if(e instanceof CRMError)return json({error:e.message},e.status);if(e instanceof Prisma.PrismaClientKnownRequestError&&['P2002','P2034'].includes(e.code))return json({error:e.code==='P2002'?'Bu qeyd artıq mövcuddur.':'Paralel dəyişiklik oldu. Yenidən cəhd edin.'},409);console.error('CRM_ERROR',e instanceof Error?e.name:'Error');return json({error:'Workspace əməliyyatını tamamlamaq mümkün olmadı.'},500);}}

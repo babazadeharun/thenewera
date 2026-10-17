@@ -211,6 +211,7 @@ enum VendorStatus {
 }
 
 model User {
+  crmSeats CrmSeat[]
   id                           String                @id @default(cuid())
   email                        String?               @unique
   phone                        String?               @unique
@@ -1163,4 +1164,183 @@ model EmailCommunication {
 
   @@index([clientId, sentAt])
   @@index([direction, sentAt])
+}
+
+enum CrmRole {
+ OWNER
+ ADMIN
+ MANAGER
+ SALES
+ ACCOUNTANT
+ VIEWER
+}
+model CrmPlan {
+ price Decimal @default(0) @db.Decimal(18,2)
+ currency String @default("AZN")
+ id String @id @default(cuid())
+ name String
+ seats Int @default(11)
+ bytes Int @default(104857600)
+ records Int @default(10000)
+ features String[] @default(["customers","sales","tasks","calendar","quotes","payments","messages","reports","automation"])
+ trialDefault Boolean @default(false)
+ archived Boolean @default(false)
+ companies CrmCompany[]
+}
+model CrmCompany {
+ id String @id @default(cuid())
+ name String
+ industry String
+ email String
+ phone String
+ taxId String?
+ state String @default("TRIAL")
+ trialStart DateTime @default(now())
+ trialEnd DateTime
+ paidUntil DateTime?
+ reason String?
+ planId String
+ plan CrmPlan @relation(fields:[planId],references:[id])
+ seats Int
+ bytes Int
+ records Int
+ features String[]
+ stages String[] @default(["Yeni","Əlaqə","Təklif","Danışıqlar"])
+ createdAt DateTime @default(now())
+ lastActivity DateTime @default(now())
+ lastJobAt DateTime?
+ members CrmSeat[]
+ invites CrmInvitation[]
+ entries CrmEntry[]
+ files CrmAttachment[]
+ events CrmEvent[]
+ rules CrmAutomation[]
+ sessions CrmSupportSession[]
+ @@index([state,trialEnd])
+}
+model CrmSeat {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ userId String
+ user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+ role CrmRole
+ team String?
+ active Boolean @default(true)
+ grants Json?
+ welcomedAt DateTime?
+ dismissedAt DateTime?
+ entries CrmEntry[]
+ createdAt DateTime @default(now())
+ @@unique([companyId,userId])
+ @@unique([companyId,id])
+ @@index([userId,active])
+}
+model CrmInvitation {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ email String
+ role CrmRole
+ team String?
+ hash String @unique
+ expiresAt DateTime
+ acceptedAt DateTime?
+ revokedAt DateTime?
+ createdAt DateTime @default(now())
+ sentAt DateTime?
+ error String?
+ @@index([email,companyId])
+}
+model CrmEntry {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ kind String
+ title String
+ email String?
+ phone String?
+ status String
+ stage String?
+ stageAt DateTime @default(now())
+ assigneeId String?
+ assignee CrmSeat? @relation(fields:[companyId,assigneeId],references:[companyId,id],onDelete:Restrict)
+ participants String[] @default([])
+ authorId String
+ customerId String?
+ customer CrmEntry? @relation("CrmCustomer",fields:[companyId,customerId],references:[companyId,id],onDelete:Restrict)
+ customerEntries CrmEntry[] @relation("CrmCustomer")
+ saleId String?
+ sale CrmEntry? @relation("CrmSale",fields:[companyId,saleId],references:[companyId,id],onDelete:Restrict)
+ saleEntries CrmEntry[] @relation("CrmSale")
+ amount Decimal @default(0) @db.Decimal(18,2)
+ currency String @default("AZN")
+ dueAt DateTime?
+ data Json
+ version Int @default(1)
+ deletedAt DateTime?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ files CrmAttachment[]
+ @@unique([companyId,id])
+ @@index([companyId,kind,deletedAt,createdAt])
+ @@index([companyId,assigneeId])
+ @@index([companyId,email])
+}
+model CrmAttachment {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ entryId String?
+ entry CrmEntry? @relation(fields:[companyId,entryId],references:[companyId,id],onDelete:Restrict)
+ name String
+ mime String
+ size Int
+ bytes Bytes
+ createdAt DateTime @default(now())
+ @@index([companyId,entryId])
+}
+model CrmEvent {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ type String
+ key String?
+ actorId String?
+ actorType String @default("MEMBER")
+ entryId String?
+ userId String?
+ data Json
+ createdAt DateTime @default(now())
+ @@unique([companyId,key])
+ @@index([companyId,type,createdAt])
+}
+model CrmAutomation {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ title String
+ trigger String
+ action String
+ stage String?
+ assigneeId String
+ authorId String
+ active Boolean @default(true)
+ @@index([companyId,active])
+}
+model CrmSupportSession {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ actorId String
+ mode String
+ reason String
+ expiresAt DateTime
+ @@index([companyId,actorId])
+}
+model CrmPlatformLog {
+ id String @id @default(cuid())
+ actorId String
+ data Json
+ createdAt DateTime @default(now())
 }

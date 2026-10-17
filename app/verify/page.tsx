@@ -5,6 +5,7 @@ import './verify-reference.css';
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { safeNext } from '@/lib/crm/policy';
 import { getAccountHomePath } from '@/lib/account-routing';
 
 export default function VerifyPage() {
@@ -58,7 +59,7 @@ export default function VerifyPage() {
       }
 
       if (data.user?.client) localStorage.setItem('new-era-client-session', JSON.stringify(data.user.client));
-      window.location.href = getAccountHomePath(data.user?.role);
+      window.location.href = safeNext(new URLSearchParams(location.search).get('next')) || getAccountHomePath(data.user?.role);
     } catch {
       setError('Hazırda New Era ilə əlaqə yaratmaq mümkün olmadı.');
     } finally {

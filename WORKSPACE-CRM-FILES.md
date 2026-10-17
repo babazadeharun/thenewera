@@ -1,0 +1,49 @@
+# Dəyişən və əlavə olunan fayllar
+
+Paketdə 45 fayl var. Mövcud layihənin kök qovluğuna yolları qoruyaraq köçürün. Yeni modulun işə düşməsi üçün install təlimatındakı migration və environment addımları tələb olunur.
+
+- `.gitignore`
+- `WORKSPACE-CRM-FILES.md`
+- `WORKSPACE-CRM-INSTALL.md`
+- `WORKSPACE-CRM-TEST-RESULTS.md`
+- `app/admin/company-workspaces/Admin.tsx`
+- `app/admin/company-workspaces/page.tsx`
+- `app/analysis/analysis-reference.css`
+- `app/api/admin/company-workspaces/[[...path]]/route.ts`
+- `app/api/workspace-jobs/route.ts`
+- `app/api/workspace-webhooks/whatsapp/[id]/route.ts`
+- `app/api/workspace/[[...path]]/route.ts`
+- `app/components-site-header.tsx`
+- `app/components-workspace/WorkspaceShell.tsx`
+- `app/events/[slug]/apply/promoter-apply-reference.css`
+- `app/events/[slug]/event-detail-reference.css`
+- `app/events/events-reference.css`
+- `app/login/page.tsx`
+- `app/public-navbar.css`
+- `app/register/page.tsx`
+- `app/verify/page.tsx`
+- `app/verify/verify-reference.css`
+- `app/workspace/Editor.tsx`
+- `app/workspace/Home.tsx`
+- `app/workspace/Sections.tsx`
+- `app/workspace/Workspace.tsx`
+- `app/workspace/[id]/page.tsx`
+- `app/workspace/invite/page.tsx`
+- `app/workspace/layout.tsx`
+- `app/workspace/page.tsx`
+- `app/workspace/shared.tsx`
+- `app/workspace/workspace.css`
+- `package-lock.json`
+- `package.json`
+- `prisma/migrations/20261017110000_company_workspace_crm/migration.sql`
+- `prisma/schema.prisma`
+- `src/lib/crm/db.ts`
+- `src/lib/crm/files.ts`
+- `src/lib/crm/http.ts`
+- `src/lib/crm/jobs.ts`
+- `src/lib/crm/policy.ts`
+- `src/lib/crm/providers.ts`
+- `src/lib/crm/records.ts`
+- `src/lib/crm/workspaces.ts`
+- `tests/company-crm.integration.cjs`
+- `vercel.json`

@@ -220,5 +220,5 @@ body:has(.eventDetailReference) .nePublicMorePanel :is(a, button):hover { backgr
   body:has(.eventDetailReference) .nePublicNav a { font-size: 14px; min-height: 40px; padding: 8px 12px; border-radius: 5px; }
   body:has(.eventDetailReference) .nePublicNav .nePublicDesktopContact { display: none !important; }
   body:has(.eventDetailReference) .nePublicMore { position: static; }
-  body:has(.eventDetailReference) .nePublicMorePanel { right: 14px; left: 14px; top: calc(100% + 266px); width: auto; z-index: 1; background: none; box-shadow: none; border: 0; border-top: 1px solid #ffffff20; border-radius: 0; padding: 10px 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  body:has(.eventDetailReference) .nePublicMorePanel { right: 14px; left: 14px; top: calc(100% + 306px); width: auto; z-index: 1; background: none; box-shadow: none; border: 0; border-top: 1px solid #ffffff20; border-radius: 0; padding: 10px 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }

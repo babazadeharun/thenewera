@@ -10,7 +10,8 @@
     "lint": "next lint",
     "test:workspace": "node tests/workspace-authorization.test.cjs",
     "test:company-crm": "node tests/company-crm.integration.cjs",
-    "test:company-crm-v2": "node tests/company-crm-v2.integration.cjs"
+    "test:company-crm-v2": "node tests/company-crm-v2.integration.cjs",
+    "test:admin-sales-import": "node tests/admin-sales-import.integration.cjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",
@@ -22,7 +23,8 @@
     "nodemailer": "10.0.13",
     "pdf-lib": "1.17.1",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "saxes": "6.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { proposalStatuses, proposalLabel } from '@/lib/sales/status';
 
 const stages = ['NEW','QUALIFIED','PROPOSAL','NEGOTIATION','WON','LOST'] as const;
 const priorities = ['LOW','NORMAL','HIGH','URGENT'] as const;
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
       source:b.source?String(b.source):null, stage, priority, budget:b.budget==null||b.budget===''?null:Number(b.budget), value:b.value==null||b.value===''?null:Number(b.value), probability:Math.max(0,Math.min(100,Number(b.probability)||20)),
       expectedCloseDate:b.expectedCloseDate?new Date(b.expectedCloseDate):null, nextFollowUp:b.nextFollowUp?new Date(b.nextFollowUp):null, notes:b.notes?String(b.notes):null,
       clientId:b.clientId||null, serviceId:b.serviceId||null, projectId:b.projectId||null, assignedUserId:b.assignedUserId||user.id,
-      proposalStatus:b.proposalStatus?String(b.proposalStatus):null, proposalValue:b.proposalValue==null||b.proposalValue===''?null:Number(b.proposalValue), proposalDate:b.proposalDate?new Date(b.proposalDate):null,
+      proposalStatus:b.proposalStatus?String(b.proposalStatus):'TODO', proposalValue:b.proposalValue==null||b.proposalValue===''?null:Number(b.proposalValue), proposalDate:b.proposalDate?new Date(b.proposalDate):null,
     }});
     await (prisma as any).salesActivity.create({ data: { dealId:deal.id, type:'NOTE', text:'Satış yaradıldı.', createdByUserId:user.id, clientId:deal.clientId, projectId:deal.projectId } });
     return NextResponse.json({ deal: serializeDeal(await (prisma as any).salesDeal.findUnique({ where:{id:deal.id}, include:{client:true,service:true,project:true,assignedUser:{select:{id:true,email:true,role:true}},activities:{orderBy:{createdAt:'desc'}}} })) }, { status:201 });
@@ -99,7 +100,18 @@ export async function PATCH(req: NextRequest) {
     for (const k of ['budget','value','proposalValue']) if (k in b) data[k] = b[k]===''||b[k]==null?null:Number(b[k]);
     for (const k of ['expectedCloseDate','nextFollowUp','proposalDate']) if (k in b) data[k] = b[k]?new Date(b[k]):null;
     for (const k of ['clientId','serviceId','projectId','assignedUserId']) if (k in b) data[k] = b[k]||null;
-    const deal = await (prisma as any).salesDeal.update({where:{id:b.id},data});
+    if ('proposalStatus' in b && b.proposalStatus !== before.proposalStatus) {
+      if (!proposalStatuses.some(x => x[0] === b.proposalStatus) && b.proposalStatus !== '') return NextResponse.json({error:'Təklif statusu düzgün deyil.'},{status:400});
+      if (b.proposalStatus === 'SENT' && b.confirmSent !== true) return NextResponse.json({error:'Təklifi göndərdiyinizi təsdiqləyin.'},{status:400});
+      if (b.proposalStatus === 'SENT') data.proposalSentAt = new Date();
+      if (b.proposalStatus === 'DECLINED' && !String(b.proposalResponse ?? before.proposalResponse ?? '').trim()) return NextResponse.json({error:'İmtina səbəbini qeyd edin.'},{status:400});
+      if (b.proposalChannel && !['EMAIL','WHATSAPP','INSTAGRAM','PHONE','OTHER'].includes(b.proposalChannel)) return NextResponse.json({error:'Əlaqə kanalı düzgün deyil.'},{status:400});
+    }
+    const deal = await prisma.$transaction(async db => {
+      const updated = await db.salesDeal.update({where:{id:b.id},data});
+      if ('proposalStatus' in data && data.proposalStatus !== before.proposalStatus) await db.salesActivity.create({data:{dealId:b.id,type:'PROPOSAL',text:`Təklif statusu: ${proposalLabel(before.proposalStatus)} → ${proposalLabel(data.proposalStatus)}${b.proposalChannel ? ' · Kanal: '+b.proposalChannel : ''}${data.proposalResponse ? ' · '+data.proposalResponse : ''}. Bu qeyd sistemdən avtomatik məktub göndərmir.`,createdByUserId:user.id,clientId:updated.clientId,projectId:updated.projectId}});
+      return updated;
+    });
     if (b.stage && b.stage !== before.stage) await (prisma as any).salesActivity.create({data:{dealId:deal.id,type:'NOTE',text:`Mərhələ dəyişdi: ${before.stage} → ${deal.stage}`,createdByUserId:user.id,clientId:deal.clientId,projectId:deal.projectId}});
     return NextResponse.json({deal:serializeDeal(await (prisma as any).salesDeal.findUnique({where:{id:deal.id},include:{client:true,service:true,project:true,assignedUser:{select:{id:true,email:true,role:true}},activities:{orderBy:{createdAt:'desc'}}}}))});
   } catch(e){console.error('sales PATCH',e);return NextResponse.json({error:'Satış yenilənə bilmədi.'},{status:500});}

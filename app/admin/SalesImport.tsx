@@ -1,9 +1,21 @@
 "use client";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { importFields, phoneKey } from "@/lib/sales/import-fields";
+import {
+  importFields,
+  phoneKey,
+  importAliases,
+  headerKey,
+} from "@/lib/sales/import-fields";
 
-type Parsed = { headers: string[]; rows: string[][] };
+type Parsed = {
+  headers: string[];
+  rows: string[][];
+  rowNumbers?: number[];
+  headerRow?: number;
+  headerRows?: number[];
+  maxHeaderRow?: number;
+};
 type Result = {
   index: number;
   status: string;
@@ -16,40 +28,6 @@ type Result = {
   };
   duplicate?: string;
   error?: string;
-};
-const aliases: Record<string, string[]> = {
-  title: [
-    "şirkət",
-    "şirkətin adı",
-    "şirkət adı",
-    "satış adı",
-    "company",
-    "title",
-    "company name",
-  ],
-  contactName: [
-    "ad soyad",
-    "ad",
-    "əlaqə şəxsi",
-    "həkim",
-    "name",
-    "full name",
-    "contact",
-    "contactname",
-  ],
-  email: ["email", "e-poçt", "e poçt", "mail", "e-mail"],
-  phone: [
-    "telefon",
-    "telefon nömrəsi",
-    "phone",
-    "mobile",
-    "tel",
-    "əlaqə nömrəsi",
-  ],
-  instagram: ["instagram", "ig", "instagram hesabı"],
-  industry: ["fəaliyyət sahəsi", "sahə", "industry", "ixtisas"],
-  source: ["mənbə", "source"],
-  notes: ["qeyd", "qeydlər", "notes", "note"],
 };
 const label = (s: string) =>
   ({
@@ -65,6 +43,7 @@ export default function SalesImport({
   onClose: () => void;
   onDone: () => Promise<void>;
 }) {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [parsed, setParsed] = useState<Parsed | null>(null),
     [mapping, setMapping] = useState<Record<string, number | "">>({}),
     [results, setResults] = useState<Result[]>([]),
@@ -83,7 +62,7 @@ export default function SalesImport({
     if (!r.ok) throw new Error(d.error || "Əməliyyat alınmadı.");
     return d;
   }
-  async function upload(file?: File) {
+  async function upload(file?: File, headerRow?: number) {
     if (!file) return;
     setBusy(true);
     setParsed(null);
@@ -91,22 +70,19 @@ export default function SalesImport({
     setSelected([]);
     setMessage("");
     setFilename(file.name);
+    setUploadedFile(file);
     try {
       if (file.size > 2 * 1024 * 1024)
         throw new Error("Fayl maksimum 2 MB ola bilər.");
       const fd = new FormData();
       fd.append("file", file);
+      if (headerRow) fd.append("headerRow", String(headerRow));
       const d: Parsed = await request(fd);
       setParsed(d);
       const m: Record<string, number | ""> = {};
       for (const [key] of importFields) {
         const i = d.headers.findIndex((h) =>
-          aliases[key].includes(
-            h
-              .trim()
-              .toLowerCase()
-              .replace(/\u0307/g, ""),
-          ),
+          importAliases[key].includes(headerKey(h)),
         );
         m[key] = i < 0 ? "" : i;
       }
@@ -256,6 +232,30 @@ export default function SalesImport({
             />
           </label>
           <p aria-live="polite">{message}</p>
+          {parsed && uploadedFile && (
+            <label className="drawerWide">
+              Başlıq sətri
+              <select
+                aria-label="Başlıq sətri"
+                disabled={busy}
+                value={parsed.headerRow || 1}
+                onChange={(e) => upload(uploadedFile, Number(e.target.value))}
+              >
+                {(parsed.headerRows || [parsed.headerRow || 1]).map(
+                  (number) => (
+                    <option key={number} value={number}>
+                      {number}-ci sətir
+                    </option>
+                  ),
+                )}
+              </select>
+              <span>
+                Seçilmiş sətirdən əvvəlki başlıq və izahlar idxala daxil
+                edilmir. Telefon hüceyrəsində bir neçə nömrə varsa ilk tam nömrə
+                əsas əlaqə kimi, tam mətn isə qeyddə saxlanılır.
+              </span>
+            </label>
+          )}
           {parsed && (
             <>
               <p>
@@ -344,7 +344,7 @@ export default function SalesImport({
                       <tr key={r.index}>
                         <td>
                           <input
-                            aria-label={`${r.index + 2}-ci sətri seç`}
+                            aria-label={`${parsed?.rowNumbers?.[r.index] ?? r.index + 2}-ci sətri seç`}
                             type="checkbox"
                             disabled={busy || r.status !== "ready"}
                             checked={selected.includes(r.index)}
@@ -357,7 +357,7 @@ export default function SalesImport({
                             }
                           />
                         </td>
-                        <td>{r.index + 2}</td>
+                        <td>{parsed?.rowNumbers?.[r.index] ?? r.index + 2}</td>
                         <td>
                           {r.data?.title ||
                             parsed?.rows[r.index]?.slice(0, 3).join(" · ")}

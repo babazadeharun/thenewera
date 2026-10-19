@@ -28,7 +28,7 @@ const root=path.resolve(__dirname,'..');process.chdir(root);
  d=await post({...preview,rows:[['Other name','X','DOCTOR@EXAMPLE.TEST','']]},admin);eq(d.data.results[0].status,'duplicate');
  d=await post({...preview,rows:[['Other name','X','','+994501234567']]},admin);eq(d.data.results[0].status,'duplicate');
  const sameFile=await post({...preview,rows:[['Beta','D','beta@example.test'],['Beta again','D','BETA@EXAMPLE.TEST']]},admin);eq(sameFile.data.results.map(x=>x.status),['ready','duplicate']);
- const invalid=await post({...preview,rows:[['','','bad',''],['Bad','B','invalid',''],['Phone','B','','123'],['Name only','Person']]},admin);eq(invalid.data.results.map(x=>x.status),['error','error','error','ready']);
+ const invalid=await post({...preview,rows:[['','','bad',''],['Bad','B','invalid',''],['Phone','B','','12'],['Name only','Person']]},admin);eq(invalid.data.results.map(x=>x.status),['error','error','error','ready']);
  d=await post({...preview,rows:[['Partial invalid','P','bad'],['Valid','V','valid@example.test']],action:'commit',confirm:true},admin);eq(d.data.results.map(x=>x.status),['error','created']);eq(await db.salesDeal.count(),2);
  // Concurrent/retried imports are serialized and cannot duplicate each other.
  const concurrent={...preview,rows:[['Concurrent','C','concurrent@example.test']],action:'commit',confirm:true};
@@ -63,6 +63,33 @@ const root=path.resolve(__dirname,'..');process.chdir(root);
  const form=new FormData();form.append('file',new File([docx],'customers.docx'));eq((await post(form,admin)).data.rows[0][0],'Clinic & Doctor');
  eq((await post(preview,admin,{origin:'https://thenewera.space','content-length':'9000000'})).status,400);
  eq(parser.phoneKey('00994501234567'),parser.phoneKey('050 123 45 67'));eq(parser.phoneKey('+123456789'),'123456789');
+
+ // Prefix-qualified SpreadsheetML, report preamble, exact physical header/row,
+ // placeholders and multiple/hotline numbers (no real contacts in fixtures).
+ const prefixed=new Zip();
+ prefixed.file('xl/workbook.xml','<x:workbook xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><x:sheets><x:sheet name="Research" sheetId="1" r:id="s1"/></x:sheets></x:workbook>');
+ prefixed.file('xl/_rels/workbook.xml.rels','<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="s1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="/xl/worksheets/sheet1.xml"/><Relationship Id="strings" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="/xl/sharedStrings.xml"/></Relationships>');
+ const sheetRows=[['Research title'],[],[],[],[],['Ad / Klinika','İxtisas / Xidmət','Instagram adı','Telefon / WhatsApp','E-poçt','Klinika / Ünvan','Bakı üzrə sübut','Qeyd','Profil linki'],['Prefix Clinic','Dental','@fixture','979; +994 51 979 00 00','Bio-da tapılmadı','Address fixture','Bakı','Note fixture','https://instagram.com/fixture'],['Hotline','Medical','@hotline','105','Bio-da tapılmadı']];
+ const escaped=v=>v.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+ const sharedValues=[];
+ const cells=sheetRows.map((r,i)=>'<x:row r="'+(i+1)+'">'+r.map((v,j)=>{const n=sharedValues.push(v)-1;return '<x:c r="'+String.fromCharCode(65+j)+(i+1)+'" t="s"><x:v>'+n+'</x:v></x:c>';}).join('')+'</x:row>').join('');
+ prefixed.file('xl/sharedStrings.xml','<x:sst xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+sharedValues.map(v=>'<x:si><x:t>'+escaped(v)+'</x:t></x:si>').join('')+'</x:sst>');
+ prefixed.file('xl/worksheets/sheet1.xml','<x:worksheet xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><x:sheetData>'+cells+'</x:sheetData></x:worksheet>');
+ const prefixBytes=await prefixed.generateAsync({type:'nodebuffer',compression:'DEFLATE'});
+ const report=await parser.parseSalesFile(prefixBytes,'report.xlsx');eq(report.headerRow,6);eq(report.rows.length,2);eq(report.rowNumbers,[7,8]);
+ const fields=require('../src/lib/sales/import-fields.ts'),reportMapping={};for(const [key]of fields.importFields){const col=report.headers.findIndex(h=>fields.importAliases[key].includes(fields.headerKey(h)));reportMapping[key]=col<0?'':col;}
+ const normalized=parser.mappedRow(report.rows[0],reportMapping);eq(normalized.email,null);eq(normalized.phone,'+994 51 979 00 00');ok(normalized.notes.includes('979; +994'));ok(normalized.notes.includes('Address fixture'));ok(normalized.notes.includes('Bio-da tapılmadı'));ok(normalized.notes.includes('https://instagram.com/fixture'));
+ const hotline=parser.mappedRow(report.rows[1],reportMapping);eq(hotline.phone,null);ok(hotline.notes.includes('105'));
+ eq((await parser.parseSalesFile(prefixBytes,'report.xlsx',1)).headerRow,1);
+ await assert.rejects(()=>parser.parseSalesFile(prefixBytes,'report.xlsx',3));checks++;
+ await assert.rejects(()=>parser.parseSalesFile(prefixBytes,'report.xlsx',31));checks++;
+ const reportForm=new FormData();reportForm.append('file',new File([prefixBytes],'report.xlsx'));reportForm.append('headerRow','6');const uploadReport=await post(reportForm,admin);eq(uploadReport.status,200);eq(uploadReport.data.rowNumbers,[7,8]);
+ // Header selection must also preserve physical row numbers in standard ExcelJS files.
+ const preambleWb=new ExcelJS.Workbook(),preambleSheet=preambleWb.addWorksheet('Leads');preambleSheet.getCell('A2').value='Research heading';preambleSheet.getRow(6).values=['Şirkət','Email'];preambleSheet.getRow(7).values=['Standard Clinic','standard@example.test'];
+ const standard=await parser.parseSalesFile(Buffer.from(await preambleWb.xlsx.writeBuffer()),'standard.xlsx');eq(standard.headerRow,6);eq(standard.rows.length,1);eq(standard.rowNumbers,[7]);
+ prefixed.file('xl/worksheets/sheet1.xml','<x:worksheet xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><x:sheetData><x:row r="1"><x:c r="A1"><x:f>1+1</x:f><x:v>2</x:v></x:c></x:row></x:sheetData></x:worksheet>');const hostileFormula=await prefixed.generateAsync({type:'nodebuffer'});await assert.rejects(()=>parser.parseSalesFile(hostileFormula,'formula-prefixed.xlsx'));checks++;
+ prefixed.file('xl/worksheets/sheet1.xml','<!DOCTYPE worksheet [<!ENTITY bad "test">]><worksheet/>');const dtdBytes=await prefixed.generateAsync({type:'nodebuffer'});await assert.rejects(()=>parser.parseSalesFile(dtdBytes,'dtd.xlsx'));checks++;
+
  console.log(`PASS ${checks} checks — admin sales import and tracking`);
  }finally{await db.$disconnect();await server.stop();await pg.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

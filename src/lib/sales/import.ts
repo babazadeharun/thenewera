@@ -1,3 +1,5 @@
+import { readXlsxXml } from "./xlsx-xml";
+import { headerScore } from "./import-fields";
 import { emailKey, phoneKey } from "./import-fields";
 export { emailKey, phoneKey } from "./import-fields";
 import ExcelJS from "exceljs";
@@ -37,7 +39,14 @@ function zipEntries(b: Buffer) {
     offset = b.readUInt32LE(end + 16);
   if (n > 2000 || !n || b.readUInt16LE(end + 8) !== n || offset >= end)
     fail("Office arxivi həddindən böyükdür.");
-  const files = [];
+  const files: {
+    name: string;
+    method: number;
+    compressed: number;
+    size: number;
+    at: number;
+    content: Buffer;
+  }[] = [];
   let p = offset,
     total = 0;
   for (let i = 0; i < n; i++) {
@@ -66,6 +75,7 @@ function zipEntries(b: Buffer) {
       compressed,
       size,
       at,
+      content: Buffer.alloc(0),
     });
     p += 46 + nameLength + extra + comment;
   }
@@ -88,6 +98,7 @@ function zipEntries(b: Buffer) {
           : inflateRawSync(raw, {
               maxOutputLength: 20 * 1024 * 1024 - expanded + 1,
             });
+    file.content = content;
     expanded += content.length;
     if (content.length !== file.size || expanded > 20 * 1024 * 1024)
       fail("Office faylının açılmış ölçüsü limiti keçir.");
@@ -201,40 +212,93 @@ function csv(text: string) {
   if (row.some((x) => x.trim())) rows.push(row);
   return rows;
 }
-export async function parseSalesFile(bytes: Buffer, name: string) {
+export async function parseSalesFile(
+  bytes: Buffer,
+  name: string,
+  selectedHeader?: number,
+) {
   if (bytes.length > LIMIT) fail("Fayl maksimum 2 MB ola bilər.");
   let rows: string[][] = [];
   if (/\.docx$/i.test(name)) rows = docx(bytes);
   else if (/\.csv$/i.test(name)) rows = csv(bytes.toString("utf8"));
   else if (/\.xlsx$/i.test(name)) {
-    zipEntries(bytes);
+    const files = zipEntries(bytes);
     const wb = new ExcelJS.Workbook();
-    await wb.xlsx.load(bytes as never);
-    const sheet = wb.worksheets[0];
-    if (!sheet) fail("Excel vərəqi tapılmadı.");
-    if (sheet.rowCount > 1001 || sheet.columnCount > 100)
-      fail("Maksimum 1000 məlumat sətri və 100 sütun.");
-    sheet.eachRow((r) => {
-      const values = [];
-      for (let col = 1; col <= sheet.columnCount; col++) {
-        const c = r.getCell(col);
-        if (c.type === ExcelJS.ValueType.Formula)
-          fail("Formulaları sadə dəyərlərə çevirin.");
-        if (c.text.length > 20000)
-          fail("Sahə maksimum 20000 simvol ola bilər.");
-        values.push(c.text);
-      }
-      rows.push(values);
-    });
+    let loaded = false;
+    try {
+      await wb.xlsx.load(bytes as never);
+      loaded = true;
+    } catch {
+      rows = readXlsxXml(files, fail);
+    }
+    if (loaded) {
+      const sheet = wb.worksheets[0];
+      if (!sheet) fail("Excel vərəqi tapılmadı.");
+      if (sheet.rowCount > 1031 || sheet.columnCount > 100)
+        fail("Maksimum 1000 məlumat sətri, 30 giriş sətri və 100 sütun.");
+      sheet.eachRow((r) => {
+        const values: string[] = [];
+        for (let col = 1; col <= sheet.columnCount; col++) {
+          const c = r.getCell(col);
+          if (c.type === ExcelJS.ValueType.Formula)
+            fail("Formulaları sadə dəyərlərə çevirin.");
+          if (c.text.length > 20000)
+            fail("Sahə maksimum 20000 simvol ola bilər.");
+          values.push(c.text);
+        }
+        rows[r.number - 1] = values;
+      });
+    }
   } else
     fail(
       "XLSX, DOCX və ya CSV faylı seçin. Köhnə XLS və DOC fayllarını yeni formatda saxlayın.",
     );
-  if (rows.length < 2 || rows.length > 1001 || rows.some((r) => r.length > 100))
+  rows = Array.from({ length: rows.length }, (_, i) => rows[i] || []);
+  if (rows.length < 2 || rows.length > 1031 || rows.some((r) => r.length > 100))
     fail("Başlıq və 1–1000 məlumat sətri olmalıdır.");
+  let header = 0,
+    score = headerScore(rows[0]);
+  if (selectedHeader !== undefined) {
+    if (
+      !Number.isInteger(selectedHeader) ||
+      selectedHeader < 1 ||
+      selectedHeader > Math.min(30, rows.length - 1)
+    )
+      fail("Başlıq sətri düzgün deyil.");
+    header = selectedHeader - 1;
+  } else {
+    for (let i = 1; i < Math.min(30, rows.length - 1); i++) {
+      const candidate = headerScore(rows[i]);
+      if (candidate >= 2 && candidate > score) {
+        header = i;
+        score = candidate;
+      }
+    }
+  }
+  if (!rows[header].some((x) => x.trim()))
+    fail("Seçilmiş başlıq sətri boşdur.");
+  const entries = rows
+    .map((values, i) => ({ values, number: i + 1 }))
+    .slice(header + 1)
+    .filter((r) => r.values.some((x) => x.trim()));
+  if (!entries.length || entries.length > 1000)
+    fail("1–1000 məlumat sətri olmalıdır.");
+  const width = Math.max(
+    rows[header].length,
+    ...entries.map((r) => r.values.length),
+  );
   return {
-    headers: rows[0].map((x, i) => x.trim().slice(0, 100) || `Sütun ${i + 1}`),
-    rows: rows.slice(1),
+    headers: Array.from(
+      { length: width },
+      (_, i) => rows[header][i]?.trim().slice(0, 100) || `Sütun ${i + 1}`,
+    ),
+    rows: entries.map((r) => r.values),
+    rowNumbers: entries.map((r) => r.number),
+    headerRow: header + 1,
+    headerRows: rows
+      .slice(0, Math.min(30, rows.length - 1))
+      .flatMap((r, i) => (r.some((v) => v.trim()) ? [i + 1] : [])),
+    maxHeaderRow: Math.min(30, rows.length - 1),
   };
 }
 export function mappedRow(raw: unknown, mapping: unknown): ImportRow {
@@ -258,12 +322,32 @@ export function mappedRow(raw: unknown, mapping: unknown): ImportRow {
   };
   const contactName = get("contactName"),
     company = get("title"),
-    email = emailKey(get("email", 254)),
-    phone = get("phone", 80),
+    emailInput = get("email", 254),
+    phoneInput = get("phone", 500),
     instagram = get("instagram"),
     industry = get("industry"),
     source = get("source", 100),
     notes = get("notes", 20000);
+  const absent = (value: string) =>
+    [
+      "bio-da tapılmadı",
+      "bio-da yoxdur",
+      "tapılmadı",
+      "yoxdur",
+      "qeyd edilməyib",
+      "göstərilməyib",
+      "n/a",
+      "-",
+      "—",
+    ].includes(value.trim().toLowerCase());
+  const email = absent(emailInput) ? "" : emailKey(emailInput);
+  const phoneText = absent(phoneInput) ? "" : phoneInput;
+  const phones = phoneText.match(/\+?\d[\d ()\u00a0.\-]*\d/g) || [];
+  const normalPhones = phones.filter(
+    (value) => phoneKey(value).length >= 7 && phoneKey(value).length <= 15,
+  );
+  const hotlineOnly = /^(?:\*?\d{3,6}|0\d{2}\s+\d{3})$/.test(phoneText);
+  const phone = normalPhones[0]?.trim() || (hotlineOnly ? "" : phoneText);
   const title = company || contactName;
   if (!title) fail("Şirkət / satış adı və ya əlaqə şəxsi tələb olunur.");
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
@@ -280,6 +364,13 @@ export function mappedRow(raw: unknown, mapping: unknown): ImportRow {
       [
         instagram && `Instagram: ${instagram}`,
         industry && `Fəaliyyət sahəsi: ${industry}`,
+        get("address") && `Klinika / ünvan: ${get("address")}`,
+        get("evidence") && `Ərazi qeydi: ${get("evidence")}`,
+        get("profileUrl") && `Profil linki: ${get("profileUrl")}`,
+        emailInput && absent(emailInput) && `E-poçt qeydi: ${emailInput}`,
+        phoneInput &&
+          (absent(phoneInput) || phones.length > 1 || phone !== phoneInput) &&
+          `Telefon məlumatı: ${phoneInput}`,
         notes,
       ]
         .filter(Boolean)

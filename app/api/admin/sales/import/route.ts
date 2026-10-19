@@ -56,7 +56,11 @@ export async function POST(r: Request) {
       if (!file || typeof file === "string")
         throw new SalesImportError("Fayl seçin.");
       return json(
-        await parseSalesFile(Buffer.from(await file.arrayBuffer()), file.name),
+        await parseSalesFile(
+          Buffer.from(await file.arrayBuffer()),
+          file.name,
+          form.has("headerRow") ? Number(form.get("headerRow")) : undefined,
+        ),
       );
     }
     let body: any;

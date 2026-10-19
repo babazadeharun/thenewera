@@ -15,7 +15,7 @@ export function getAccountHomePath(role: AccountRole | null | undefined): string
     case 'CREATOR':
       return '/creator';
     case 'CLIENT':
-      return '/account';
+      return '/workspace';
     default:
       return '/login';
   }

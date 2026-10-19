@@ -1,9 +1,156 @@
-import { createHmac,timingSafeEqual } from 'node:crypto';
-import { config } from '@/lib/crm/providers';
-import { bytes,handled,json } from '@/lib/crm/http';
-import { tx,lock } from '@/lib/crm/db';
-import { fail,state } from '@/lib/crm/policy';
-export const dynamic='force-dynamic';type P={params:Promise<{id:string}>};
-const equal=(a:string,b:string)=>{const x=Buffer.from(a),y=Buffer.from(b);return x.length===y.length&&timingSafeEqual(x,y)};
-export async function GET(r:Request,p:P){return handled(async()=>{const {id}=await p.params,w=config(id).whatsapp,q=new URL(r.url).searchParams;if(!w?.verifyToken||q.get('hub.mode')!=='subscribe'||!equal(q.get('hub.verify_token')||'',w.verifyToken))fail('İcazə yoxdur.',403);return new Response(q.get('hub.challenge')||'',{headers:{'Cache-Control':'no-store'}});});}
-export async function POST(r:Request,p:P){return handled(async()=>{const {id}=await p.params,w=config(id).whatsapp;if(!w?.appSecret||!w.phoneNumberId)fail('Qoşulmayıb.',503);const raw=await bytes(r,524288);if(!equal(r.headers.get('x-hub-signature-256')||'','sha256='+createHmac('sha256',w.appSecret).update(raw).digest('hex')))fail('İmza düzgün deyil.',403);const payload=JSON.parse(raw.toString());return json(await tx(async db=>{const company=await lock(db,id);if(!['TRIAL','ACTIVE'].includes(state(company))||!company.features.includes('messages'))return {ok:true,ignored:true};const owner=await db.crmSeat.findFirst({where:{companyId:id,role:'OWNER',active:true}});if(!owner)return {ok:true};for(const e of (payload.entry||[]).slice(0,20))for(const change of (e.changes||[]).slice(0,20)){const value=change.value;if(String(value?.metadata?.phone_number_id)!==w.phoneNumberId)continue;for(const m of (value.messages||[]).slice(0,100)){if(m.type!=='text'||typeof m.text?.body!=='string'||typeof m.id!=='string'||!/^[0-9]{7,16}$/.test(String(m.from)))continue;const key='wa:'+m.id;if(await db.crmEvent.findUnique({where:{companyId_key:{companyId:id,key}}}))continue;if(await db.crmEntry.count({where:{companyId:id,deletedAt:null}})>=company.records)fail('Qeyd limiti dolub.',409);const customer=await db.crmEntry.findFirst({where:{companyId:id,kind:'customers',deletedAt:null,phone:{in:[m.from,'+'+m.from]}}});const item=await db.crmEntry.create({data:{companyId:id,kind:'messages',status:'RECEIVED',title:'WhatsApp mesajı',assigneeId:customer?.assigneeId||owner.id,participants:customer?.participants||[],authorId:'SYSTEM',customerId:customer?.id||null,data:{channel:'WHATSAPP',delivery:'RECEIVED',body:m.text.body.slice(0,20000),to:m.from,providerId:m.id}}});await db.crmEvent.create({data:{companyId:id,type:'AUDIT',key,entryId:item.id,actorType:'SYSTEM',data:{action:'WHATSAPP_RECEIVED'}}});}}return {ok:true};}));});}
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { config } from "@/lib/crm/providers";
+import { bytes, handled, json } from "@/lib/crm/http";
+import { tx, lock } from "@/lib/crm/db";
+import { fail, state } from "@/lib/crm/policy";
+export const dynamic = "force-dynamic";
+type P = { params: Promise<{ id: string }> };
+const equal = (a: string, b: string) => {
+  const x = Buffer.from(a),
+    y = Buffer.from(b);
+  return x.length === y.length && timingSafeEqual(x, y);
+};
+export async function GET(r: Request, p: P) {
+  return handled(async () => {
+    const { id } = await p.params,
+      w = config(id).whatsapp,
+      q = new URL(r.url).searchParams;
+    if (
+      !w?.verifyToken ||
+      q.get("hub.mode") !== "subscribe" ||
+      !equal(q.get("hub.verify_token") || "", w.verifyToken)
+    )
+      fail("İcazə yoxdur.", 403);
+    return new Response(q.get("hub.challenge") || "", {
+      headers: { "Cache-Control": "no-store" },
+    });
+  });
+}
+export async function POST(r: Request, p: P) {
+  return handled(async () => {
+    const { id } = await p.params,
+      w = config(id).whatsapp;
+    if (!w?.appSecret || !w.phoneNumberId) fail("Qoşulmayıb.", 503);
+    const raw = await bytes(r, 524288);
+    if (
+      !equal(
+        r.headers.get("x-hub-signature-256") || "",
+        "sha256=" + createHmac("sha256", w.appSecret).update(raw).digest("hex"),
+      )
+    )
+      fail("İmza düzgün deyil.", 403);
+    const payload = JSON.parse(raw.toString());
+    return json(
+      await tx(async (db) => {
+        const company = await lock(db, id);
+        if (
+          !["TRIAL", "ACTIVE"].includes(state(company)) ||
+          !company.features.includes("messages")
+        )
+          return { ok: true, ignored: true };
+        const owner = await db.crmSeat.findFirst({
+          where: { companyId: id, role: "OWNER", active: true },
+        });
+        if (!owner) return { ok: true };
+        for (const e of (payload.entry || []).slice(0, 20))
+          for (const change of (e.changes || []).slice(0, 20)) {
+            const value = change.value;
+            if (String(value?.metadata?.phone_number_id) !== w.phoneNumberId)
+              continue;
+            for (const m of (value.messages || []).slice(0, 100)) {
+              if (
+                m.type !== "text" ||
+                typeof m.text?.body !== "string" ||
+                typeof m.id !== "string" ||
+                !/^[0-9]{7,16}$/.test(String(m.from))
+              )
+                continue;
+              const key = "wa:" + m.id;
+              if (
+                await db.crmEvent.findUnique({
+                  where: { companyId_key: { companyId: id, key } },
+                })
+              )
+                continue;
+              if (
+                (await db.crmEntry.count({
+                  where: { companyId: id, deletedAt: null },
+                })) >= company.records
+              )
+                fail("Qeyd limiti dolub.", 409);
+              const customer = await db.crmEntry.findFirst({
+                where: {
+                  companyId: id,
+                  kind: "customers",
+                  deletedAt: null,
+                  phone: { in: [m.from, "+" + m.from] },
+                },
+              });
+              const item = await db.crmEntry.create({
+                data: {
+                  companyId: id,
+                  kind: "messages",
+                  status: "RECEIVED",
+                  title: "WhatsApp mesajı",
+                  assigneeId: customer?.assigneeId || owner.id,
+                  participants: customer?.participants || [],
+                  authorId: "SYSTEM",
+                  customerId: customer?.id || null,
+                  data: {
+                    channel: "WHATSAPP",
+                    delivery: "RECEIVED",
+                    body: m.text.body.slice(0, 20000),
+                    to: m.from,
+                    providerId: m.id,
+                  },
+                },
+              });
+              await db.crmThread.upsert({
+                where: {
+                  companyId_channel_contact: {
+                    companyId: id,
+                    channel: "WHATSAPP",
+                    contact: m.from,
+                  },
+                },
+                create: {
+                  companyId: id,
+                  channel: "WHATSAPP",
+                  contact: m.from,
+                  title: "WhatsApp yazışması",
+                  assigneeId: customer?.assigneeId || owner.id,
+                  customerId: customer?.id || null,
+                  lastInboundAt: new Date(),
+                  responseDueAt: new Date(
+                    Date.now() +
+                      (Number((company.preferences as any).slaMinutes) || 30) *
+                        60000,
+                  ),
+                },
+                update: {
+                  status: "OPEN",
+                  lastInboundAt: new Date(),
+                  responseDueAt: new Date(
+                    Date.now() +
+                      (Number((company.preferences as any).slaMinutes) || 30) *
+                        60000,
+                  ),
+                },
+              });
+              await db.crmEvent.create({
+                data: {
+                  companyId: id,
+                  type: "AUDIT",
+                  key,
+                  entryId: item.id,
+                  actorType: "SYSTEM",
+                  data: { action: "WHATSAPP_RECEIVED" },
+                },
+              });
+            }
+          }
+        return { ok: true };
+      }),
+    );
+  });
+}

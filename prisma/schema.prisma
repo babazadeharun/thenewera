@@ -1209,6 +1209,7 @@ model CrmCompany {
  createdAt DateTime @default(now())
  lastActivity DateTime @default(now())
  lastJobAt DateTime?
+ jobCursor String?
  members CrmSeat[]
  invites CrmInvitation[]
  entries CrmEntry[]
@@ -1216,6 +1217,14 @@ model CrmCompany {
  events CrmEvent[]
  rules CrmAutomation[]
  sessions CrmSupportSession[]
+ preferences Json @default("{}")
+ connections CrmConnection[]
+ threads CrmThread[]
+ schedules CrmSchedule[]
+ bookings CrmBooking[]
+ portalAccess CrmPortalAccess[]
+ approvals CrmApproval[]
+ jobs CrmJob[]
  @@index([state,trialEnd])
 }
 model CrmSeat {
@@ -1231,6 +1240,10 @@ model CrmSeat {
  welcomedAt DateTime?
  dismissedAt DateTime?
  entries CrmEntry[]
+ threads CrmThread[]
+ schedules CrmSchedule[]
+ bookings CrmBooking[]
+ connections CrmConnection[]
  createdAt DateTime @default(now())
  @@unique([companyId,userId])
  @@unique([companyId,id])
@@ -1282,6 +1295,13 @@ model CrmEntry {
  createdAt DateTime @default(now())
  updatedAt DateTime @updatedAt
  files CrmAttachment[]
+ threads CrmThread[]
+ portalAccess CrmPortalAccess[]
+ approvals CrmApproval[]
+ customerBookings CrmBooking[] @relation("CrmBookingCustomer")
+ calendarBookings CrmBooking[] @relation("CrmBookingCalendar")
+ custom Json @default("{}")
+ pipelineId String @default("main")
  @@unique([companyId,id])
  @@index([companyId,kind,deletedAt,createdAt])
  @@index([companyId,assigneeId])
@@ -1295,6 +1315,7 @@ model CrmAttachment {
  entry CrmEntry? @relation(fields:[companyId,entryId],references:[companyId,id],onDelete:Restrict)
  name String
  mime String
+ portalVisible Boolean @default(false)
  size Int
  bytes Bytes
  createdAt DateTime @default(now())
@@ -1343,4 +1364,155 @@ model CrmPlatformLog {
  actorId String
  data Json
  createdAt DateTime @default(now())
+}
+
+// Workspace v2: additive tenant-bound collaboration, booking and security.
+model CrmThread {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ customerId String?
+ customer CrmEntry? @relation(fields:[companyId,customerId],references:[companyId,id],onDelete:Restrict)
+ channel String
+ contact String
+ title String
+ assigneeId String?
+ assignee CrmSeat? @relation(fields:[companyId,assigneeId],references:[companyId,id],onDelete:Restrict)
+ status String @default("OPEN")
+ claimedBy String?
+ claimUntil DateTime?
+ lastInboundAt DateTime?
+ lastOutboundAt DateTime?
+ responseDueAt DateTime?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([companyId,channel,contact])
+ @@index([companyId,status,responseDueAt])
+}
+model CrmSchedule {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ title String
+ slug String @unique
+ assigneeId String
+ assignee CrmSeat @relation(fields:[companyId,assigneeId],references:[companyId,id],onDelete:Restrict)
+ timezone String @default("Asia/Baku")
+ duration Int @default(30)
+ buffer Int @default(10)
+ leadHours Int @default(2)
+ horizonDays Int @default(30)
+ availability Json
+ active Boolean @default(true)
+ createdAt DateTime @default(now())
+ bookings CrmBooking[]
+ @@unique([companyId,id])
+}
+model CrmBooking {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ scheduleId String
+ schedule CrmSchedule @relation(fields:[companyId,scheduleId],references:[companyId,id],onDelete:Restrict)
+ assigneeId String
+ assignee CrmSeat @relation(fields:[companyId,assigneeId],references:[companyId,id],onDelete:Restrict)
+ userId String
+ customerId String?
+ customer CrmEntry? @relation("CrmBookingCustomer",fields:[companyId,customerId],references:[companyId,id],onDelete:Restrict)
+ calendarEntryId String?
+ calendarEntry CrmEntry? @relation("CrmBookingCalendar",fields:[companyId,calendarEntryId],references:[companyId,id],onDelete:Restrict)
+ email String
+ title String
+ startsAt DateTime
+ endsAt DateTime
+ timezone String
+ status String @default("CONFIRMED")
+ requestKey String
+ external Json @default("{}")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([companyId,requestKey])
+ @@index([companyId,assigneeId,startsAt,endsAt])
+}
+model CrmPortalAccess {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ customerId String
+ customer CrmEntry @relation(fields:[companyId,customerId],references:[companyId,id],onDelete:Restrict)
+ email String
+ userId String?
+ hash String @unique
+ expiresAt DateTime
+ acceptedAt DateTime?
+ revokedAt DateTime?
+ createdAt DateTime @default(now())
+ @@unique([companyId,customerId,email])
+ @@index([userId,revokedAt])
+}
+model CrmApproval {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ entryId String
+ entry CrmEntry @relation(fields:[companyId,entryId],references:[companyId,id],onDelete:Restrict)
+ fingerprint String
+ status String @default("PENDING")
+ requesterId String
+ approverId String?
+ reason String?
+ createdAt DateTime @default(now())
+ decidedAt DateTime?
+ @@unique([companyId,entryId,fingerprint])
+ @@index([companyId,status])
+}
+model CrmJob {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ key String
+ kind String
+ data Json
+ state String @default("QUEUED")
+ runAt DateTime @default(now())
+ claimedAt DateTime?
+ attempts Int @default(0)
+ error String?
+ createdAt DateTime @default(now())
+ @@unique([companyId,key])
+ @@index([state,runAt])
+}
+model CrmAccountSecurity {
+ userId String @id
+ secret String?
+ pendingSecret String?
+ enabled Boolean @default(false)
+ lastCounter BigInt @default(-1)
+ recoveryHashes String[] @default([])
+ failedAttempts Int @default(0)
+ lockedUntil DateTime?
+ updatedAt DateTime @updatedAt
+}
+model CrmMfaProof {
+ sessionHash String @id
+ userId String
+ expiresAt DateTime
+ @@index([userId])
+}
+model CrmConnection {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ provider String
+ channel String
+ memberId String
+ member CrmSeat @relation(fields:[companyId,memberId],references:[companyId,id],onDelete:Restrict)
+ email String
+ secret String
+ active Boolean @default(true)
+ cursor Json @default("{}")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([companyId,channel,memberId])
+ @@index([companyId,active])
 }

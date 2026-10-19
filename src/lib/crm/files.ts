@@ -1,10 +1,160 @@
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
-import { PDFDocument,rgb } from 'pdf-lib';
-import fontkit from '@pdf-lib/fontkit';
-import type { CrmEntry } from '@prisma/client';
-import { entry,permit,write,log,type Context,type DB } from './db';
-import { fail,required } from './policy';
-export async function upload(db:DB,c:Context,bytes:Buffer,name:string,mime:string,entryId:string|null){write(c);if(entryId)await entry(db,c,entryId,'update');else permit(c,'settings','update');if(!['image/png','image/jpeg','image/webp','application/pdf','text/plain'].includes(mime)||!bytes.length||bytes.length>10485760)fail('PNG/JPEG/WebP/PDF/TXT, maksimum 10 MB.');if(!entryId&&!mime.startsWith('image/'))fail('Loqo şəkil olmalıdır.');if(mime==='image/png'&&bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a'||mime==='image/jpeg'&&bytes.subarray(0,3).toString('hex')!=='ffd8ff'||mime==='image/webp'&&(bytes.subarray(0,4).toString()!=='RIFF'||bytes.subarray(8,12).toString()!=='WEBP')||mime==='application/pdf'&&bytes.subarray(0,5).toString()!=='%PDF-')fail('Fayl məzmunu düzgün deyil.');const size=(await db.crmAttachment.aggregate({where:{companyId:c.company.id},_sum:{size:true}}))._sum.size||0;if(size+bytes.length>c.company.bytes)fail('Yaddaş limiti dolub.',409);const file=await db.crmAttachment.create({data:{companyId:c.company.id,entryId,name:required(name,180).replace(/[\x00-\x1f/\\]/g,'_'),mime,size:bytes.length,bytes},select:{id:true,name:true,size:true}});await log(db,c.company.id,c.user,'FILE_UPLOADED',{id:file.id,size:file.size},entryId||undefined,Boolean(c.support));return file;}
-export async function attachment(db:DB,c:Context,id:string){const f=await db.crmAttachment.findFirst({where:{companyId:c.company.id,id}})||fail('Fayl tapılmadı.',404);if(c.state==='SUSPENDED'&&!c.support)fail('Workspace dayandırılıb.',403);if(f.entryId)await entry(db,c,f.entryId);return f;}
-export async function pdf(name:string,e:CrmEntry){const doc=await PDFDocument.create();doc.registerFontkit(fontkit);const font=await doc.embedFont(await readFile(path.join(process.cwd(),'public/fonts/NewEraSans-Regular.ttf')),{subset:true});let page=doc.addPage([595,842]),y=790;function draw(s:string,size=12){let row='';for(const word of s.split(/\s+/)){if(font.widthOfTextAtSize(row+' '+word,size)>490&&row){put(row,size);row=word}else row+=(row?' ':'')+word;}put(row,size)}function put(s:string,size:number){if(y<60){page=doc.addPage([595,842]);y=790;}page.drawText(s,{x:50,y,size,font,color:rgb(.08,.14,.16)});y-=size+10;}draw(name,22);draw(e.title,18);draw('Status: '+e.status);const d=e.data as {lines?:{name:string;quantity:number;price:number}[];discount?:number;notes?:string};for(const l of d.lines||[])draw(`${l.name} — ${l.quantity} × ${l.price.toFixed(2)} ${e.currency}`);draw(`Endirim: ${d.discount||0} ${e.currency}`);draw(`Yekun: ${e.amount.toString()} ${e.currency}`,18);if(d.notes)draw(d.notes);return new Uint8Array(await doc.save());}
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { PDFDocument, rgb } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
+import type { CrmEntry } from "@prisma/client";
+import { entry, permit, write, log, type Context, type DB } from "./db";
+import { fail, required } from "./policy";
+export async function upload(
+  db: DB,
+  c: Context,
+  bytes: Buffer,
+  name: string,
+  mime: string,
+  entryId: string | null,
+) {
+  write(c);
+  if (entryId) await entry(db, c, entryId, "update");
+  else permit(c, "settings", "update");
+  validateFile(bytes, mime);
+  if (!entryId && !mime.startsWith("image/")) fail("Loqo şəkil olmalıdır.");
+  const size =
+    (
+      await db.crmAttachment.aggregate({
+        where: { companyId: c.company.id },
+        _sum: { size: true },
+      })
+    )._sum.size || 0;
+  if (size + bytes.length > c.company.bytes) fail("Yaddaş limiti dolub.", 409);
+  const file = await db.crmAttachment.create({
+    data: {
+      companyId: c.company.id,
+      entryId,
+      name: required(name, 180).replace(/[\x00-\x1f/\\]/g, "_"),
+      mime,
+      size: bytes.length,
+      bytes,
+    },
+    select: { id: true, name: true, size: true },
+  });
+  await log(
+    db,
+    c.company.id,
+    c.user,
+    "FILE_UPLOADED",
+    { id: file.id, size: file.size },
+    entryId || undefined,
+    Boolean(c.support),
+  );
+  return file;
+}
+export async function attachment(db: DB, c: Context, id: string) {
+  const f =
+    (await db.crmAttachment.findFirst({
+      where: { companyId: c.company.id, id },
+    })) || fail("Fayl tapılmadı.", 404);
+  if (c.state === "SUSPENDED" && !c.support)
+    fail("Workspace dayandırılıb.", 403);
+  if (f.entryId) await entry(db, c, f.entryId);
+  return f;
+}
+export async function pdf(
+  name: string,
+  e: Pick<CrmEntry, "title" | "status" | "data" | "amount" | "currency">,
+  brand?: {
+    title?: string;
+    footer?: string;
+    logo?: Uint8Array;
+    logoMime?: string;
+  },
+) {
+  const doc = await PDFDocument.create();
+  doc.registerFontkit(fontkit);
+  const font = await doc.embedFont(
+    await readFile(
+      path.join(process.cwd(), "public/fonts/NewEraSans-Regular.ttf"),
+    ),
+    { subset: true },
+  );
+  let page = doc.addPage([595, 842]),
+    y = 790;
+  function draw(s: string, size = 12) {
+    let row = "";
+    for (const word of s.split(/\s+/)) {
+      if (font.widthOfTextAtSize(row + " " + word, size) > 490 && row) {
+        put(row, size);
+        row = word;
+      } else row += (row ? " " : "") + word;
+    }
+    put(row, size);
+  }
+  function put(s: string, size: number) {
+    if (y < 60) {
+      page = doc.addPage([595, 842]);
+      y = 790;
+    }
+    page.drawText(s, { x: 50, y, size, font, color: rgb(0.08, 0.14, 0.16) });
+    y -= size + 10;
+  }
+  if (brand?.logo) {
+    try {
+      const logo =
+        brand.logoMime === "image/png"
+          ? await doc.embedPng(brand.logo)
+          : brand.logoMime === "image/jpeg"
+            ? await doc.embedJpg(brand.logo)
+            : null;
+      if (logo) {
+        const d = logo.scaleToFit(160, 60);
+        page.drawImage(logo, {
+          x: 50,
+          y: y - d.height,
+          width: d.width,
+          height: d.height,
+        });
+        y -= d.height + 22;
+      }
+    } catch {}
+  }
+  draw(brand?.title || name, 22);
+  draw(e.title, 18);
+  draw("Status: " + e.status);
+  const d = e.data as {
+    lines?: { name: string; quantity: number; price: number }[];
+    discount?: number;
+    notes?: string;
+  };
+  for (const l of d.lines || [])
+    draw(`${l.name} — ${l.quantity} × ${l.price.toFixed(2)} ${e.currency}`);
+  draw(`Endirim: ${d.discount || 0} ${e.currency}`);
+  draw(`Yekun: ${e.amount.toString()} ${e.currency}`, 18);
+  if (d.notes) draw(d.notes);
+  if (brand?.footer) draw(brand.footer);
+  return new Uint8Array(await doc.save());
+}
+
+export function validateFile(bytes: Buffer, mime: string) {
+  if (
+    ![
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "application/pdf",
+      "text/plain",
+    ].includes(mime) ||
+    !bytes.length ||
+    bytes.length > 10485760
+  )
+    fail("PNG/JPEG/WebP/PDF/TXT, maksimum 10 MB.");
+  if (
+    (mime === "image/png" &&
+      bytes.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a") ||
+    (mime === "image/jpeg" &&
+      bytes.subarray(0, 3).toString("hex") !== "ffd8ff") ||
+    (mime === "image/webp" &&
+      (bytes.subarray(0, 4).toString() !== "RIFF" ||
+        bytes.subarray(8, 12).toString() !== "WEBP")) ||
+    (mime === "application/pdf" && bytes.subarray(0, 5).toString() !== "%PDF-")
+  )
+    fail("Fayl məzmunu düzgün deyil.");
+}

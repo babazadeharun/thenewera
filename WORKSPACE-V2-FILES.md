@@ -1,0 +1,47 @@
+# Workspace V2 — dəyişən və əlavə olunan fayllar
+
+Paketdə 43 fayl var. Mövcud layihənin kökünə yolları qoruyaraq köçürün. Migration və environment addımları üçün WORKSPACE-V2-INSTALL.md faylını oxuyun.
+
+- `WORKSPACE-V2-FILES.md`
+- `WORKSPACE-V2-INSTALL.md`
+- `WORKSPACE-V2-TEST-RESULTS.md`
+- `app/api/workspace-account/route.ts`
+- `app/api/workspace-booking/[slug]/route.ts`
+- `app/api/workspace-connect/[provider]/callback/route.ts`
+- `app/api/workspace-portal/route.ts`
+- `app/api/workspace-webhooks/instagram/[id]/route.ts`
+- `app/api/workspace-webhooks/whatsapp/[id]/route.ts`
+- `app/api/workspace/[[...path]]/route.ts`
+- `app/workspace/Advanced.tsx`
+- `app/workspace/CustomerHistory.tsx`
+- `app/workspace/Editor.tsx`
+- `app/workspace/Sections.tsx`
+- `app/workspace/Workspace.tsx`
+- `app/workspace/account/page.tsx`
+- `app/workspace/book/[slug]/page.tsx`
+- `app/workspace/portal/page.tsx`
+- `app/workspace/shared.tsx`
+- `app/workspace/workspace.css`
+- `package-lock.json`
+- `package.json`
+- `prisma/migrations/20261019110000_workspace_collaboration/migration.sql`
+- `prisma/schema.prisma`
+- `src/lib/crm/assistant.ts`
+- `src/lib/crm/booking.ts`
+- `src/lib/crm/connections.ts`
+- `src/lib/crm/db.ts`
+- `src/lib/crm/files.ts`
+- `src/lib/crm/imports.ts`
+- `src/lib/crm/inbox.ts`
+- `src/lib/crm/insights.ts`
+- `src/lib/crm/jobs.ts`
+- `src/lib/crm/mail.ts`
+- `src/lib/crm/portal.ts`
+- `src/lib/crm/preferences.ts`
+- `src/lib/crm/providers.ts`
+- `src/lib/crm/queue.ts`
+- `src/lib/crm/records.ts`
+- `src/lib/crm/security.ts`
+- `src/lib/crm/sync.ts`
+- `src/lib/crm/workspaces.ts`
+- `tests/company-crm-v2.integration.cjs`

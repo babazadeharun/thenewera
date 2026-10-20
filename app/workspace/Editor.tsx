@@ -177,7 +177,7 @@ export default function Editor({
       {
         key: "data.channel",
         label: "Kanal",
-        options: options(["EMAIL", "WHATSAPP", "INSTAGRAM"]),
+        options: options(["EMAIL", "WHATSAPP", "INSTAGRAM", "MESSENGER"]),
       },
       {
         key: "data.to",

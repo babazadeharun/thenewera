@@ -1,3 +1,4 @@
+import { maintainSocial } from './social';
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { tx, lock, type Context, type DB, permit, write, log } from "./db";
@@ -7,6 +8,7 @@ import { mailError } from "./mail";
 export async function workQueue(deadline = Date.now() + 25000) {
   let processed = 0;
   if (Date.now() > deadline) return { processed, pending: 0 };
+  await maintainSocial(deadline);
   const stale = new Date(Date.now() - 10 * 60000);
   await prisma.crmJob.updateMany({
     where: { state: "RUNNING", claimedAt: { lt: stale } },

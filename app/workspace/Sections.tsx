@@ -612,7 +612,7 @@ export default function Sections({
       <>
         <section className="crmPanel">
           <h2>İnteqrasiyalar</h2>
-          {["email", "whatsapp", "instagram", "ai"].map((k) => (
+          {["email", "whatsapp", "instagram", "messenger", "ai"].map((k) => (
             <p key={k}>
               <b>{k.toUpperCase()}</b>:{" "}
               {providers[k] === "CONFIGURED"

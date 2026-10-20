@@ -1219,6 +1219,8 @@ model CrmCompany {
  sessions CrmSupportSession[]
  preferences Json @default("{}")
  connections CrmConnection[]
+ socialConnections CrmSocialConnection[]
+ socialAuth CrmSocialAuth[]
  threads CrmThread[]
  schedules CrmSchedule[]
  bookings CrmBooking[]
@@ -1244,6 +1246,8 @@ model CrmSeat {
  schedules CrmSchedule[]
  bookings CrmBooking[]
  connections CrmConnection[]
+ socialConnections CrmSocialConnection[]
+ socialAuth CrmSocialAuth[]
  createdAt DateTime @default(now())
  @@unique([companyId,userId])
  @@unique([companyId,id])
@@ -1515,4 +1519,49 @@ model CrmConnection {
  updatedAt DateTime @updatedAt
  @@unique([companyId,channel,memberId])
  @@index([companyId,active])
+}
+
+// Company-owned social assets; passwords are never collected by NEW ERA.
+model CrmSocialConnection {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ memberId String
+ member CrmSeat @relation(fields:[companyId,memberId],references:[companyId,id],onDelete:Restrict)
+ channel String
+ assetKey String? @unique
+ externalId String
+ parentId String?
+ displayName String
+ secret String
+ state String @default("CONNECTING")
+ attemptId String?
+ subjectId String?
+ readyAt DateTime?
+ expiresAt DateTime?
+ lastCheckedAt DateTime?
+ errorCode String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([companyId,channel])
+ @@index([state,lastCheckedAt])
+}
+model CrmSocialAuth {
+ id String @id @default(cuid())
+ companyId String
+ company CrmCompany @relation(fields:[companyId],references:[id],onDelete:Restrict)
+ memberId String
+ member CrmSeat @relation(fields:[companyId,memberId],references:[companyId,id],onDelete:Restrict)
+ userId String
+ sessionHash String
+ stateHash String @unique
+ channel String
+ state String @default("PENDING")
+ secret String?
+ expiresAt DateTime
+ errorCode String?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([companyId,userId,createdAt])
+ @@index([expiresAt])
 }

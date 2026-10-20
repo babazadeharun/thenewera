@@ -1,3 +1,4 @@
+import { socialList, socialPending, startSocial, finishEmbedded, activateSocial, disconnectSocial, verifySocial, cancelSocial } from '@/lib/crm/social';
 import { mailHealth } from "@/lib/crm/mail";
 import { assistant } from "@/lib/crm/assistant";
 import { queueStatus } from "@/lib/crm/queue";
@@ -85,6 +86,8 @@ export async function GET(r: Request, p: P) {
       });
       return json(await mailHealth());
     }
+    if (op === 'social-connections') return json(await socialList(u,id));
+    if (op === 'social-auth') return json(await socialPending(u,id,required(q.get('authId'))));
     if (op === "connections") return json(await connections(u, id));
     const result = await tx(async (db) => {
       const c = await context(db, u, id, q.get("support"));
@@ -329,6 +332,7 @@ export async function POST(r: Request, p: P) {
       u = await actor();
     if (!path.length) {
       const b = await body(r);
+
       return json(
         b.action === "accept" ? await accept(u, b) : await create(u, b),
         201,
@@ -369,6 +373,12 @@ export async function POST(r: Request, p: P) {
       );
     }
     const b = await body(r);
+    if(op === 'social-start')return json(await startSocial(u,id,b));
+    if(op === 'social-finish')return json(await finishEmbedded(u,id,b));
+    if(op === 'social-activate')return json(await activateSocial(u,id,b));
+    if(op === 'social-disconnect')return json(await disconnectSocial(u,id,required(b.id)));
+    if(op === 'social-check')return json(await verifySocial(u,id,required(b.id)));
+    if(op === 'social-cancel')return json(await cancelSocial(u,id,required(b.authId)));
     if (op === "sync-connection")
       return json(await syncNow(u, id, required(b.id)));
     if (op === "mail-test") {

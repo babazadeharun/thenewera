@@ -156,6 +156,7 @@ export async function save(
       source: str(data.source),
       tags: str(data.tags),
       instagramId: str(data.instagramId, 80),
+      messengerId: str(data.messengerId, 80),
     });
   if (kind === "sales") {
     stage = required(b.stage, 80);
@@ -211,7 +212,7 @@ export async function save(
     if (status !== "DRAFT" && status !== old?.status)
       fail("Göndərmə ayrıca təsdiq tələb edir.");
     const channel = str(data.channel || "EMAIL", 20);
-    if (!["EMAIL", "WHATSAPP", "INSTAGRAM"].includes(channel))
+    if (!["EMAIL", "WHATSAPP", "INSTAGRAM", "MESSENGER"].includes(channel))
       fail("Kanal düzgün deyil.");
     Object.assign(clean, {
       channel,

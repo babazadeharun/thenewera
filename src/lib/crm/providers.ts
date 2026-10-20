@@ -1,3 +1,5 @@
+import { resolveSocial } from './social';
+import { socialConfig, type SocialChannel } from './social-api';
 import { activeConnection, credential, requestJSON } from "./connections";
 import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
@@ -70,19 +72,18 @@ export async function providerStatus(db: DB, id: string) {
     mail = await db.crmConnection.findFirst({
       where: { companyId: id, channel: "MAIL", active: true },
     });
+  const socials=await db.crmSocialConnection.findMany({where:{companyId:id}});
+  const socialState=async(channel:string,legacy:boolean)=>{const row=socials.find(x=>x.channel===channel);if(!row)return legacy?'CONFIGURED':'NOT_CONNECTED';if(row.state==='DISCONNECTED')return 'NOT_CONNECTED';if(!await db.crmSeat.findFirst({where:{id:row.memberId,companyId:id,active:true}}))return 'RECONNECT_REQUIRED';if(row.expiresAt&&row.expiresAt<new Date())return 'RECONNECT_REQUIRED';return row.state==='CONNECTED'&&row.readyAt?'CONFIGURED':row.state;};
   return {
+    messenger: await socialState('MESSENGER',false),
     instagram:
-      p.instagram?.token && p.instagram.accountId
-        ? "CONFIGURED"
-        : "NOT_CONNECTED",
+      await socialState('INSTAGRAM',Boolean(p.instagram?.token && p.instagram.accountId)),
     email:
       (p.smtp?.host && p.smtp.password) || mail
         ? "CONFIGURED"
         : "NOT_CONNECTED",
     whatsapp:
-      p.whatsapp?.token && p.whatsapp.phoneNumberId
-        ? "CONFIGURED"
-        : "NOT_CONNECTED",
+      await socialState('WHATSAPP',Boolean(p.whatsapp?.token && p.whatsapp.phoneNumberId)),
     ai: p.ai?.apiKey && p.ai.model ? "CONFIGURED" : "NOT_CONNECTED",
     emailInbox: mail ? "CONFIGURED" : "NOT_CONNECTED",
     logs: await db.crmEvent.findMany({
@@ -111,6 +112,9 @@ export async function send(
     const customer = await entry(db, c, e.customerId!),
       p = config(id);
     if (customer.kind !== "customers") fail("Müştəri uyğun deyil.");
+    const social=['INSTAGRAM','MESSENGER','WHATSAPP'].includes(String(d.channel))?await resolveSocial(db,id,d.channel as SocialChannel):null;
+    if(social){const cfg=socialConfig(d.channel as SocialChannel);if(d.channel==='INSTAGRAM')p.instagram={token:social.token,accountId:social.row.externalId,version:cfg.version,appSecret:cfg.appSecret,verifyToken:cfg.verifyToken};if(d.channel==='WHATSAPP')p.whatsapp={token:social.token,phoneNumberId:social.row.externalId,version:cfg.version,appSecret:cfg.appSecret,verifyToken:cfg.verifyToken};}
+
     if (d.channel === "EMAIL") {
       if (
         (!p.smtp?.host || !p.smtp.password) &&
@@ -137,10 +141,15 @@ export async function send(
             customerId: customer.id,
             createdAt: { gt: new Date(Date.now() - 86400000) },
             data: { path: ["channel"], equals: "INSTAGRAM" },
+            ...(social ? {AND:[{data:{path:["socialAccountId"],equals:social.row.externalId}}]} : {}),
           },
         }))
       )
         fail("Instagram cavab pəncərəsi açıq deyil.");
+    } else if(d.channel==='MESSENGER') {
+      if(!social)fail('Facebook Messenger qoşulmayıb.',503);
+      if(String(d.to)!==String((customer.data as Record<string,unknown>).messengerId||''))fail('Messenger alıcısı müştəriyə uyğun deyil.');
+      if(!await db.crmEntry.findFirst({where:{companyId:id,kind:'messages',status:'RECEIVED',deletedAt:null,customerId:customer.id,createdAt:{gt:new Date(Date.now()-86400000)},AND:[{data:{path:['channel'],equals:'MESSENGER'}},{data:{path:['socialAccountId'],equals:social.row.externalId}}]}}))fail('Messenger cavab pəncərəsi açıq deyil.');
     } else {
       if (!p.whatsapp?.token || !/^v\d+\.\d+$/.test(p.whatsapp.version))
         fail("WhatsApp qoşulmayıb.", 503);
@@ -158,6 +167,7 @@ export async function send(
             customerId: customer.id,
             createdAt: { gt: new Date(Date.now() - 86400000) },
             data: { path: ["channel"], equals: "WHATSAPP" },
+            ...(social ? {AND:[{data:{path:["socialAccountId"],equals:social.row.externalId}}]} : {}),
           },
         }))
       )
@@ -197,7 +207,7 @@ export async function send(
       e.id,
       Boolean(c.support),
     );
-    return { e, d };
+    return { e, d, socialAccountId:social?.row.externalId };
   });
   try {
     return await tx(async (db) => {
@@ -205,6 +215,9 @@ export async function send(
       write(c, "messages");
       await entry(db, c, itemId, "update");
       const p = config(id);
+      const linkedSocial=['INSTAGRAM','MESSENGER','WHATSAPP'].includes(String(claimed.d.channel))?await resolveSocial(db,id,claimed.d.channel as SocialChannel):null;
+      if(linkedSocial?.row.externalId!==claimed.socialAccountId)fail('Hesab bağlantısı dəyişib. Mesajı yoxlayın.',409);
+      if(linkedSocial){const cfg=socialConfig(claimed.d.channel as SocialChannel);if(claimed.d.channel==='INSTAGRAM')p.instagram={token:linkedSocial.token,accountId:linkedSocial.row.externalId,version:cfg.version,appSecret:cfg.appSecret,verifyToken:cfg.verifyToken};if(claimed.d.channel==='WHATSAPP')p.whatsapp={token:linkedSocial.token,phoneNumberId:linkedSocial.row.externalId,version:cfg.version,appSecret:cfg.appSecret,verifyToken:cfg.verifyToken};}
       let providerId = "";
       if (claimed.d.channel === "EMAIL") {
         const linked = await activeConnection(db, id, "MAIL");
@@ -288,6 +301,9 @@ export async function send(
           },
         );
         providerId = String(out.message_id || "");
+      } else if(claimed.d.channel==='MESSENGER') {
+        const out=await requestJSON('https://graph.facebook.com/'+socialConfig('MESSENGER').version+'/'+linkedSocial!.row.externalId+'/messages',linkedSocial!.token,{method:'POST',body:JSON.stringify({recipient:{id:String(claimed.d.to)},messaging_type:'RESPONSE',message:{text:String(claimed.d.body)}})});
+        providerId=String(out.message_id||'');if(!providerId)throw Error('PROVIDER_RESULT');
       } else {
         const w = p.whatsapp!;
         const r = await fetch(

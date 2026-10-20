@@ -1,4 +1,5 @@
 "use client";
+import SocialConnections from "./SocialConnections";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api, Form, Table, dt, type R } from "./shared";
@@ -1189,7 +1190,9 @@ function ConnectionPanel({ url, action, writable }: Props) {
     load();
   }, []);
   return (
-    <section className="crmPanel">
+    <>
+      <SocialConnections url={url} writable={writable}/>
+      <section className="crmPanel">
       <h2>Poçt və təqvim hesabları</h2>
       <p>
         Yalnız bu şirkətə aid hesabı bağlayın. Poçt üçün Gmail/Outlook inbox və
@@ -1301,6 +1304,7 @@ function ConnectionPanel({ url, action, writable }: Props) {
         }))}
       />
     </section>
+    </>
   );
 }
 function AssistantPanel({ meta, url, action, writable }: Props) {

@@ -42,6 +42,7 @@ export async function POST(r: Request, p: P) {
     const body = JSON.parse(raw.toString());
     return json(
       await tx(async (db) => {
+        if(await db.crmSocialConnection.findUnique({where:{companyId_channel:{companyId:id,channel:'INSTAGRAM'}}}))return {ok:true,ignored:true};
         const c = await lock(db, id);
         if (
           !["TRIAL", "ACTIVE"].includes(state(c)) ||

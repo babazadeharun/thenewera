@@ -213,11 +213,11 @@ export async function act(db: DB, c: Context, b: Record<string, unknown>) {
       where: { id: t.id },
       data: { customerId: customer.id },
     });
-    if (t.channel === "INSTAGRAM")
+    if (["INSTAGRAM","MESSENGER"].includes(t.channel))
       await db.crmEntry.update({
         where: { id: customer.id },
         data: {
-          data: { ...(customer.data as object), instagramId: t.contact },
+          data: { ...(customer.data as object), [t.channel === "INSTAGRAM" ? "instagramId" : "messengerId"]: t.contact },
           version: { increment: 1 },
         },
       });

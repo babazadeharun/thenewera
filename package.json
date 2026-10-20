@@ -11,7 +11,8 @@
     "test:workspace": "node tests/workspace-authorization.test.cjs",
     "test:company-crm": "node tests/company-crm.integration.cjs",
     "test:company-crm-v2": "node tests/company-crm-v2.integration.cjs",
-    "test:admin-sales-import": "node tests/admin-sales-import.integration.cjs"
+    "test:admin-sales-import": "node tests/admin-sales-import.integration.cjs",
+    "test:workspace-social": "node tests/workspace-social.integration.cjs"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "1.1.1",

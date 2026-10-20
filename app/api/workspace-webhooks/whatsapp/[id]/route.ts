@@ -42,6 +42,7 @@ export async function POST(r: Request, p: P) {
     const payload = JSON.parse(raw.toString());
     return json(
       await tx(async (db) => {
+        if(await db.crmSocialConnection.findUnique({where:{companyId_channel:{companyId:id,channel:'WHATSAPP'}}}))return {ok:true,ignored:true};
         const company = await lock(db, id);
         if (
           !["TRIAL", "ACTIVE"].includes(state(company)) ||

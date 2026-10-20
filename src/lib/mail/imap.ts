@@ -255,6 +255,9 @@ class ImapConnection {
         uid: number;
         flags: string[];
         messageId?: string;
+        inReplyTo?: string;
+        references?: string;
+        autoSubmitted?: string;
         from: MailAddress[];
         to: MailAddress[];
         cc: MailAddress[];
@@ -265,7 +268,7 @@ class ImapConnection {
     }
 
     const response = await this.command(
-      `UID FETCH ${uids.join(',')} (UID FLAGS INTERNALDATE RFC822.SIZE BODY.PEEK[HEADER.FIELDS (MESSAGE-ID IN-REPLY-TO REFERENCES FROM TO CC SUBJECT DATE)])`,
+      `UID FETCH ${uids.join(',')} (UID FLAGS INTERNALDATE RFC822.SIZE BODY.PEEK[HEADER.FIELDS (MESSAGE-ID IN-REPLY-TO REFERENCES AUTO-SUBMITTED FROM TO CC SUBJECT DATE)])`,
     );
 
     const raw = response.toString('utf8');
@@ -274,6 +277,9 @@ class ImapConnection {
       uid: number;
       flags: string[];
       messageId?: string;
+      inReplyTo?: string;
+      references?: string;
+      autoSubmitted?: string;
       from: MailAddress[];
       to: MailAddress[];
       cc: MailAddress[];
@@ -306,6 +312,9 @@ class ImapConnection {
         flags,
         size,
         messageId: headers['message-id'],
+        inReplyTo: headers['in-reply-to'],
+        references: headers.references,
+        autoSubmitted: headers['auto-submitted'],
         from: parseAddresses(headers.from),
         to: parseAddresses(headers.to),
         cc: parseAddresses(headers.cc),

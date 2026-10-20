@@ -1,0 +1,240 @@
+.salesCampaigns {
+  color: #213842;
+  max-width: 100%;
+  min-width: 0;
+}
+.salesCampaigns h3,
+.salesCampaigns h4 {
+  margin: 0 0 10px;
+}
+.salesCampaigns p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+.salesCampaigns button,
+.salesCampaigns input,
+.salesCampaigns select,
+.salesCampaigns textarea {
+  font: inherit;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.salesCampaigns button {
+  cursor: pointer;
+  border: 1px solid #cfdee4;
+  background: #fff;
+  color: #1c4551;
+  padding: 10px 14px;
+  border-radius: 9px;
+}
+.salesCampaigns button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.salesCampaigns input,
+.salesCampaigns select,
+.salesCampaigns textarea {
+  background: #fff;
+  color: #1d333e;
+  border: 1px solid #cbdce2;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+}
+.salesCampaigns label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 14px;
+}
+.salesCampaigns .salesPrimary {
+  background: #087e8b;
+  color: #fff;
+  border-color: #087e8b;
+}
+.campaignHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.campaignBox {
+  padding: 24px;
+  border: 1px solid #dce7ed;
+  border-radius: 16px;
+  background: #f9fcfd;
+  margin: 18px 0;
+  min-width: 0;
+}
+.campaignSmall,
+.salesCampaigns small {
+  font-size: 12px;
+  color: #526c79;
+}
+.campaignList {
+  display: grid;
+  gap: 10px;
+  margin: 20px 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+.salesCampaigns .campaignItem {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-wrap: anywhere;
+}
+.campaignItem.selected {
+  border-color: #008c99;
+  background: #eaf9fa;
+}
+.campaignActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 14px 0;
+}
+.campaignRecipient {
+  border-top: 1px solid #d8e4e9;
+  padding: 22px 0;
+}
+.campaignBadge {
+  display: inline-block;
+  background: #e6edf1;
+  border-radius: 7px;
+  padding: 5px 9px;
+  font-size: 12px;
+}
+.campaignBadge.replied {
+  background: #d6f4e9;
+}
+.campaignBadge.uncertain,
+.campaignBadge.failed {
+  background: #ffe9d6;
+}
+.campaignReview {
+  border: 1px solid #5aa9b2;
+  border-radius: 12px;
+  padding: 20px;
+  background: #eaf7f8;
+  margin: 18px 0;
+}
+.salesCampaigns .campaignCheck {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0;
+}
+.salesCampaigns .campaignCheck input {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.campaignCheck small {
+  display: block;
+  margin-top: 4px;
+}
+.campaignPreview {
+  padding: 16px;
+  background: white;
+  border: 1px solid #e1e9ed;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+.campaignPreview pre {
+  font: 14px/1.65 inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.campaignError {
+  background: #fff0ed;
+  color: #873329;
+  padding: 14px;
+  border-radius: 9px;
+}
+.campaignNotice {
+  background: #e4f6f1;
+  padding: 14px;
+  border-radius: 9px;
+}
+.campaignBackdrop {
+  position: fixed;
+  inset: 0;
+  background: #10263280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1500;
+}
+.campaignModal {
+  background: #f5f9fb;
+  border: 1px solid #d4e4ea;
+  border-radius: 18px;
+  padding: 28px;
+  width: 960px;
+  max-width: 100%;
+  max-height: 90svh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+.campaignGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+.campaignPicker {
+  max-height: 260px;
+  overflow: auto;
+  border: 1px solid #d5e4ea;
+  border-radius: 10px;
+  padding: 0 16px;
+  background: #fff;
+}
+.salesCampaigns fieldset {
+  border: 1px solid #cddfe5;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  min-width: 0;
+}
+.salesCampaigns fieldset label {
+  margin: 10px 0;
+}
+.salesCampaigns summary {
+  cursor: pointer;
+  padding: 10px 0;
+}
+.salesCampaigns button:focus-visible,
+.salesCampaigns input:focus-visible,
+.salesCampaigns textarea:focus-visible,
+.salesCampaigns select:focus-visible {
+  outline: 3px solid #36b8c8;
+  outline-offset: 2px;
+}
+@media (max-width: 650px) {
+  .campaignGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .campaignBox {
+    padding: 16px;
+  }
+  .campaignBackdrop {
+    padding: 8px;
+  }
+  .campaignModal {
+    padding: 18px;
+    max-height: 96svh;
+  }
+  .campaignActions button {
+    flex: 1 1 130px;
+  }
+  .campaignPreview {
+    padding: 12px;
+  }
+}

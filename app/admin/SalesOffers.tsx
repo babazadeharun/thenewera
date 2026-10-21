@@ -16,6 +16,7 @@ import OfferView, {
 } from "../offer/OfferView";
 import "../offer/offer.css";
 import "./sales-offers.css";
+import SalesInstagram, { InstagramChannelCard } from "./SalesInstagram";
 type Props = { deals: any[]; services: any[]; onChanged: () => Promise<void> };
 const blankService = () => ({
   title: "",
@@ -214,6 +215,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
     ) || 0;
   return (
     <section className="salesOffers">
+      <InstagramChannelCard />
       <div className="soHeading">
         <div>
           <h3>Onlayn təkliflər</h3>
@@ -599,6 +601,18 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
             </span>
           </div>
           <div className="soActions">
+            {link &&
+              ["OPEN", "CHANGES_REQUESTED", "MEETING_REQUESTED"].includes(
+                detail.state,
+              ) && (
+                <SalesInstagram
+                  offer={detail}
+                  onChanged={async () => {
+                    await onChanged();
+                    await open(detail.id);
+                  }}
+                />
+              )}
             <button
               className="salesSecondary"
               disabled={busy}
@@ -764,6 +778,13 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                       LINK_VIEWED: "Link açıldı",
                       EMAIL_ATTEMPT: "Məktub göndərişi başladıldı",
                       EMAIL_SMTP_ACCEPTED: "Məktubu SMTP qəbul etdi",
+                      INSTAGRAM_ATTEMPT: "Instagram göndərişi başladı",
+                      INSTAGRAM_API_ACCEPTED: "Instagram API mesajı qəbul etdi",
+                      INSTAGRAM_REJECTED: "Instagram göndərişi rədd etdi",
+                      INSTAGRAM_UNCERTAIN:
+                        "Instagram nəticəsi qeyri-müəyyəndir",
+                      INSTAGRAM_CANCELLED:
+                        "Instagram göndərişi başlamadan dayandı",
                       ACCEPTED: "Müştəri qəbul etdi",
                       DECLINED: "Müştəri imtina etdi",
                       CHANGES_REQUESTED: "Dəyişiklik istənildi",

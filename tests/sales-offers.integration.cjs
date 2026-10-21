@@ -27,7 +27,16 @@ process.chdir(root);
   const pg = await PGlite.create(),
     tmp = fs.mkdtempSync(path.join(os.tmpdir(), "new-era-offer-test-"));
   let baseline = fs.readFileSync("prisma/schema.prisma", "utf8");
-  for (const m of ["SalesOffer", "SalesOfferChallenge", "SalesOfferEvent"])
+  for (const m of [
+    "SalesOffer",
+    "SalesOfferChallenge",
+    "SalesOfferEvent",
+    "SalesInstagramAccount",
+    "SalesInstagramAuth",
+    "SalesInstagramThread",
+    "SalesInstagramInbound",
+    "SalesInstagramDelivery",
+  ])
     baseline = baseline.replace(
       new RegExp("model " + m + " \\{[\\s\\S]*?\\n\\}"),
       "",

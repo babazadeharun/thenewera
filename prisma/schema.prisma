@@ -1678,6 +1678,7 @@ model SalesOffer {
   deal              SalesDeal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
   challenges        SalesOfferChallenge[]
   events            SalesOfferEvent[]
+  instagramDeliveries SalesInstagramDelivery[]
 
   @@unique([groupId, version])
   @@index([dealId, createdAt])
@@ -1713,4 +1714,82 @@ model SalesOfferEvent {
   offer     SalesOffer @relation(fields: [offerId], references: [id], onDelete: Restrict)
 
   @@index([offerId, createdAt])
+}
+
+// Platform-owned Instagram sales channel; never reads a company's inbox.
+model SalesInstagramAccount {
+ configHash String
+ id String @id @default("PLATFORM")
+ externalId String
+ subjectId String
+ displayName String
+ secret String
+ revision String
+ state String
+ expiresAt DateTime
+ connectedAt DateTime @default(now())
+ lastWebhookAt DateTime?
+ errorCode String?
+ updatedAt DateTime @updatedAt
+}
+model SalesInstagramAuth {
+ configHash String
+ id String @id @default(uuid())
+ userId String
+ sessionHash String
+ stateHash String @unique
+ state String @default("PENDING")
+ secret String?
+ externalId String?
+ subjectId String?
+ displayName String?
+ tokenExpiresAt DateTime?
+ expiresAt DateTime
+ createdAt DateTime @default(now())
+ @@index([userId,createdAt])
+}
+model SalesInstagramThread {
+ id String @id @default(uuid())
+ externalId String
+ contact String
+ displayName String?
+ profileCheckedAt DateTime?
+ lastInboundAt DateTime
+ lastMessage String @db.Text
+ lastOutboundAt DateTime?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ inbound SalesInstagramInbound[]
+ deliveries SalesInstagramDelivery[]
+ @@unique([externalId,contact])
+ @@index([externalId,lastInboundAt])
+}
+model SalesInstagramInbound {
+ id String @id
+ threadId String
+ providerAt DateTime
+ receivedAt DateTime @default(now())
+ thread SalesInstagramThread @relation(fields:[threadId],references:[id],onDelete:Restrict)
+ @@index([receivedAt])
+}
+model SalesInstagramDelivery {
+ id String @id @default(uuid())
+ offerId String
+ threadId String
+ accountExternalId String
+ accountRevision String
+ contact String
+ intro String @db.Text
+ bodyHash String
+ requestKey String @unique
+ state String @default("SENDING")
+ providerMessageId String? @unique
+ errorCode String?
+ actorId String
+ createdAt DateTime @default(now())
+ finishedAt DateTime?
+ offer SalesOffer @relation(fields:[offerId],references:[id],onDelete:Restrict)
+ thread SalesInstagramThread @relation(fields:[threadId],references:[id],onDelete:Restrict)
+ @@index([offerId,createdAt])
+ @@index([state,createdAt])
 }

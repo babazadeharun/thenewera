@@ -1,3 +1,5 @@
+import PwaHead from './components-pwa/PwaHead';
+import PwaRegistration from './components-pwa/PwaRegistration';
 import type { Metadata } from 'next';
 import './globals.css';
 import './mobile-public.css';
@@ -15,5 +17,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="az"><body><SiteHeader />{children}</body></html>;
+  return <html lang="az"><head><PwaHead /></head><body><SiteHeader />{children}<PwaRegistration /></body></html>;
 }

@@ -1,0 +1,349 @@
+.salesOffers {
+  background: #fff;
+  border: 1px solid #e2e6df;
+  border-radius: 18px;
+  padding: 24px;
+  color: #1d291b;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.soHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.soHeading h3 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+.soHeading p {
+  font-size: 13px;
+  color: #687464;
+  margin: 0;
+}
+.soMessage {
+  padding: 14px;
+  background: #f1f7e9;
+  border: 1px solid #d7e9c7;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+.soMessage button {
+  border: 0;
+  background: none;
+}
+.soHint,
+.soPublish > p {
+  font-size: 12px;
+  color: #687464;
+  line-height: 1.8;
+}
+.soEditor fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.soEditor label,
+.soLink {
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.salesOffers input:not([type="checkbox"]),
+.salesOffers textarea,
+.salesOffers select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid #d8dfd3;
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 11px;
+  color: #1c291b;
+  font: inherit;
+  font-size: 13px;
+}
+.salesOffers textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+.salesOffers input:focus-visible,
+.salesOffers textarea:focus-visible,
+.salesOffers select:focus-visible,
+.salesOffers button:focus-visible {
+  outline: 2px solid #637d34;
+  outline-offset: 2px;
+}
+.soFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+}
+.soService {
+  padding: 22px;
+  background: #f7f9f5;
+  border: 1px solid #e2e8dd;
+  border-radius: 14px;
+  margin: 18px 0;
+}
+.soService .soHeading {
+  margin-bottom: 14px;
+  align-items: center;
+}
+.soService h4 {
+  margin: 0;
+}
+.soRowTotal {
+  display: block;
+  text-align: right;
+  font-size: 14px;
+}
+.soTerms {
+  margin-top: 24px;
+}
+.soTotal {
+  font-size: 23px;
+  font-weight: 700;
+  text-align: right;
+}
+.soList {
+  display: grid;
+  gap: 10px;
+}
+.soList > button {
+  padding: 18px;
+  border: 1px solid #e0e6dc;
+  border-radius: 10px;
+  background: #fbfcfa;
+  color: #21311c;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.soList > button:hover {
+  border-color: #9cb67c;
+  background: #f4f9ed;
+}
+.soList span {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.soList span:last-child {
+  text-align: right;
+}
+.soList small {
+  font-size: 12px;
+  color: #687464;
+}
+.soPaging {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: flex-end;
+  margin-top: 22px;
+  font-size: 13px;
+}
+.soDetailMeta,
+.soActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.soDetailMeta span {
+  font-size: 12px;
+  background: #f1f5ec;
+  border: 1px solid #e0e6db;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.soActions a {
+  text-decoration: none;
+}
+.soPublish {
+  border: 1px solid #cbdfb8;
+  background: #f4faed;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+.soPublish label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+.soPublish input {
+  margin-top: 5px;
+  accent-color: #6d8d3c;
+}
+.soHistory {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+.soHistory li {
+  padding: 16px 0;
+  border-top: 1px solid #e3e9df;
+  font-size: 13px;
+}
+.soHistory time {
+  float: right;
+  font-size: 11px;
+  color: #697862;
+}
+.soHistory p,
+.soResponse {
+  white-space: pre-wrap;
+}
+.soHistory small {
+  display: block;
+  color: #788370;
+  font-size: 11px;
+  margin-top: 6px;
+}
+.soStats {
+  font-size: 12px;
+  color: #607157;
+  background: #f7f9f5;
+  padding: 16px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+.soPreview {
+  margin: 22px 0;
+  border: 1px solid #53624d;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.soPreview .offerPage {
+  padding: 0 24px;
+}
+.soPreview .offerColumns {
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 24px;
+}
+.soPreview .offerHero h1 {
+  font-size: 38px;
+}
+.soPreview .offerAside {
+  position: static;
+}
+.soPreview .offerServiceHead > strong {
+  flex-basis: 100%;
+  margin-left: 56px;
+}
+.soPreview .offerTotal {
+  font-size: 30px;
+}
+.salesOffers button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+@media (max-width: 1100px) {
+  .soPreview .offerColumns {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 650px) {
+  .salesOffers {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  .soFields {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .soService {
+    padding: 16px;
+  }
+  .soHeading h3 {
+    font-size: 20px;
+  }
+  .soList > button {
+    flex-direction: column;
+  }
+  .soList span:last-child {
+    text-align: left;
+  }
+  .soHistory time {
+    float: none;
+    display: block;
+    margin-top: 4px;
+  }
+  .soPreview .offerHero h1 {
+    font-size: 30px;
+  }
+  .soPreview .offerPage {
+    padding: 0 16px;
+  }
+  .soActions {
+    align-items: stretch;
+  }
+  .soActions > button,
+  .soActions > a {
+    justify-content: center;
+    flex: 1 1 150px;
+  }
+}
+
+/* Keep the customer preview independent of the existing admin glass theme. */
+.soPreview .offerPage {
+  --wg-ink: #f6f8f4;
+  --wg-muted: #a4aaa5;
+}
+.soPreview .offerPage :is(h1, h2, h3, h4, strong, b) {
+  color: #f6f8f4 !important;
+  font-weight: 700 !important;
+}
+.soPreview .offerPage :is(p, small) {
+  color: #a4aaa5 !important;
+}
+.soPreview .offerPage .offerEyebrow,
+.soPreview .offerPage .offerServiceHead > strong {
+  color: #ceff57 !important;
+}
+.soPreview .offerPage .offerPrimary {
+  background: #ceff57 !important;
+  color: #101605 !important;
+  border-color: #ceff57 !important;
+}
+.soPreview .offerPage :is(.offerSecondary, .offerQuiet) {
+  background: transparent !important;
+  color: #e1e8df !important;
+  border-color: #ffffff60 !important;
+}
+.soPreview .offerPage h1 {
+  font-size: 38px !important;
+  line-height: 1.1 !important;
+  font-weight: 800 !important;
+}
+.soPreview .offerPage h2 {
+  font-size: 24px !important;
+}
+.soPreview .offerPage h3 {
+  font-size: 19px !important;
+}
+@media (max-width: 650px) {
+  .soPreview .offerPage h1 {
+    font-size: 30px !important;
+  }
+}

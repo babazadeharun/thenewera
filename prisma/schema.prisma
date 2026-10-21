@@ -983,6 +983,7 @@ model SalesDeal {
   service            Service?        @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   project            Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
   assignedUser       User?           @relation("SalesDealAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  onlineOffers       SalesOffer[]
   campaignRecipients SalesCampaignRecipient[]
   activities         SalesActivity[]
 
@@ -1641,4 +1642,75 @@ model CrmSocialAuth {
  updatedAt DateTime @updatedAt
  @@index([companyId,userId,createdAt])
  @@index([expiresAt])
+}
+
+// Platform sales proposals. Company Workspace data is not shared here.
+model SalesOffer {
+  id                String   @id @default(uuid())
+  groupId           String
+  version           Int
+  dealId            String?
+  state             String   @default("DRAFT")
+  recipientEmail    String
+  recipientName     String
+  company           String
+  title             String
+  introduction      String   @db.Text
+  services          Json
+  currency          String
+  discountMinor     Int      @default(0)
+  totalMinor        Int
+  terms             String   @db.Text
+  expiresAt         DateTime
+  tokenHash         String?
+  publishedAt       DateTime?
+  firstViewedAt     DateTime?
+  lastViewedAt      DateTime?
+  acceptedAt        DateTime?
+  responseAt        DateTime?
+  responseMessage   String?  @db.Text
+  mailState         String   @default("NONE")
+  mailAttemptAt     DateTime?
+  sentAt            DateTime?
+  createdByUserId   String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deal              SalesDeal? @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  challenges        SalesOfferChallenge[]
+  events            SalesOfferEvent[]
+
+  @@unique([groupId, version])
+  @@index([dealId, createdAt])
+  @@index([state, expiresAt])
+  @@index([createdAt])
+}
+
+model SalesOfferChallenge {
+  id           String   @id @default(uuid())
+  offerId      String
+  email        String
+  action       String
+  message      String   @db.Text
+  codeHash     String
+  state        String   @default("SENDING")
+  attempts     Int      @default(0)
+  expiresAt    DateTime
+  usedAt       DateTime?
+  createdAt    DateTime @default(now())
+  offer        SalesOffer @relation(fields: [offerId], references: [id], onDelete: Restrict)
+
+  @@index([offerId, createdAt])
+  @@index([email, createdAt])
+}
+
+model SalesOfferEvent {
+  id        String   @id @default(uuid())
+  offerId   String
+  type      String
+  actorId   String?
+  details   String?  @db.Text
+  createdAt DateTime @default(now())
+  offer     SalesOffer @relation(fields: [offerId], references: [id], onDelete: Restrict)
+
+  @@index([offerId, createdAt])
 }

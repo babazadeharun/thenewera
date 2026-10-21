@@ -23,7 +23,7 @@ export default function SiteHeader() {
     return () => { active = false; };
   }, [pathname]);
 
-  if (pathname === '/account' || pathname === '/projects' || pathname.startsWith('/admin') || pathname.startsWith('/app/admin') || pathname.startsWith('/promoter') || pathname === '/workspace' || pathname.startsWith('/workspace/')) return null;
+  if (pathname.startsWith('/offer/') || pathname === '/account' || pathname === '/projects' || pathname.startsWith('/admin') || pathname.startsWith('/app/admin') || pathname.startsWith('/promoter') || pathname === '/workspace' || pathname.startsWith('/workspace/')) return null;
 
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -65,5 +65,3 @@ export default function SiteHeader() {
     </header>
   );
 }
-
-

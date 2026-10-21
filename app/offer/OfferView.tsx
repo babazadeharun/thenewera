@@ -24,6 +24,7 @@ export type OfferData = {
   acceptedAt?: string | null;
   responseMessage?: string | null;
   emailHint?: string;
+  responseEnabled?: boolean;
 };
 export const offerMoney = (minor: number, currency: string) => {
   const absolute = Math.abs(minor);
@@ -148,7 +149,7 @@ export default function OfferView({
             <section className="offerSummary">
               <div className="offerSummaryTop">
                 <Layers3 size={19} />
-                <span>{offerStates[p.state] || p.state}</span>
+                <span>{p.responseEnabled === false && p.state === "OPEN" ? "Baxış üçün yayımlanıb" : offerStates[p.state] || p.state}</span>
               </div>
               <h2>Təklifin xülasəsi</h2>
               <p className="offerMuted">
@@ -191,6 +192,11 @@ export default function OfferView({
                 </div>
               ) : p.state === "DECLINED" ? (
                 <p className="offerReceipt">İmtinanız qeydə alınıb.</p>
+              ) : (actionable || preview) && p.responseEnabled === false ? (
+                <div className="offerReceipt">
+                  <h3>Təkliflə tanış olun</h3>
+                  <p>Şərtləri razılaşdırmaq, dəyişiklik və ya görüş istəmək üçün təklifi göndərən NEW ERA nümayəndəsi ilə əlaqə saxlayın.</p>
+                </div>
               ) : actionable || preview ? (
                 <>
                   <button
@@ -230,7 +236,7 @@ export default function OfferView({
                 </div>
               )}
             </section>
-            {(actionable || preview) && (
+            {(actionable || preview) && p.responseEnabled !== false && (
               <section className="offerMeeting">
                 <CalendarDays size={22} />
                 <div>

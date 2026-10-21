@@ -71,8 +71,9 @@ export function minor(value: unknown) {
   return Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
 }
 export function validateOffer(b: any) {
-  const recipientEmail = email(b.recipientEmail);
-  if (!recipientEmail) reject("Düzgün müştəri e-poçtu daxil edin.");
+  const emailInput = text(b.recipientEmail ?? "", 254);
+  const recipientEmail = emailInput ? email(emailInput) : "";
+  if (emailInput && !recipientEmail) reject("Düzgün müştəri e-poçtu daxil edin.");
   if (!["AZN", "USD", "EUR"].includes(b.currency)) reject("Valyutanı seçin.");
   if (
     !Array.isArray(b.services) ||

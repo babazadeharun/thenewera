@@ -1,6 +1,7 @@
 import { randomInt, randomUUID } from "node:crypto";
 import { Prisma, type SalesOffer } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { email } from "./campaign-policy";
 import { sendMail, smtpConfigured } from "@/lib/mail/smtp";
 import {
   validateOffer,
@@ -86,7 +87,8 @@ function publicDto(p: SalesOffer) {
     acceptedAt: p.acceptedAt,
     responseAt: p.responseAt,
     responseMessage: p.responseMessage,
-    emailHint: maskEmail(p.recipientEmail),
+    emailHint: p.recipientEmail ? maskEmail(p.recipientEmail) : undefined,
+    responseEnabled: Boolean(email(p.recipientEmail)),
   };
 }
 async function visible(
@@ -117,6 +119,8 @@ async function visible(
   return p;
 }
 function canRespond(p: SalesOffer) {
+  if (!email(p.recipientEmail))
+    reject("Bu təklif yalnız baxış üçündür. Cavabınızı təklifi göndərən NEW ERA nümayəndəsinə bildirin.", 409);
   if (!editableResponses.includes(p.state))
     reject("Bu təklif üzrə yekun cavab artıq qeydə alınıb.", 409);
 }
@@ -219,8 +223,6 @@ export async function saveOffer(userId: string, b: any) {
 export async function publishOffer(userId: string, b: any) {
   if (b.confirm !== true) reject("Yayımlanmanı ayrıca təsdiqləyin.");
   key();
-  if (!smtpConfigured())
-    reject("Müştərinin təsdiq kodu üçün e-poçt bağlantısını qurun.", 503);
   // Validate canonical URL before committing an irreversible published version.
   linkFor(String(b.id));
   return tx(async (db) => {
@@ -228,6 +230,8 @@ export async function publishOffer(userId: string, b: any) {
     const p = await db.salesOffer.findUnique({ where: { id: String(b.id) } });
     if (!p || p.state !== "DRAFT")
       reject("Yalnız qaralamanı yayımlamaq olar.", 409);
+    if (email(p.recipientEmail) && !smtpConfigured())
+      reject("Müştərinin təsdiq kodu üçün e-poçt bağlantısını qurun.", 503);
     if (b.review !== review(p))
       reject("Təklif dəyişib. Məzmunu yenidən yoxlayın.", 409);
     if (p.expiresAt.getTime() <= Date.now())
@@ -303,6 +307,8 @@ export async function sendOffer(userId: string, b: any) {
       p.expiresAt.getTime() <= Date.now()
     )
       reject("Aktiv yayımlanmış təklif seçin.", 409);
+    if (!email(p.recipientEmail))
+      reject("Bu təklifdə müştərinin e-poçtu yoxdur. Linki kopyalayıb paylaşın.", 409);
     if (["SENDING", "UNCERTAIN", "SENT"].includes(p.mailState))
       reject(
         "Bu təklif üçün göndəriş artıq başlanıb. Yenidən avtomatik göndərilmir; linki kopyalaya bilərsiniz.",
@@ -516,6 +522,8 @@ export async function confirmOfferCode(id: string, b: any) {
   const result = await tx(async (db) => {
     await lock(db);
     const p = await visible(db, id, b.token);
+    if (!email(p.recipientEmail))
+      reject("Bu təklif yalnız baxış üçündür.", 409);
     const c = await db.salesOfferChallenge.findUnique({
       where: { id: b.challengeId },
     });

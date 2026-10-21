@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { offerEditorTotals } from "@/lib/sales/offer-editor";
 import {
   Plus,
   X,
@@ -55,6 +56,10 @@ const toForm = (p: any) => ({
   expiresAt: new Date(p.expiresAt).toISOString().slice(0, 10),
 });
 export default function SalesOffers({ deals, services, onChanged }: Props) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [reviewStep, setReviewStep] = useState(2);
+  const [formError, setFormError] = useState("");
+  const [messageError, setMessageError] = useState(false);
   const [items, setItems] = useState<any[]>([]),
     [total, setTotal] = useState(0),
     [page, setPage] = useState(1),
@@ -87,6 +92,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
       setTotal(d.total);
     } catch (e: any) {
       setMessage(e.message);
+      setMessageError(true);
     } finally {
       setLoading(false);
     }
@@ -97,6 +103,8 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
   async function open(id: string) {
     setBusy(true);
     setMessage("");
+    setMessageError(false);
+    setFormError("");
     try {
       const d = await api(undefined, `?id=${encodeURIComponent(id)}`);
       setDetail({ ...d.offer, versions: d.versions });
@@ -104,14 +112,18 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
       setLink(d.link || "");
       setForm(null);
       setChecked(false);
-      setPreview(false);
+      setPreview(d.offer.state === "DRAFT");
+      setReviewStep(2);
+      return true;
     } catch (e: any) {
       setMessage(e.message);
+      setMessageError(true);
+      return false;
     } finally {
       setBusy(false);
     }
   }
-  const field = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
+  const field = (k: string, v: any) => { setFormError(""); setForm((f: any) => ({ ...f, [k]: v })); };
   const row = (i: number, k: string, v: any) =>
     setForm((f: any) => ({
       ...f,
@@ -121,8 +133,11 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
     }));
   function fresh() {
     setForm(blank());
+    setQuery("");
     setDetail(null);
     setMessage("");
+    setMessageError(false);
+    setFormError("");
     setPreview(false);
   }
   function selectDeal(id: string) {
@@ -132,15 +147,19 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
       dealId: id,
       recipientName:
         d?.contactName ||
-        [d?.client?.firstName, d?.client?.lastName].filter(Boolean).join(" "),
+        [d?.client?.firstName, d?.client?.lastName].filter(Boolean).join(" ") || d?.title || "",
       recipientEmail: d?.email || d?.client?.email || "",
       company: d?.client?.company || "",
     }));
   }
   async function save(e: React.FormEvent) {
     e.preventDefault();
+    const intent = (e.nativeEvent as SubmitEvent).submitter?.getAttribute("value") || "preview";
+    if (totals.error) { setFormError(totals.error); return; }
     setBusy(true);
     setMessage("");
+    setMessageError(false);
+    setFormError("");
     try {
       const d = await api({
         ...form,
@@ -151,13 +170,20 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
           billing: form.billing,
         })),
       });
-      await open(d.offer.id);
+      if (intent === "draft") {
+        setForm(toForm(d.offer));
+        setMessage("Qaralama saxlanıldı. Hazır olduqda “Təklifə bax” ilə davam edin.");
+      } else {
+        if (!await open(d.offer.id)) throw Error("Qaralama saxlanıldı, amma önbaxış yüklənmədi. Siyahıdan yenidən açın.");
+        setReviewStep(2);
+        setPreview(true);
+        setMessage("Müştərinin görəcəyi təklifi yoxlayın, sonra yayımlamaya keçin.");
+      }
       await load();
-      setMessage(
-        "Qaralama saxlanıldı. Yayımlamazdan əvvəl önbaxışda məzmunu yoxlayın.",
-      );
     } catch (e: any) {
+      setFormError(e.message);
       setMessage(e.message);
+      setMessageError(true);
     } finally {
       setBusy(false);
     }
@@ -177,6 +203,8 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
       return;
     setBusy(true);
     setMessage("");
+    setMessageError(false);
+    setFormError("");
     try {
       await api({ action, id: detail.id, review, confirm: true });
       await open(detail.id);
@@ -184,37 +212,39 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
       await onChanged();
       setMessage(
         action === "publish"
-          ? "Təklif yayımlandı. Linki paylaşa və ya e-poçtla göndərə bilərsiniz."
+          ? detail.recipientEmail ? "Təklif yayımlandı. Linki paylaşa və ya e-poçtla göndərə bilərsiniz." : "Təklif yayımlandı. Baxış linkini kopyalayıb müştəriyə paylaşın."
           : action === "send"
             ? "Məktubu SMTP qəbul etdi. Bu, inbox-a çatdırılma təsdiqi deyil."
             : "Link bağlandı.",
       );
     } catch (e: any) {
       setMessage(e.message);
+      setMessageError(true);
     } finally {
       setBusy(false);
     }
   }
   async function copy() {
+    setMessageError(false);
     try {
       await navigator.clipboard.writeText(link);
       setMessage(
         "Xüsusi təklif linki kopyalandı. Yalnız müştəri ilə paylaşın.",
       );
     } catch {
+      setMessageError(true);
       setMessage(
         "Kopyalama alınmadı. Aşağıdakı linki əl ilə seçib kopyalayın.",
       );
     }
   }
-  const subtotal =
-    form?.services.reduce(
-      (sum: number, s: any) =>
-        sum + (Number(s.unitPrice) || 0) * (Number(s.quantity) || 0),
-      0,
-    ) || 0;
+  const totals = form ? offerEditorTotals(form.services, form.discount) : { subtotalMinor: 0, discountMinor: 0, totalMinor: 0, error: "" };
+  const currentStep = form ? 1 : detail?.state === "DRAFT" ? reviewStep : detail ? 3 : 0;
+  useEffect(() => {
+    if (currentStep > 0) sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [currentStep, detail?.id]);
   return (
-    <section className="salesOffers">
+    <section ref={sectionRef} className="salesOffers">
       <InstagramChannelCard />
       <div className="soHeading">
         <div>
@@ -227,8 +257,9 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
           <Plus size={16} /> Yeni təklif
         </button>
       </div>
+      {currentStep > 0 && <ol className="soSteps" aria-label="Təklifin hazırlanma mərhələləri">{["Müştəri və xidmətlər", "Təklifə bax", "Yayımla və linki al"].map((label, i) => <li key={label} className={currentStep === i + 1 ? "active" : currentStep > i + 1 ? "done" : ""} aria-current={currentStep === i + 1 ? "step" : undefined}><b>{i + 1}</b><span>{label}</span></li>)}</ol>}
       {message && (
-        <div className="soMessage" role="status">
+        <div className={messageError ? "soMessage soError" : "soMessage"} role={messageError ? "alert" : "status"}>
           {message}
           <button onClick={() => setMessage("")} aria-label="Bildirişi bağla">
             <X size={16} />
@@ -236,7 +267,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
         </div>
       )}
       {form ? (
-        <form className="soEditor" onSubmit={save}>
+        <form className="soEditor" onSubmit={save} onInvalidCapture={() => setFormError("Tələb olunan sahələri və daxil etdiyiniz qiymətləri yoxlayın.")}>
           <div className="soHeading">
             <h3>
               {form.id ? "Qaralamanı redaktə et" : "Yeni təklif / yeni versiya"}
@@ -300,14 +331,14 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                 />
               </label>
               <label>
-                Müştərinin e-poçtu
+                Müştərinin e-poçtu (istəyə bağlı)
                 <input
-                  required
                   type="email"
                   maxLength={254}
                   value={form.recipientEmail}
                   onChange={(e) => field("recipientEmail", e.target.value)}
                 />
+                <small>E-poçt yoxdursa, təklif linki yalnız baxış üçün olacaq. Qəbul, imtina, dəyişiklik və görüş istəyi üçün e-poçt kodu tələb olunur.</small>
               </label>
               <label>
                 Şirkət
@@ -378,6 +409,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                   required
                   type="number"
                   min="0"
+                  max={totals.subtotalMinor === null ? undefined : totals.subtotalMinor / 100}
                   step="0.01"
                   value={form.discount}
                   onChange={(e) => field("discount", e.target.value)}
@@ -545,20 +577,23 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
             </label>
             <p className="soTotal">
               Yekun:{" "}
-              {offerMoney(
-                Math.round((subtotal - (Number(form.discount) || 0)) * 100),
-                form.currency,
-              )}
+              {totals.totalMinor === null ? "Qiymətləri yoxlayın" : offerMoney(totals.totalMinor, form.currency)}
               {form.billing === "MONTHLY" ? " / ay" : ""}
             </p>
             <p className="soHint">
               Hesablama serverdə yenidən yoxlanır. Aylıq və birdəfəlik xidmətlər
               üçün ayrı təkliflər hazırlayın.
             </p>
-            <button className="salesPrimary">
-              <FileText size={16} />
-              {busy ? "Saxlanılır…" : "Qaralamanı saxla"}
-            </button>
+            {(totals.error || formError) && <p className="soError" role="alert">{totals.error || formError}</p>}
+            <div className="soActions">
+              <button type="submit" name="intent" value="preview" className="salesPrimary" disabled={busy || !!totals.error}>
+                {busy ? "Saxlanılır…" : "Təklifə bax"} <ArrowLeft size={16} style={{transform:"rotate(180deg)"}}/>
+              </button>
+              <button type="submit" name="intent" value="draft" className="salesSecondary" disabled={busy || !!totals.error}>
+                <FileText size={16}/> Qaralamanı saxla
+              </button>
+            </div>
+            <p className="soHint">“Təklifə bax” məlumatları qaralamada saxlayıb müştəri görünüşünü açır. Bu mərhələdə link yayımlanmır və mesaj göndərilmir.</p>
           </fieldset>
         </form>
       ) : detail ? (
@@ -567,7 +602,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
             <div>
               <h3>{detail.title}</h3>
               <p>
-                {detail.recipientName} · {detail.recipientEmail} · v
+                {detail.recipientName} · {detail.recipientEmail || "Yalnız baxış üçün link"} · v
                 {detail.version}
               </p>
             </div>
@@ -582,7 +617,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
             </button>
           </div>
           <div className="soDetailMeta">
-            <span>{offerStates[detail.state]}</span>
+            <span>{!detail.recipientEmail && detail.state === "OPEN" ? "Baxış üçün yayımlanıb" : offerStates[detail.state]}</span>
             <span>{offerMoney(detail.totalMinor, detail.currency)}</span>
             <span>Son tarix: {offerDate(detail.expiresAt)}</span>
             <span>
@@ -620,12 +655,14 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
             >
               Yenilə
             </button>
-            <button
+            {detail.state !== "DRAFT" && <button
               className="salesSecondary"
               onClick={() => setPreview(!preview)}
             >
               {preview ? "Önbaxışı bağla" : "Müştəri görünüşü"}
-            </button>
+            </button>}
+            {detail.state === "DRAFT" && reviewStep === 2 && <button className="salesPrimary" disabled={busy} onClick={() => { setReviewStep(3); setPreview(false); setChecked(false); }}>Yayımlamaya keç</button>}
+            {detail.state === "DRAFT" && reviewStep === 3 && <button className="salesSecondary" disabled={busy} onClick={() => { setReviewStep(2); setPreview(true); setChecked(false); }}>Önbaxışa qayıt</button>}
             {detail.state === "DRAFT" ? (
               <button
                 className="salesSecondary"
@@ -666,7 +703,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                 </a>
                 {["OPEN", "CHANGES_REQUESTED", "MEETING_REQUESTED"].includes(
                   detail.state,
-                ) && (
+                ) && !!detail.recipientEmail && (
                   <button
                     className="salesPrimary"
                     disabled={
@@ -698,8 +735,10 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
               <input readOnly value={link} onFocus={(e) => e.target.select()} />
             </label>
           )}
-          {detail.state === "DRAFT" && (
+          {detail.state === "DRAFT" && reviewStep === 3 && (
             <div className="soPublish">
+              <h4>Təklifi yayımlamağa hazırsınız?</h4>
+              <p>{detail.recipientEmail ? "Müştəri linkə qeydiyyatsız baxa, cavabını e-poçt kodu ilə təsdiqləyə bilər." : "E-poçt yoxdur: müştəri linkə baxa bilər. Onlayn qəbul və digər cavab əməliyyatları bağlı olacaq. Cavabı Instagram və ya digər əlaqə kanalından alın."}</p>
               <label>
                 <input
                   type="checkbox"
@@ -714,7 +753,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                 disabled={busy || !checked}
                 onClick={() => control("publish")}
               >
-                Təsdiqlə və link yarat
+                Yayımla və linki al
               </button>
               <p>
                 Yayımlamaq məktub göndərmir. Göndəriş ayrıca təsdiq tələb edir.
@@ -723,7 +762,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
           )}
           {preview && (
             <div className="soPreview">
-              <OfferView offer={detail} preview />
+              <OfferView offer={{...detail, responseEnabled: !!detail.recipientEmail}} preview />
             </div>
           )}
           <div className="soStats">
@@ -740,8 +779,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                 : "yoxdur"}
             </p>
             <p>
-              Linkin açılması insanın oxuduğunu sübut etmir. Qəbul yalnız e-poçt
-              kodu ilə qeydə alınır.
+              Linkin açılması insanın oxuduğunu sübut etmir. {detail.recipientEmail ? "Qəbul yalnız e-poçt kodu ilə qeydə alınır." : "Bu link yalnız baxış üçündür; onlayn müştəri cavabları bağlıdır."}
             </p>
             {detail.responseMessage && (
               <p className="soResponse">
@@ -804,8 +842,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
       ) : (
         <>
           <p className="soHint">
-            Qaralama → önbaxış → təsdiqlə və yayımla → linki paylaş / e-poçtla
-            göndər → kodla müştəri cavabı. Müştəridən qeydiyyat tələb olunmur.
+            Müştəri və xidmətlər → təklifə bax → yayımla və linki al. E-poçtu olmayan müştəriyə də linki Instagram və ya başqa kanaldan paylaşa bilərsiniz. Onlayn müştəri cavabları e-poçt kodu ilə təsdiqlənir.
           </p>
           {loading ? (
             <p>Yüklənir…</p>
@@ -816,13 +853,13 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
                   <span>
                     <strong>{p.title}</strong>
                     <small>
-                      {p.company || p.recipientName} · {p.recipientEmail}
+                      {p.company || p.recipientName} · {p.recipientEmail || "Yalnız baxış üçün link"}
                     </small>
                   </span>
                   <span>
                     <b>{offerMoney(p.totalMinor, p.currency)}</b>
                     <small>
-                      v{p.version} · {offerStates[p.state]}
+                      v{p.version} · {!p.recipientEmail && p.state === "OPEN" ? "Baxış üçün yayımlanıb" : offerStates[p.state]}
                     </small>
                   </span>
                 </button>

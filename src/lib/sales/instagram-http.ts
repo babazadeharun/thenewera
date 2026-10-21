@@ -7,7 +7,6 @@ export async function instagramAdmin() {
   if (
     !u ||
     !["ADMIN", "SUPER_ADMIN"].includes(u.role) ||
-    !u.verifiedAt ||
     ["SUSPENDED", "ARCHIVED"].includes(u.accountStatus)
   )
     reject("Admin girişi tələb olunur.", 403);

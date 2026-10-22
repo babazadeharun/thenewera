@@ -1,3 +1,4 @@
+import { getCurrentUser } from '@/lib/auth';
 import Link from 'next/link';
 import './promoter-apply-reference.css';
 import { ArrowLeft } from 'lucide-react';
@@ -10,6 +11,8 @@ export default async function PromoterApplyPage({ params, searchParams }: { para
   const query = await searchParams;
   const event = await prisma.event.findUnique({ where: { slug }, select: { id: true, slug: true, name: true, artist: true, status: true, startsAt: true } });
   if (!event || event.status !== 'APPLICATION_OPEN') notFound();
+  const actor = await getCurrentUser();
+  const profile = actor?.role === 'PROMOTER' ? await prisma.promoter.findUnique({where:{userId:actor.id},select:{firstName:true,lastName:true,email:true,phone:true}}) : null;
   return (
     <main className="promoterApplyPage promoterApplyReference">
       <div className="promoterApplyContainer">
@@ -19,7 +22,7 @@ export default async function PromoterApplyPage({ params, searchParams }: { para
           <h1>{event.name}</h1>
           <p>{event.artist ? `${event.artist} · ` : ''}Bu tədbir üçün promoter kimi əməkdaşlıq müraciəti göndər.</p>
         </div>
-        <PromoterApplyForm eventSlug={event.slug} eventName={event.name} verified={query.verified === '1'} />
+        <PromoterApplyForm profile={profile} eventSlug={event.slug} eventName={event.name} verified={query.verified === '1'} />
       </div>
     </main>
   );

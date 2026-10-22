@@ -1,0 +1,38 @@
+name: NEW ERA background jobs
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: new-era-background-jobs
+  cancel-in-progress: false
+jobs:
+  run:
+    if: vars.NEW_ERA_SCHEDULER_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    env:
+      SITE_URL: ${{ secrets.NEW_ERA_SITE_URL }}
+      SCHEDULER_SECRET: ${{ secrets.NEW_ERA_CRON_SECRET }}
+    steps:
+      - name: Invoke authenticated workers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$SITE_URL" || -z "$SCHEDULER_SECRET" || "$SITE_URL" != https://* ]]; then
+            echo 'Set NEW_ERA_SITE_URL (HTTPS origin) and NEW_ERA_CRON_SECRET.'
+            exit 1
+          fi
+          failed=0
+          for endpoint in /api/workspace-jobs /api/cron/sales-campaigns /api/admin/notifications/process /api/cron/mail-sent; do
+            echo "Processing $endpoint"
+            if ! curl --fail --silent --show-error --max-time 65 \
+              --header "Authorization: Bearer $SCHEDULER_SECRET" \
+              "${SITE_URL%/}$endpoint" > /dev/null; then
+              echo "Worker failed: $endpoint"
+              failed=1
+            fi
+          done
+          exit "$failed"

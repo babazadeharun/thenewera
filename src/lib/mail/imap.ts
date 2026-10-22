@@ -41,6 +41,7 @@ export function mailConfigured() {
 }
 
 function quote(value: string) {
+  if (/[\r\n\x00]/.test(value)) throw new Error('MAIL_IMAP_INVALID_ARGUMENT');
   return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
 
@@ -79,6 +80,8 @@ class ImapConnection {
         })
       : net.connect({ host: host(), port: port() });
 
+    // Late socket errors during LOGOUT must not become unhandled process errors.
+    this.socket.on('error', () => undefined);
     this.socket.setTimeout(timeoutMs());
 
     await this.waitForGreeting();
@@ -97,6 +100,8 @@ class ImapConnection {
         socket.off('data', onData);
         socket.off('error', onError);
         socket.off('timeout', onTimeout);
+        socket.off('end', onClose);
+        socket.off('close', onClose);
       };
 
       const onData = (chunk: Buffer) => {
@@ -115,6 +120,10 @@ class ImapConnection {
         reject(new Error('MAIL_IMAP_TIMEOUT'));
       };
 
+      const onClose = () => { cleanup(); reject(new Error('MAIL_IMAP_CONNECTION_CLOSED')); };
+
+      socket.once('end', onClose);
+      socket.once('close', onClose);
       socket.once('data', onData);
       socket.once('error', onError);
       socket.once('timeout', onTimeout);
@@ -187,6 +196,25 @@ class ImapConnection {
     }
 
     return response;
+  }
+
+  async append(folder: string, raw: Buffer) {
+    if (!this.socket || this.socket.destroyed) throw new Error('MAIL_IMAP_NOT_CONNECTED');
+    const tag = `A${String(++this.tag).padStart(4, '0')}`;
+    this.socket.write(`${tag} APPEND ${quote(encodeModifiedUtf7(folder))} (\\Seen) {${raw.length}}\r\n`);
+    // Synchronizing literal: wait for the server's continuation before sending bytes.
+    while (true) {
+      const end = this.buffer.indexOf('\r\n');
+      if (end < 0) { await this.readChunk(); continue; }
+      const line = this.buffer.subarray(0, end).toString('utf8');
+      this.buffer = this.buffer.subarray(end + 2);
+      if (line.startsWith('+')) break;
+      if (line.startsWith(tag + ' ')) throw new Error('MAIL_SENT_COPY_REJECTED');
+    }
+    this.socket.write(raw);
+    this.socket.write('\r\n');
+    const response = (await this.readUntilTag(tag)).toString('utf8');
+    if (!new RegExp(`(?:^|\\r\\n)${tag} OK\\b`, 'i').test(response)) throw new Error('MAIL_SENT_COPY_REJECTED');
   }
 
   async logout() {
@@ -772,5 +800,17 @@ export async function getUnreadCount(
   return withImap(async (c) => {
     await c.select(folder);
     return (await c.search('UNSEEN')).length;
+  });
+}
+
+/** Check Message-ID before APPEND, including retries after an uncertain acknowledgement. */
+export async function appendSentCopy(raw: Buffer, messageId: string) {
+  if (!/^<[^<>\r\n]{1,500}>$/.test(messageId)) throw new Error('MAIL_MESSAGE_ID_INVALID');
+  return withImap(async c => {
+    const folder = mailboxFromKey('sent');
+    await c.select(folder);
+    if ((await c.search(`HEADER Message-ID ${quote(messageId)}`)).length) return 'EXISTS' as const;
+    await c.append(folder, raw);
+    return 'APPENDED' as const;
   });
 }

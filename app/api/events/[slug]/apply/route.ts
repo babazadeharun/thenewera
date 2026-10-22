@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { hashPassword } from '@/lib/auth';
+import { getCurrentUser, hashPassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { looksLikeEmail, maskIdentifier, sendVerificationCode, verificationErrorMessage } from '@/lib/verification';
 
@@ -10,6 +10,8 @@ const nullable = (v: unknown) => text(v) || null;
 export async function POST(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params;
+    const origin = request.headers.get('origin');
+    if (origin && origin !== new URL(request.url).origin) return NextResponse.json({error:'Sorğu mənbəyi uyğun deyil.'},{status:403});
     const body = await request.json();
     const event = await prisma.event.findUnique({ where: { slug } });
     if (!event || event.status !== 'APPLICATION_OPEN') {
@@ -22,7 +24,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
     const phone = text(body.phone);
     const password = String(body.password ?? '');
 
-    if (!firstName || !lastName || !email || !phone || password.length < 8) {
+    if (!firstName || !lastName || !email || !phone) {
       return NextResponse.json({ error: 'Ad, soyad, e-poçt, telefon və minimum 8 simvolluq şifrə tələb olunur.' }, { status: 400 });
     }
     if (!looksLikeEmail(email)) return NextResponse.json({ error: 'Düzgün e-poçt ünvanı daxil edin.' }, { status: 400 });
@@ -45,6 +47,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
         return NextResponse.json({ error: 'Bu e-poçt artıq New Era hesabına bağlıdır. Mövcud hesabdan istifadə edin.' }, { status: 409 });
       }
 
+      // Existing accounts must use their authenticated promoter session.
+      const actor = await getCurrentUser();
+      if (!actor || actor.id !== existing.id || actor.role !== 'PROMOTER') {
+        return NextResponse.json({ error: 'Bu e-poçtla müraciət üçün mövcud promouter hesabınıza daxil olun.', loginRequired: true }, { status: 401 });
+      }
+      if (!actor.verifiedAt || existing.promoter.status !== 'ACTIVE' || ['SUSPENDED', 'ARCHIVED'].includes(actor.accountStatus)) {
+        return NextResponse.json({ error: 'Hesabınız müraciət üçün aktiv və təsdiqlənmiş olmalıdır.' }, { status: 403 });
+      }
       const existingApplication = await prisma.promoterApplication.findUnique({
         where: { promoterId_eventId: { promoterId: existing.promoter.id, eventId: event.id } },
       });
@@ -67,6 +77,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ slu
 
       return NextResponse.json({ ok: true, applicationSubmitted: true }, { status: 201 });
     }
+
+    if (password.length < 8 || password.length > 500) return NextResponse.json({error:'Şifrə 8–500 simvol arasında olmalıdır.'},{status:400});
 
     const user = await prisma.user.create({
       data: { email, phone, passwordHash: hashPassword(password), role: 'PROMOTER' },

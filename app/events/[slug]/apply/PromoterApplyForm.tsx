@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -7,11 +8,12 @@ const socials = ['INSTAGRAM','TIKTOK','FACEBOOK','YOUTUBE','TELEGRAM','OTHER'];
 type Social = { platform: string; username: string; profileUrl: string; followerCount: string; notes: string };
 const blank = (): Social => ({ platform: 'INSTAGRAM', username: '', profileUrl: '', followerCount: '', notes: '' });
 
-export default function PromoterApplyForm({ eventSlug, eventName, verified = false }: { eventSlug: string; eventName: string; verified?: boolean }) {
+export default function PromoterApplyForm({ eventSlug, eventName, verified = false, profile }: { eventSlug: string; eventName: string; verified?: boolean; profile?: {firstName:string;lastName:string;email:string|null;phone:string|null}|null }) {
   const router = useRouter();
-  const [form, setForm] = useState({ firstName:'', lastName:'', email:'', phone:'', city:'', address:'', password:'', experience:'', previousEventPromotion:'', salesExperience:'', approximateAudience:'', notes:'' });
+  const [form, setForm] = useState({ firstName:profile?.firstName||'', lastName:profile?.lastName||'', email:profile?.email||'', phone:profile?.phone||'', city:'', address:'', password:'', experience:'', previousEventPromotion:'', salesExperience:'', approximateAudience:'', notes:'' });
   const [socialAccounts, setSocialAccounts] = useState<Social[]>([blank()]);
   const [error, setError] = useState('');
+  const [loginRequired,setLoginRequired] = useState(false);
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(verified);
@@ -24,6 +26,7 @@ export default function PromoterApplyForm({ eventSlug, eventName, verified = fal
       const res = await fetch(`/api/events/${eventSlug}/apply`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ...form, socialAccounts }) });
       const data = await res.json();
       if (!res.ok) {
+        setLoginRequired(Boolean(data.loginRequired));
         if (res.status === 409 && data.code === 'APPLICATION_EXISTS') {
           setInfo(data.error || 'Bu tədbir üçün müraciətiniz artıq mövcuddur.');
           return;
@@ -49,7 +52,7 @@ export default function PromoterApplyForm({ eventSlug, eventName, verified = fal
       <label>Telefon *<input value={form.phone} onChange={e=>update('phone',e.target.value)} required /></label>
       <label>Şəhər<input value={form.city} onChange={e=>update('city',e.target.value)} /></label>
       <label>Ünvan<input value={form.address} onChange={e=>update('address',e.target.value)} /></label>
-      <label className="full">Hesab şifrəsi *<input type="password" minLength={8} value={form.password} onChange={e=>update('password',e.target.value)} required /><small className="fieldHint">Hesab yalnız müraciət təsdiqləndikdən sonra aktiv olacaq.</small></label>
+      {!profile && <label className="full">Hesab şifrəsi *<input type="password" minLength={8} value={form.password} onChange={e=>update('password',e.target.value)} required /><small className="fieldHint">Hesab yalnız müraciət təsdiqləndikdən sonra aktiv olacaq.</small></label>}
     </div></section>
     <section className="promoterFormSection"><div className="promoterFormTitle"><span>02</span><div><strong>Promotion information</strong><small>Promoter təcrübən və auditoriyan</small></div></div><div className="promoterFormGrid">
       <label className="full">Promoter təcrübəsi<textarea value={form.experience} onChange={e=>update('experience',e.target.value)} /></label>
@@ -61,7 +64,7 @@ export default function PromoterApplyForm({ eventSlug, eventName, verified = fal
     <section className="promoterFormSection"><div className="promoterFormTitle"><span>03</span><div><strong>Social media</strong><small>Promotion etdiyin platformalar</small></div></div>
       <div className="socialForms">{socialAccounts.map((s,i)=><div className="socialForm" key={i}><select value={s.platform} onChange={e=>updateSocial(i,'platform',e.target.value)}>{socials.map(x=><option key={x} value={x}>{x[0]+x.slice(1).toLowerCase()}</option>)}</select><input placeholder="@username" value={s.username} onChange={e=>updateSocial(i,'username',e.target.value)} /><input placeholder="Profil URL" value={s.profileUrl} onChange={e=>updateSocial(i,'profileUrl',e.target.value)} /><input type="number" min="0" placeholder="Followers" value={s.followerCount} onChange={e=>updateSocial(i,'followerCount',e.target.value)} /><input placeholder="Qeyd" value={s.notes} onChange={e=>updateSocial(i,'notes',e.target.value)} />{socialAccounts.length>1&&<button type="button" onClick={()=>setSocialAccounts(a=>a.filter((_,x)=>x!==i))}>×</button>}</div>)}<button type="button" className="addSocial" onClick={()=>setSocialAccounts(a=>[...a,blank()])}>+ Platform əlavə et</button></div>
     </section>
-    {error && <div className="promoterFormError">{error}</div>}
+    {error && <div className="promoterFormError">{error}{loginRequired && <p><Link href="/login">Mövcud hesabıma daxil ol</Link></p>}</div>}
     <div className="promoterSubmitRow"><span>Göndərməklə məlumatlarının New Era tərəfindən promoter müraciətinin qiymətləndirilməsi üçün işlənməsinə razılıq verirsən.</span><button disabled={loading} className="eventPrimaryCta" type="submit">{loading ? 'Göndərilir…' : 'Müraciəti göndər'} <span>→</span></button></div>
   </form>;
 }

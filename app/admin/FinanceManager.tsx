@@ -94,7 +94,7 @@ function InvoiceModal({data,saving,onClose,onSave}:{data:AnyRecord;saving:boolea
  </div><div className="financeModalActions"><button className="financeGhost" onClick={onClose}>Ləğv et</button><button className="financePrimary" disabled={saving} onClick={()=>onSave('/api/admin/finance/invoices',f)}>{saving?'Yaradılır...':'Faktura yarat'}</button></div></Modal>;
 }
 function PaymentModal({data,saving,onClose,onSave}:{data:AnyRecord;saving:boolean;onClose:()=>void;onSave:(u:string,b:AnyRecord)=>void}) {
- const [f,setF]=useState<any>({date:new Date().toISOString().slice(0,10),method:'BANK_TRANSFER'});
+ const [f,setF]=useState<any>(()=>({idempotencyKey:crypto.randomUUID(),date:new Date().toISOString().slice(0,10),method:'BANK_TRANSFER'}));
  const choose=(id:string)=>{const i=(data.invoices||[]).find((x:any)=>x.id===id);setF({...f,invoiceId:id,amount:i?Math.max(0,Number(i.total)-Number(i.paidAmount)):''})};
  return <Modal title="Ödəniş qeyd et" onClose={onClose}><div className="financeFormGrid">
   <Field label="Faktura"><select value={f.invoiceId||''} onChange={e=>choose(e.target.value)}><option value="">Seçin</option>{(data.invoices||[]).filter((i:any)=>Number(i.total)>Number(i.paidAmount)).map((i:any)=><option key={i.id} value={i.id}>{i.number} · {money(Number(i.total)-Number(i.paidAmount))}</option>)}</select></Field>

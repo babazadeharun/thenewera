@@ -3,6 +3,9 @@ import './events-reference.css';
 import { CalendarDays, MapPin, ArrowUpRight, Ticket, Sparkles } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const date=(v:Date)=>new Intl.DateTimeFormat('az-AZ',{day:'2-digit',month:'short',year:'numeric'}).format(v);
 const time=(v:Date)=>new Intl.DateTimeFormat('az-AZ',{hour:'2-digit',minute:'2-digit'}).format(v);
 const money=(v:unknown)=>`${new Intl.NumberFormat('az-AZ',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(v))} AZN`;

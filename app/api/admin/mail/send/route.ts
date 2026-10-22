@@ -29,8 +29,9 @@ export async function POST(req:NextRequest){
     if(draftId && attachments.length===0){const draftAttachments=await getDraftAttachments(user.id,draftId);for(const a of draftAttachments){total+=a.sizeBytes;if(total>maxAttachmentBytes())break;attachments.push({filename:safeName(a.filename),content:Buffer.from(a.data),contentType:a.mimeType});}}
     const forwardUid=Number(form.get('forwardUid')||0); const forwardFolder=String(form.get('forwardFolder')||''); if(forwardUid>0&&forwardFolder){const original=await getMessage(mailboxFromKey(forwardFolder),forwardUid,false);for(const a of original.attachments){total+=a.size;if(total>maxAttachmentBytes())return NextResponse.json({error:`Faylların ümumi ölçüsü ${Math.round(maxAttachmentBytes()/1024/1024)} MB-dan çox ola bilməz.`},{status:400});attachments.push({filename:safeName(a.filename),content:a.content,contentType:a.mimeType});}}
     const result=await sendMail({to,cc,bcc,subject,text,html,attachments,inReplyTo:String(form.get('inReplyTo')||'').trim()||undefined,references:String(form.get('references')||'').trim()||undefined});
+    if(!result.accepted?.length) return NextResponse.json({error:'SMTP server heç bir alıcını qəbul etmədi.'},{status:502});
     if(draftId)await deleteDraft(user.id,draftId).catch(()=>undefined);
     if(clientId){await recordEmailCommunication({messageId:result.messageId||`local:${result.response||Date.now()}`,clientId,direction:'OUTBOUND',subject:subject||null,fromAddress:process.env.MAIL_FROM_ADDRESS||process.env.MAIL_SMTP_USER||'',toAddress:to.join(', '),sentAt:new Date()}).catch(()=>undefined);}
-    return NextResponse.json({ok:true,messageId:result.messageId||null});
+    return NextResponse.json({ok:true,messageId:result.messageId||null,sentCopyWarning:result.sentCopyWarning});
   }catch(e){console.error('mail send',e instanceof Error?e.message:'unknown');return NextResponse.json({error:friendlyMailError(e,'Email göndərilmədi. Mail server bağlantısını yoxlayın.')},{status:502});}
 }

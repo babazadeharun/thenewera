@@ -1,9 +1,12 @@
 {
   "crons": [
-    { "path": "/api/cron/events-sync", "schedule": "0 3 * * *" },
-    { "path": "/api/workspace-jobs", "schedule": "0 4 * * *" },
-    { "path": "/api/cron/sales-campaigns", "schedule": "15 4 * * *" },
-    { "path": "/api/admin/notifications/process", "schedule": "30 4 * * *" },
-    { "path": "/api/cron/mail-sent", "schedule": "45 4 * * *" }
+    {
+      "path": "/api/cron/events-sync",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/workspace-jobs",
+      "schedule": "*/5 * * * *"
+    }
   ]
 }

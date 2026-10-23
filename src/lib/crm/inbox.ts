@@ -9,7 +9,7 @@ import {
   type Context,
   type DB,
 } from "./db";
-import { fail, required, str } from "./policy";
+import { fail, required, str, grant } from "./policy";
 import { prefs } from "./preferences";
 export async function thread(db: DB, c: Context, messageId: string) {
   const m = await entry(db, c, messageId);
@@ -173,6 +173,7 @@ export async function act(db: DB, c: Context, b: Record<string, unknown>) {
   } else if (op === "assign") {
     const target = await seat(db, required(b.assigneeId), c.company.id),
       scope = permit(c, "messages", "update");
+    if (grant(target.role, "messages", "read", target.grants) === "NONE" || grant(target.role, "messages", "update", target.grants) === "NONE") fail("Əməkdaşın mesajlara cavab icazəsi yoxdur.", 403);
     if (
       (scope === "OWN" && target.id !== c.member?.id) ||
       (scope === "TEAM" &&
@@ -180,6 +181,16 @@ export async function act(db: DB, c: Context, b: Record<string, unknown>) {
         (!c.member?.team || target.team !== c.member.team))
     )
       fail("Təyinetmə əhatəsi uyğun deyil.", 403);
+    if (t.customerId) {
+      const customer = await entry(db, c, t.customerId, "update");
+      for (const kind of ["customers", "sales"]) {
+        const resourceScope = permit(c, kind, "update");
+        if ((resourceScope === "OWN" && target.id !== c.member?.id) || (resourceScope === "TEAM" && target.id !== c.member?.id && (!c.member?.team || target.team !== c.member.team))) fail("CRM təyinatı əhatəsi uyğun deyil.", 403);
+      }
+      await db.crmEntry.update({ where: { id: customer.id }, data: { assigneeId: target.id, version: { increment: 1 } } });
+      const visibleSales = await where(db, c, "sales", "update");
+      await db.crmEntry.updateMany({ where: { AND: [visibleSales, { customerId: customer.id, status: "OPEN" }] }, data: { assigneeId: target.id, version: { increment: 1 } } });
+    }
     await db.crmThread.update({
       where: { id: t.id },
       data: { assigneeId: target.id },
@@ -245,7 +256,7 @@ export async function act(db: DB, c: Context, b: Record<string, unknown>) {
     c.company.id,
     c.user,
     "INBOX_" + op.toUpperCase(),
-    {},
+    op === "assign" ? { assigneeId: required(b.assigneeId) } : op === "link" ? { customerId: required(b.customerId) } : {},
     m.id,
     Boolean(c.support),
   );

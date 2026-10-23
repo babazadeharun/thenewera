@@ -1,3 +1,4 @@
+import { inboundLead } from "./lead-flow";
 import { prisma } from "@/lib/prisma";
 import { tx, lock, hash } from "./db";
 import { requestJSON, credential } from "./connections";
@@ -126,14 +127,8 @@ export async function syncMail(
         })) >= company.records
       )
         fail("Qeyd limiti dolub.", 409);
-      const customer = await db.crmEntry.findFirst({
-        where: {
-          companyId: company.id,
-          kind: "customers",
-          deletedAt: null,
-          email: m.from,
-        },
-      });
+      const lead = await inboundLead(db, company, { channel: "EMAIL", contact: m.from, fallbackId: member.id });
+      const customer = lead.customer;
       const createdAt = new Date(m.date),
         at = Number.isFinite(createdAt.getTime()) ? createdAt : new Date();
       const item = await db.crmEntry.create({
@@ -142,7 +137,8 @@ export async function syncMail(
           kind: "messages",
           title: m.subject.slice(0, 200) || "E-poçt",
           customerId: customer?.id || null,
-          assigneeId: customer?.assigneeId || member.id,
+          saleId: lead.sale?.id || null,
+          assigneeId: lead.assigneeId,
           participants: customer?.participants || [],
           authorId: "SYSTEM",
           status: "RECEIVED",
@@ -166,6 +162,8 @@ export async function syncMail(
           data: { action: "MAIL_RECEIVED" },
         },
       });
+      const previousThread = await db.crmThread.findUnique({ where: { companyId_channel_contact: { companyId: company.id, channel: "EMAIL", contact: m.from } } });
+      const pendingDue = previousThread?.responseDueAt && (!previousThread.lastOutboundAt || !previousThread.lastInboundAt || previousThread.lastOutboundAt < previousThread.lastInboundAt) ? previousThread.responseDueAt : null;
       await db.crmThread.upsert({
         where: {
           companyId_channel_contact: {
@@ -180,21 +178,20 @@ export async function syncMail(
           contact: m.from,
           title: m.subject.slice(0, 200),
           customerId: customer?.id || null,
-          assigneeId: customer?.assigneeId || member.id,
+          assigneeId: lead.assigneeId,
           lastInboundAt: at,
           responseDueAt: new Date(
             at.getTime() +
               (Number((company.preferences as any).slaMinutes) || 30) * 60000,
           ),
         },
-        update: {
+        update: !previousThread?.lastInboundAt || previousThread.lastInboundAt < at ? {
           lastInboundAt: at,
-          responseDueAt: new Date(
-            at.getTime() +
-              (Number((company.preferences as any).slaMinutes) || 30) * 60000,
-          ),
+          responseDueAt: pendingDue || new Date(at.getTime() + (Number((company.preferences as any).slaMinutes) || 30) * 60000),
+          customerId: customer?.id || null,
+          assigneeId: lead.assigneeId,
           status: "OPEN",
-        },
+        } : {},
       });
     }
     await db.crmConnection.update({

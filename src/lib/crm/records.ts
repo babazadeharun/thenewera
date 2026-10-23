@@ -13,6 +13,8 @@ import {
   type DB,
   type Context,
 } from "./db";
+import { followUp } from "./lead-flow";
+import { sourceReport } from "./source-report";
 export const kinds = [
   "customers",
   "sales",
@@ -163,9 +165,8 @@ export async function save(
     if (!pipeline(c, b.pipelineId || old?.pipelineId).stages.includes(stage))
       fail("Mərhələ düzgün deyil.");
     Object.assign(clean, {
+      source: str((old?.data as any)?.source || data.source || (customer?.data as any)?.source),
       nextStep: str(data.nextStep),
-      nextContactAt: date(data.nextContactAt)?.toISOString() || null,
-      paymentDueAt: date(data.paymentDueAt)?.toISOString() || null,
       lossReason: str(data.lossReason),
     });
     if (status === "LOST" && !clean.lossReason)
@@ -342,6 +343,7 @@ export async function save(
   }
   if (!old || old.stage !== stage)
     await automate(db, c, item, !old ? "CREATED" : "STAGE_CHANGED");
+  if (kind === "quotes" && status === "SENT" && old?.status !== "SENT") await followUp(db, c, item);
   return (await db.crmEntry.findUnique({ where: { id: item.id } }))!;
 }
 export async function automate(
@@ -541,6 +543,7 @@ export async function reports(db: DB, c: Context, q: URLSearchParams) {
       a[key] = (a[key] || 0) + 1;
       return a;
     }, {});
+  out.sourceConversion = await sourceReport(db, c, q);
   out.overdue = (loaded.tasks || []).filter(
     (x) => x.status !== "DONE" && x.dueAt && x.dueAt < new Date(),
   ).length;

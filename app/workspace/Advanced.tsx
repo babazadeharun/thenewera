@@ -1,4 +1,5 @@
 "use client";
+import LeadFlowSettings from "./LeadFlowSettings";
 import SocialConnections from "./SocialConnections";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -85,7 +86,15 @@ function Overview({ meta, url }: Props) {
             />
           </section>
           <section className="crmPanel">
-            <h2>Mənbələr üzrə faktiki daxilolmalar</h2>
+            <h2>Mənbələr üzrə müraciət və satış çevrilməsi</h2>
+            <p>{data.report?.sourceConversion?.notice}</p>
+            <Table rows={(data.report?.sourceConversion?.rows || []).map((r: R) => ({
+              Mənbə: r.source, Müraciətlər: r.leads, Satışlar: r.deals, Qazanılmış: r.won,
+              İtirilmiş: r.lost, Çevrilmə: r.conversion + "%",
+              Razılaşdırılmış: Object.entries(r.agreed).map(([c,v]) => `${v} ${c}`).join("; ") || "0",
+              Daxilolma: r.received === null ? "İcazə yoxdur" : Object.entries(r.received).map(([c,v]) => `${v} ${c}`).join("; ") || "0"
+            }))} />
+            <h3>Mənbələr üzrə faktiki daxilolmalar</h3>
             <Table
               rows={(data.sources || []).map((r: R) => ({
                 Mənbə: r.source,
@@ -136,6 +145,7 @@ function Configuration({ meta, url, action, writable }: Props) {
         section="settings"
         error={setError}
       />
+      <LeadFlowSettings meta={meta} url={url} allowed={allowed} />
       <section className="crmPanel">
         <h2>Fərdi məlumat sahələri</h2>
         <p>Sahələr seçilmiş bölmənin qeyd formasında görünür.</p>
@@ -1087,6 +1097,7 @@ function Inbox({ url, action, meta, writable }: Props) {
                     />
                   </section>
                 )}
+                {conversation.thread.channel === "FORM" && <p>Sayt müraciəti: cavabı müştərinin email və ya WhatsApp kanalında yeni mesaj kimi hazırlayın.</p>}
                 <label>
                   Hazır cavab
                   <select
@@ -1112,7 +1123,7 @@ function Inbox({ url, action, meta, writable }: Props) {
                 </label>
                 <button
                   className="crmPrimary"
-                  disabled={!text.trim() || !conversation.thread.customerId}
+                  disabled={!text.trim() || !conversation.thread.customerId || conversation.thread.channel === "FORM"}
                   onClick={async () => {
                     if (
                       !confirm(

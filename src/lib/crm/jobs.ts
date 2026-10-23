@@ -1,3 +1,4 @@
+import { unanswered } from "./lead-flow";
 import { workQueue } from "./queue";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
@@ -80,6 +81,7 @@ export async function jobs() {
             support: null,
             state: s,
           };
+        await unanswered(db, w);
         const items = await db.crmEntry.findMany({
           where: {
             companyId: w.id,

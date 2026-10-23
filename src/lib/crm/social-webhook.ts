@@ -1,3 +1,4 @@
+import { inboundLead } from "./lead-flow";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { tx, lock, hash } from "./db";
@@ -113,24 +114,8 @@ export async function receiveSocial(channel: SocialChannel, payload: any) {
             })) >= company.records
           )
             fail("Qeyd limiti dolub.", 409);
-          const relation = wa
-            ? { phone: { in: [from, "+" + from] } }
-            : {
-                data: {
-                  path: [
-                    channel === "INSTAGRAM" ? "instagramId" : "messengerId",
-                  ],
-                  equals: from,
-                },
-              };
-          const customer = await db.crmEntry.findFirst({
-            where: {
-              companyId: company.id,
-              kind: "customers",
-              deletedAt: null,
-              ...relation,
-            },
-          });
+          const lead = await inboundLead(db, company, { channel, contact: from, fallbackId: owner.id });
+          const customer = lead.customer;
           const timestamp = Number(event.timestamp) * (wa ? 1000 : 1),
             at =
               Number.isFinite(timestamp) &&
@@ -149,9 +134,10 @@ export async function receiveSocial(channel: SocialChannel, payload: any) {
                   WHATSAPP: "WhatsApp",
                 }[channel] + " mesajı",
               status: "RECEIVED",
-              assigneeId: customer?.assigneeId || owner.id,
+              assigneeId: lead.assigneeId,
               participants: customer?.participants || [],
               customerId: customer?.id || null,
+              saleId: lead.sale?.id || null,
               authorId: "SYSTEM",
               createdAt: at,
               data: {
@@ -191,14 +177,14 @@ export async function receiveSocial(channel: SocialChannel, payload: any) {
               channel,
               contact: from,
               title: "Yeni yazışma",
-              assigneeId: customer?.assigneeId || owner.id,
+              assigneeId: lead.assigneeId,
               customerId: customer?.id || null,
               lastInboundAt: at,
               responseDueAt: due,
             },
             update:
               !existing?.lastInboundAt || existing.lastInboundAt < at
-                ? { status: "OPEN", lastInboundAt: at, responseDueAt: due }
+                ? { status: "OPEN", lastInboundAt: at, responseDueAt: existing?.responseDueAt && (!existing.lastOutboundAt || !existing.lastInboundAt || existing.lastOutboundAt < existing.lastInboundAt) ? existing.responseDueAt : due, customerId: customer?.id || null, assigneeId: lead.assigneeId }
                 : {},
           });
           await db.crmEvent.create({

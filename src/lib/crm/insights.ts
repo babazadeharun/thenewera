@@ -35,7 +35,8 @@ export async function timeline(db: DB, c: Context, id: string) {
     orderBy: { createdAt: "desc" },
     take: 300,
   });
-  return { customer, records: visible, events };
+  const files = await db.crmAttachment.findMany({ where: { companyId: c.company.id, entryId: { in: ids } }, select: { id: true, entryId: true, name: true, size: true, createdAt: true }, orderBy: { createdAt: "desc" }, take: 200 });
+  return { customer, records: visible, events, files };
 }
 export async function dashboard(db: DB, c: Context, q: URLSearchParams) {
   permit(c, "reports", "read");

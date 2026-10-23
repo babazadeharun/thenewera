@@ -1,3 +1,4 @@
+import { contactKey } from "./lead-flow";
 import { resolveSocial } from './social';
 import { socialConfig, type SocialChannel } from './social-api';
 import { activeConnection, credential, requestJSON } from "./connections";
@@ -207,7 +208,9 @@ export async function send(
       e.id,
       Boolean(c.support),
     );
-    return { e, d, socialAccountId:social?.row.externalId };
+    const replyThread = await db.crmThread.findUnique({ where: { companyId_channel_contact: { companyId: id, channel: String(d.channel), contact: contactKey(String(d.channel), String(d.to)) } } });
+    const formThreads = await db.crmThread.findMany({ where: { companyId: id, channel: "FORM", customerId: e.customerId }, select: { id: true, lastInboundAt: true } });
+    return { e, d, socialAccountId:social?.row.externalId, replyInboundAt: replyThread?.lastInboundAt || null, formThreads };
   });
   try {
     return await tx(async (db) => {
@@ -338,7 +341,8 @@ export async function send(
         where: {
           companyId: id,
           channel: String(claimed.d.channel),
-          contact: String(claimed.d.to).toLowerCase(),
+          contact: contactKey(String(claimed.d.channel), String(claimed.d.to)),
+          lastInboundAt: claimed.replyInboundAt,
         },
         data: {
           lastOutboundAt: new Date(),
@@ -347,6 +351,7 @@ export async function send(
           claimUntil: null,
         },
       });
+      for (const t of claimed.formThreads) await db.crmThread.updateMany({ where: { companyId: id, id: t.id, customerId: claimed.e.customerId, lastInboundAt: t.lastInboundAt }, data: { lastOutboundAt: new Date(), responseDueAt: null } });
       await db.crmEvent.create({
         data: {
           companyId: id,

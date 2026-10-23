@@ -69,6 +69,8 @@ export default function CustomerHistory({
             )}
           </details>
         ))}
+      <h3>Əlaqəli fayllar</h3>
+      {(data.files || []).map((f: R) => <p key={f.id}><a href={url("files/" + f.id)}>{f.name}</a> · {Math.ceil(f.size / 1024)} KB</p>)}
       <h3>Əlaqəli fəaliyyətlər</h3>
       {(data.events || []).map((e: R) => (
         <p key={e.id}>

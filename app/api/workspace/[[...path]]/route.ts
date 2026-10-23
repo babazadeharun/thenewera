@@ -1,4 +1,4 @@
-import { today } from "@/lib/crm/today";
+import { intakeKey } from "@/lib/crm/intake";
 import { socialList, socialPending, startSocial, finishEmbedded, activateSocial, disconnectSocial, verifySocial, cancelSocial } from '@/lib/crm/social';
 import { mailHealth } from "@/lib/crm/mail";
 import { assistant } from "@/lib/crm/assistant";
@@ -92,7 +92,6 @@ export async function GET(r: Request, p: P) {
     if (op === "connections") return json(await connections(u, id));
     const result = await tx(async (db) => {
       const c = await context(db, u, id, q.get("support"));
-      if (op === "today") return {data: await today(db,c,q)};
       if (op === "queue") return { data: await queueStatus(db, c) };
       if (op === "timeline")
         return { data: await timeline(db, c, required(itemId)) };
@@ -606,6 +605,7 @@ export async function POST(r: Request, p: P) {
         );
         return { ok: true };
       }
+      if (op === "intake-key") return intakeKey(db, c, b);
       if (op === "settings") {
         permit(c, "settings", "update");
         write(c);

@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 import { fail, required, str, num } from "./policy";
 import { permit, write, entry, where, log, type Context, type DB } from "./db";
 export type Prefs = {
+  leadFlow?: import("./lead-flow").LeadFlow;
   fields?: {
     key: string;
     label: string;
@@ -240,6 +241,22 @@ export async function configure(
     if (!["general", "clinic", "agency", "services"].includes(t))
       fail("Şablon düzgün deyil.");
     p.industryTemplate = t;
+  }
+  if (b.leadFlow !== undefined) {
+    if (!b.leadFlow || typeof b.leadFlow !== "object" || Array.isArray(b.leadFlow)) fail("Müraciət ayarları düzgün deyil.");
+    const x = b.leadFlow as Record<string, unknown>;
+    if (typeof x.enabled !== "boolean" || !["OWNER", "ROUND_ROBIN"].includes(String(x.assignment))) fail("Təyinat rejimi düzgün deyil.");
+    const memberIds = Array.isArray(x.memberIds) ? [...new Set(x.memberIds.map(v => required(v, 100)))] : [];
+    if (memberIds.length > 100) fail("Maksimum 100 əməkdaş seçin.");
+    for (const id of memberIds) {
+      const s = await db.crmSeat.findFirst({ where: { companyId: c.company.id, id, active: true } });
+      const { grant } = await import("./policy");
+      if (!s || ["customers", "sales", "messages"].some(k => (grant(s.role, k, "read", s.grants) === "NONE" || grant(s.role, k, "update", s.grants) === "NONE"))) fail("Məsul əməkdaşın CRM və mesajlara giriş icazəsi olmalıdır.");
+    }
+    if (x.assignment === "ROUND_ROBIN" && !memberIds.length) fail("Növbəli təyinat üçün əməkdaş seçin.");
+    p.leadFlow = { enabled: x.enabled, assignment: x.assignment as "OWNER" | "ROUND_ROBIN", memberIds,
+      escalationMinutes: Math.max(1, Math.min(10080, Math.floor(num(x.escalationMinutes ?? 30)))),
+      followUpDays: Math.max(0, Math.min(90, Math.floor(num(x.followUpDays ?? 2)))) };
   }
   const clean = JSON.parse(JSON.stringify(p));
   await db.crmCompany.update({

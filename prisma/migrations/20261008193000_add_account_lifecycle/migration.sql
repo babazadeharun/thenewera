@@ -81,7 +81,7 @@ UPDATE "User" SET "accountType" = CASE WHEN "clientId" IS NOT NULL AND EXISTS (S
 -- Preserve existing customer data by creating one workspace per Client and linking its owner when possible.
 INSERT INTO "Workspace" ("id","name","type","status","ownerUserId","clientId","createdAt","updatedAt")
 SELECT 'ws_' || c.id,
-       COALESCE(NULLIF(c.company,''), NULLIF(TRIM(c.firstName || ' ' || c.lastName),''), 'New Era Workspace'),
+       COALESCE(NULLIF(c.company,''), NULLIF(TRIM(c."firstName" || ' ' || c."lastName"),''), 'New Era Workspace'),
        CASE WHEN COALESCE(c.company,'') <> '' THEN 'BUSINESS'::"WorkspaceType" ELSE 'INDIVIDUAL'::"WorkspaceType" END,
        'ACTIVE'::"WorkspaceStatus",
        u.id,

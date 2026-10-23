@@ -1,3 +1,4 @@
+import '../../product-experience.css';
 import './project-detail-reference.css';
 import Link from 'next/link';
 import PortfolioImage from './PortfolioImage';
@@ -17,7 +18,7 @@ type MediaItem = {
   createdAt: Date;
 };
 
-type PortfolioMeta = {
+type PortfolioMeta = { problem?:string;workDone?:string;duration?:string;result?:string;evidenceUrl?:string;isConcept?:boolean;
   title?: string;
   client?: string;
   description?: string;
@@ -95,7 +96,7 @@ export default async function PortfolioDetailPage({
             )}
           </div>
           <div className="portfolioDetailIntro">
-            <div className="eyebrow">PORTFOLİO LAYİHƏSİ</div>
+            <div className="eyebrow">{coverMeta.isConcept ? 'KONSEPT LAYİHƏ · NÜMUNƏ İŞ' : 'PORTFOLİO LAYİHƏSİ'}</div>
             <h1>{coverMeta.title || cover.originalName}</h1>
             {coverMeta.client && <div className="portfolioDetailClient">{coverMeta.client}</div>}
             {coverMeta.description && <p>{coverMeta.description}</p>}
@@ -112,6 +113,7 @@ export default async function PortfolioDetailPage({
         </div>
       </section>
 
+      <section className="container portfolioDetailDescription"><h2>Problem, iş və nəticə</h2>{coverMeta.isConcept&&<p>Bu iş konsept nümunəsidir. Real müştəri nəticəsi və ya kommersiya göstəricisi kimi təqdim edilmir.</p>}<dl className="productCaseFacts">{[['Başlanğıc problem',coverMeta.problem],['Gördüyümüz iş',coverMeta.workDone],['İcra müddəti',coverMeta.duration],['Nəticə',coverMeta.result]].map(([label,value])=><div key={label}><dt>{label}</dt><dd style={{whiteSpace:'pre-wrap'}}>{value || 'Bu layihə üçün hələ paylaşılmayıb.'}</dd></div>)}</dl>{coverMeta.evidenceUrl&&/^https?:\/\//i.test(coverMeta.evidenceUrl)&&<a href={coverMeta.evidenceUrl} target="_blank" rel="noreferrer">Paylaşılmış nəticəyə bax →</a>}</section>
       {coverMeta.fullDescription && (
         <section className="container portfolioDetailDescription">
           <div className="eyebrow">LAYİHƏ HAQQINDA</div>
@@ -152,7 +154,7 @@ export default async function PortfolioDetailPage({
           <div className="eyebrow">NÖVBƏTİ LAYİHƏ</div>
           <h2>İdeyanızı birlikdə <span>nəticəyə çevirək.</span></h2>
         </div>
-        <Link className="primary" href="/start-project">Layihəyə başla <ArrowRight size={16} /></Link>
+        <Link className="primary" href="/contact">Layihəyə başla <ArrowRight size={16} /></Link>
       </section>
     </main>
   );

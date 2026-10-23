@@ -433,7 +433,7 @@ export default function Sections({
             {dt(meta.company.trialEnd)}
           </p>
           <p>Aktiv abunəlik: {dt(meta.company.paidUntil) || "Aktiv deyil"}</p>
-          <p>Ödəniş kartı tələb olunmur. Avtomatik ödəniş tutulmayacaq.</p>
+          <p>Ödəniş kartı tələb olunmur. Avtomatik ödəniş tutulmayacaq.</p><p>Sınaq bitəndə mövcud məlumatlara baxış qalır. Yeni qeyd və dəyişiklik üçün abunəlik aktivləşdirilməlidir. Workspace ayrıca dayandırılıbsa giriş məhdudlaşdırıla bilər.</p>
           <Table
             rows={[
               {

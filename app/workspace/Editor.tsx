@@ -152,6 +152,8 @@ export default function Editor({
         ),
       },
       { key: "data.nextStep", label: "Növbəti addım" },
+      { key: "data.nextContactAt", label: "Növbəti əlaqə vaxtı", type: "datetime-local" },
+      { key: "data.paymentDueAt", label: "Razılaşdırılmış ödəniş tarixi (istəyə bağlı)", type: "datetime-local" },
       { key: "data.lossReason", label: "İtirilmə səbəbi" },
     );
   if (["tasks", "calendar"].includes(kind))
@@ -274,6 +276,9 @@ export default function Editor({
             if (k.startsWith("custom.")) custom[k.slice(7)] = b[k];
           for (const k of Object.keys(b))
             if (k.startsWith("data.")) data[k.slice(5)] = b[k];
+          for (const key of ["nextContactAt", "paymentDueAt"]) {
+            if (typeof data[key] === "string" && data[key]) data[key] = new Date(data[key]).toISOString();
+          }
           if (kind === "quotes") data.lines = lines;
           data.portalVisible = b.portalVisible === "true";
           await api(url(kind + (item ? "/" + item.id : "")), {

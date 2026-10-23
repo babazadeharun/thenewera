@@ -164,6 +164,8 @@ export async function save(
       fail("Mərhələ düzgün deyil.");
     Object.assign(clean, {
       nextStep: str(data.nextStep),
+      nextContactAt: date(data.nextContactAt)?.toISOString() || null,
+      paymentDueAt: date(data.paymentDueAt)?.toISOString() || null,
       lossReason: str(data.lossReason),
     });
     if (status === "LOST" && !clean.lossReason)

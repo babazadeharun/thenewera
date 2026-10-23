@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { api, dt, Modal, Table, roleNames, type R } from "./shared";
 import Editor from "./Editor";
+import DailyFocus from "./DailyFocus";
 import Sections from "./Sections";
 import Advanced from "./Advanced";
 const tabs = [
@@ -79,11 +80,11 @@ export default function Workspace({
     [notifications, setNotifications] = useState(false),
     [editing, setEditing] = useState<R | null | false>(false);
   const side = useRef<HTMLElement>(null);
-  function url(part: string) {
+  const url = useCallback((part: string) => {
     const u = new URL("/api/workspace/" + id + "/" + part, location.origin);
     if (support) u.searchParams.set("support", support);
     return u.pathname + u.search;
-  }
+  }, [id, support]);
   async function refreshMeta() {
     const m = await api(url("meta"));
     setMeta(m);
@@ -125,7 +126,7 @@ export default function Workspace({
   }).toString();
   async function load() {
     if (
-      !meta ||
+      !meta || section === "overview" ||
       ["inbox", "imports", "approvals", "booking", "trash", "portal"].includes(
         section,
       )
@@ -153,7 +154,7 @@ export default function Workspace({
   }
   useEffect(() => {
     if (
-      !meta ||
+      !meta || section === "overview" ||
       ["inbox", "imports", "approvals", "booking", "trash", "portal"].includes(
         section,
       )
@@ -360,6 +361,7 @@ export default function Workspace({
           ))}
         </nav>
         <Link href="/workspace">Şirkətlər / yeni Workspace</Link>
+        <Link href="/workspace/demo">Nümunə demo</Link>
         <Link href="/">Sayta qayıt</Link>
       </aside>
       <div className="crmBody" inert={open ? true : undefined}>
@@ -837,7 +839,8 @@ export default function Workspace({
               </button>
             </div>
           )}
-          {(section === "overview" || section === "reports") && (
+          {section === "overview" && <DailyFocus url={url} meta={meta} writable={writable} navigate={tab} openRecord={item=>{tab(item.kind);setEditing(item);}}/>}
+          {section === "reports" && (
             <>
               <div className="crmCards">
                 {[
@@ -962,7 +965,7 @@ export default function Workspace({
               url={url}
               writable={writable}
               close={() => setEditing(false)}
-              saved={() => load()}
+              saved={async () => { await load(); await refreshMeta(); }}
             />
           )}
           {billing &&

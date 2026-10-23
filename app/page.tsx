@@ -1,3 +1,4 @@
+import './product-experience.css';
 import './home-glass.css';
 import './home-mobile-reference.css';
 import './home-sculpture-reference.css';
@@ -41,7 +42,7 @@ export default async function Home() {
   }).catch(() => []);
   const parsePortfolioMeta = (alt: string | null) => {
     if (!alt?.startsWith('NEPORTFOLIO:')) return null;
-    try { return JSON.parse(alt.slice('NEPORTFOLIO:'.length)) as { title?: string; client?: string; category?: string; description?: string; featured?: boolean; status?: string; itemId?: string; role?: string }; }
+    try { return JSON.parse(alt.slice('NEPORTFOLIO:'.length)) as { title?: string; client?: string; category?: string; description?: string; featured?: boolean; status?: string; itemId?: string; role?: string; isConcept?: boolean }; }
     catch { return null; }
   };
   const featuredProjects = new Map<string, { media: typeof featuredMedia[number]; meta: NonNullable<ReturnType<typeof parsePortfolioMeta>> }>();
@@ -61,6 +62,7 @@ export default async function Home() {
     service: meta.category || 'Portfolio',
     text: meta.description || 'New Era tərəfindən həyata keçirilmiş kreativ və marketinq işi.',
     itemId: meta.itemId,
+    isConcept: meta.isConcept === true,
   }));
   const portfolio = dynamicPortfolio.length ? dynamicPortfolio : fallbackPortfolio;
   const section = (key: string) => sections.find((item) => item.key === key);
@@ -91,7 +93,7 @@ export default async function Home() {
   const heroTitle = hero?.title && !['New Era Hero', 'New Era', 'Növbəti Era Buradan Başlayır.'].includes(hero.title) ? hero.title : 'Növbəti Era Buradan Başlayır.';
   const heroDescription = hero?.description && !['Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan.', 'Find the right creative for your next big idea. From design to development, connect with top talent in Azerbaijan'].includes(hero.description.trim())
     ? hero.description
-    : 'Brendiniz üçün strategiyanı, kreativ ideyanı və rəqəmsal icranı bir komandada birləşdiririk.';
+    : 'Biznesinizə uyğun müştəriləri cəlb edir, müraciətləri satışa qədər izləyir və komandanızın işini vahid sistemdə birləşdiririk.';
   const heroCtaText = hero?.ctaText === 'Create Client Account' ? 'Layihəyə başla' : (hero?.ctaText || 'Layihəyə başla');
 
   return (
@@ -105,11 +107,13 @@ export default async function Home() {
           <div className="eyebrow">B2B MARKETİNQ &amp; KREATİV AGENTLİYİ</div>
           <h1>{hero ? (heroTitle === 'Növbəti Era Buradan Başlayır.' ? <>Növbəti Era<br/><span className="heroContinuation">Buradan <em>Başlayır.</em></span></> : heroTitle) : <>Növbəti Era<br/><span className="heroContinuation">Buradan <em>Başlayır.</em></span></>}</h1>
           <p>{heroDescription}</p>
-          <div className="heroCtas"><a className="primary" href="/start-project">{heroCtaText} <ArrowRight size={17}/></a><a className="secondary" href="#portfolio">İşlərimizə baxın</a></div>
+          <div className="heroCtas"><a className="primary" href="/contact">{heroCtaText} <ArrowRight size={17}/></a><a className="secondary" href="#portfolio">İşlərimizə baxın</a></div>
           <a className="auditCta auditCtaHero" href="/analysis"><span><strong>Biznes Audit</strong><small>Biznesiniz üçün real ekspert analizi və təkliflər</small></span><ArrowRight size={18}/></a>
         </div>
         <div className="scrollHint">Aşağı sürüşdür <span>↓</span></div>
       </section>
+
+      <section className="container productNeeds" aria-labelledby="needs-title"><div className="eyebrow">SİZİN MƏQSƏDİNİZ</div><h2 id="needs-title">Biznesinizdə nəyi yaxşılaşdıraq?</h2><div className="productNeedsGrid"><a className="productNeed" href="/contact?need=acquisition"><strong>Daha çox müştəri istəyirəm →</strong><span>Uyğun auditoriya, aydın təklif və müraciət gətirən marketinq.</span></a><a className="productNeed" href="/contact?need=conversion"><strong>Müraciətlərim satışa çevrilmir →</strong><span>Müraciətdən növbəti əlaqəyə qədər izlənən satış prosesi.</span></a><a className="productNeed" href="/workspace"><strong>Komandamı idarə etmək istəyirəm →</strong><span>Tapşırıqlar, satışlar və məsul şəxslər bir iş məkanında.</span></a></div></section>
 
       {showSection('services') && <section id="services" className="section container servicesSection">
         <div className="sectionIntro"><div><div className="eyebrow">XİDMƏTLƏRİMİZ</div><h2>Brendinizi <span>böyütmək üçün.</span></h2></div><p>Strategiyadan kreativ istehsala, rəqəmsal marketinqdən veb həllərə qədər bütün əsas istiqamətləri bir komandada idarə edirik.</p></div>
@@ -120,9 +124,9 @@ export default async function Home() {
       {showSection('portfolio') !== false && <section id="portfolio" className="section portfolioSection">
         <div className="container">
           <div className="sectionIntro"><div><div className="eyebrow">İŞLƏRİMİZ</div><h2>İdeyadan <span>nəticəyə.</span></h2></div><p>Fərqli sahələrdə həyata keçirdiyimiz brend, kreativ və rəqəmsal işlərdən seçilmiş nümunələr.</p></div>
-          <div className="agencyPortfolioGrid">{portfolio.map((item) => (
+          <p>{dynamicPortfolio.length ? 'Layihənin problemini, görülən işi və təsdiqlənən nəticəni detallarda oxuyun.' : 'Aşağıdakı işlər konsept nümunələridir; real müştəri nəticəsi kimi təqdim edilmir.'}</p><div className="agencyPortfolioGrid">{portfolio.map((item) => (
             <a className="agencyPortfolioCard" href={('itemId' in item && typeof item.itemId === 'string' && item.itemId) ? `/portfolio/${encodeURIComponent(item.itemId)}` : '/portfolio'} key={item.image}>
-              <div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title}/><span>{item.service}</span></div>
+              <div className="agencyPortfolioImage"><img src={item.image.startsWith('/') || item.image.startsWith('http') ? item.image : `/portfolio/${item.image}.jpg`} alt={item.title}/><span>{dynamicPortfolio.length && !('isConcept' in item && item.isConcept) ? item.service : 'Konsept layihə · ' + item.service}</span></div>
               <div className="agencyPortfolioBody"><div><strong>{item.title}</strong><small>{item.client}</small></div><ArrowRight size={17}/><p>{item.text}</p></div>
             </a>
           ))}</div>
@@ -136,7 +140,7 @@ export default async function Home() {
 
       <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 
-      <footer id="contact" className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><span>© 2026 New Era</span></footer>
+      <footer id="contact" className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><a href="/contact">Bizimlə əlaqə</a><span>© 2026 New Era</span></footer>
     </main>
   );
 }

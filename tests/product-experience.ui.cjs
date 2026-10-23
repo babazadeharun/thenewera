@@ -1,0 +1,31 @@
+// DOM-level interaction checks; no browser, production account or mail required.
+const assert=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),Module=require('node:module');
+const root=path.resolve(__dirname,'..');const {JSDOM}=require(path.join(root,'.crm-test-runtime/node_modules/jsdom'));
+const dom=new JSDOM('<div id="root"></div>',{url:'https://example.test/workspace/demo'});
+for(const key of ['window','document','HTMLElement','HTMLInputElement','Event','MouseEvent','FormData','navigator'])Object.defineProperty(global,key,{value:dom.window[key],configurable:true});
+global.IS_REACT_ACT_ENVIRONMENT=true;global.requestAnimationFrame=f=>setTimeout(f,0);
+const ts=require('typescript');for(const ext of ['.ts','.tsx'])require.extensions[ext]=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{fileName:f,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true,jsx:ts.JsxEmit.ReactJSX}}).outputText,f);
+const orig=Module._load;Module._load=function(n,p,main){if(n==='next/link')return{__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};return orig.call(this,n,p,main)};
+const React=require('react'),{act}=React,{createRoot}=require('react-dom/client');const container=document.getElementById('root');let tree=createRoot(container),checks=0;
+const check=(value,msg)=>{assert.ok(value,msg);checks++};const click=async text=>{const button=[...container.querySelectorAll('button')].find(b=>b.textContent.includes(text));assert.ok(button,'button: '+text);await act(async()=>button.click());};
+(async()=>{
+ const Demo=require('../app/workspace/demo/Demo.tsx').default;
+ await act(async()=>tree.render(React.createElement(Demo)));
+ await click('1. Müştəri');await click('Nümunə müştəri əlavə');check(container.textContent.includes('Müştəri əlavə edildi'),'customer creates a visible demo result');
+ await click('2. Satış');await click('Nümunə müştəri üçün satış');check(container.textContent.includes('Satış yaradıldı'),'customer-to-sale journey');await click('Sabaha zəng');
+ await click('3. Əməkdaş');await click('Əməkdaş dəvətini');check(container.textContent.includes('4/4'),'all first-use steps completed');
+ await click('Tapşırıqlar');await click('Tamamlandı kimi');await click('Bu gün');check(container.textContent.includes('0 gecikmiş'),'completed task changes overview');
+ await click('Demonu sıfırla');check(container.textContent.includes('0/4'),'reset clears sample session');
+ check(container.querySelector('a[href="/workspace?start=1"]'),'signup continuation available');
+ await act(async()=>tree.unmount());tree=createRoot(container);
+ const Quick=require('../app/contact/QuickRequest.tsx').default;const requests=[];
+ global.fetch=async(url,opts)=>{requests.push(JSON.parse(opts.body));if(requests.length===1)throw Error('Connection interrupted');return{ok:true,json:async()=>({reference:'ABC123'})};};
+ await act(async()=>tree.render(React.createElement(Quick,{initialNeed:'conversion'})));
+ const name=container.querySelector('[name="name"]'),contact=container.querySelector('[name="contact"]');name.value='Test Founder';contact.value='founder@example.test';container.querySelector('[name="consent"]').checked=true;
+ check(container.querySelector('[name="need"]').value==='conversion','need carried from entry link');
+ const submit=async()=>act(async()=>container.querySelector('form').dispatchEvent(new dom.window.Event('submit',{bubbles:true,cancelable:true})));
+ await submit();check(container.textContent.includes('Connection interrupted'),'failed request leaves recoverable form');
+ await submit();check(container.textContent.includes('ABC123'),'durable receipt displayed');check(requests[0].requestId===requests[1].requestId,'same idempotency key after network failure');
+ check(requests[0].consent===true&&requests[0].need==='conversion','explicit consent and need submitted');
+ await act(async()=>tree.unmount());dom.window.close();console.log('PASS product UI: '+checks+' assertions');
+})().catch(e=>{console.error(e);process.exitCode=1});

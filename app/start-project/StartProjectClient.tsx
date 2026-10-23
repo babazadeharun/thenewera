@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import QuickRequest from '../contact/QuickRequest';
+import '../product-experience.css';
 
 const services = [
   'Brendinq',
@@ -28,6 +30,7 @@ const serviceQueryLabels: Record<string,string> = {
 export default function StartProjectClient() {
   const params = useSearchParams();
 
+  const [sessionState, setSessionState] = useState<'loading'|'guest'|'client'|'other'>('loading');
   const [sent, setSent] = useState(false);
   const [projectId, setProjectId] = useState('');
 
@@ -59,25 +62,16 @@ export default function StartProjectClient() {
       }));
     }
 
-    const session = localStorage.getItem('new-era-client-session');
-
-    if (!session) {
-      window.location.href = '/login';
-      return;
-    }
-
-    try {
-      const client = JSON.parse(session);
-
-      setForm((current) => ({
-        ...current,
-        name: `${client.firstName || ''} ${client.lastName || ''}`.trim(),
-        email: client.email || '',
-        company: client.company || '',
-      }));
-    } catch {
-      // Ignore invalid local session data.
-    }
+    let active = true;
+    fetch('/api/auth/me', {cache:'no-store'}).then(async res => res.ok ? res.json() : null).then(data => {
+      if(!active)return;
+      if(!data?.user){setSessionState('guest');return;}
+      if(data.user.role !== 'CLIENT'){setSessionState('other');return;}
+      setSessionState('client');
+      const client=data.user.client || {};
+      setForm(current=>({...current,name:`${client.firstName||''} ${client.lastName||''}`.trim(),email:data.user.email||'',company:client.company||''}));
+    }).catch(()=>{if(active)setSessionState('guest');});
+    return ()=>{active=false;};
   }, [params]);
 
   function update(key: string, value: string) {
@@ -113,6 +107,8 @@ export default function StartProjectClient() {
     }
   }
 
+  if(sessionState==='loading')return <main className="productPage"><div className="productWrap" role="status">Yüklənir…</div></main>;
+  if(sessionState!=='client')return <main className="productPage"><div className="productWrap"><div className="productIntro"><span className="productKicker">İLK ADDIM</span><h1>Məqsədinizi paylaşın.</h1><p>İlk müraciət üçün hesab tələb olunmur. Ətraflı layihə brifi müştəri hesabında qalır.</p></div><div className="productColumns"><QuickRequest/><aside className="productPanel"><h2>Ətraflı brifə hazırsınız?</h2><p>Mövcud müştəri hesabınızla daxil olub brifi və layihə mərhələlərini izləyə bilərsiniz.</p><Link href="/login?next=%2Fstart-project">Müştəri hesabına daxil ol →</Link></aside></div></div></main>;
   return (
     <main className="innerPage briefReference">
       <div className="container formPage">
@@ -308,8 +304,7 @@ export default function StartProjectClient() {
             </button>
 
             <div className="privateNote">
-              Your brief and future project communication stay inside New
-              Era. Mütəxəssis şəxsi əlaqə məlumatları yayımlanmır.
+              Brifiniz və layihə üzrə yazışmalarınız New Era sistemində saxlanılır. Mütəxəssis şəxsi əlaqə məlumatları yayımlanmır.
             </div>
           </form>
         )}

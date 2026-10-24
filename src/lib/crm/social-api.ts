@@ -44,7 +44,8 @@ export function socialConfig(channel: SocialChannel, strict = true) {
       ] || "",
     version = process.env.CRM_META_GRAPH_VERSION || "",
     verifyToken = process.env.CRM_META_WEBHOOK_VERIFY_TOKEN || "",
-    configId = process.env.CRM_WHATSAPP_CONFIG_ID || "";
+    configId = process.env.CRM_WHATSAPP_CONFIG_ID || "",
+    messengerConfigId = (process.env.CRM_MESSENGER_CONFIG_ID || "").trim();
   const rawKey = process.env.CRM_ENCRYPTION_KEY || "",
     key = /^[a-f0-9]{64}$/i.test(rawKey)
       ? Buffer.from(rawKey, "hex")
@@ -55,6 +56,7 @@ export function socialConfig(channel: SocialChannel, strict = true) {
     /^v\d+\.\d+$/.test(version) &&
     verifyToken.length >= 24 &&
     key.length === 32 &&
+    (channel !== "MESSENGER" || !messengerConfigId || /^\d+$/.test(messengerConfigId)) &&
     (channel !== "WHATSAPP" || /^\d+$/.test(configId));
   if (strict && !enabled)
     fail("Bu kanalın qoşulmasını NEW ERA komandası aktivləşdirməlidir.", 503);
@@ -64,6 +66,7 @@ export function socialConfig(channel: SocialChannel, strict = true) {
     version,
     verifyToken,
     configId,
+    messengerConfigId,
     enabled,
     instagram,
     callback: strict

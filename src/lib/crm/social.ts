@@ -154,13 +154,18 @@ export async function startSocial(
     redirect_uri: cfg.callback,
     response_type: "code",
     state: raw,
-    scope:
-      channel === "INSTAGRAM"
-        ? "instagram_business_basic,instagram_business_manage_messages"
-        : "pages_show_list,pages_messaging,pages_manage_metadata",
     ...(channel === "INSTAGRAM"
-      ? { enable_fb_login: "0", force_authentication: "1" }
-      : { auth_type: "rerequest" }),
+      ? {
+          scope: "instagram_business_basic,instagram_business_manage_messages",
+          enable_fb_login: "0",
+          force_authentication: "1",
+        }
+      : {
+          auth_type: "rerequest",
+          ...(cfg.messengerConfigId
+            ? { config_id: cfg.messengerConfigId }
+            : { scope: "pages_show_list,pages_messaging,pages_manage_metadata" }),
+        }),
   }).toString();
   return { authId: pending.id, mode: "OAUTH", url: url.toString() };
 }

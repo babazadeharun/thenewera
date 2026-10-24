@@ -140,7 +140,7 @@ export default async function Home() {
 
       <section id="analysis" className="analysisTeaser"><div className="container analysisTeaserInner"><div><div className="eyebrow">BİZNES AUDİT</div><h2>Biznesinizi daha dərindən <span>anlamaq üçün.</span></h2><p>Qısa sorğunu cavablandırın. New Era ekspertləri məlumatları real insan baxışı ilə təhlil edib nəticələri və inkişaf təkliflərini e-poçtunuza göndərəcək.</p></div><a className="secondary" href="/analysis">Biznes Auditə keçin <ArrowRight size={16}/></a></div></section>
 
-      <footer id="contact" className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><a href="/contact">Bizimlə əlaqə</a><span>© 2026 New Era</span></footer>
+      <footer id="contact" className="footer container"><a className="brand" href="#top"><img src="/new-era-logo.png" alt={cms?.siteName || 'New Era'} /></a><span>B2B marketinq və kreativ tərəfdaşlıq.</span><a href="/contact">Bizimlə əlaqə</a><a href="/privacy">Məxfilik siyasəti</a><a href="/data-deletion">Məlumatların silinməsi</a><span>© 2026 New Era · “NEAGENCY” MMC · VÖEN: 7002625441</span></footer>
     </main>
   );
 }

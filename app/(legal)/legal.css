@@ -1,0 +1,17 @@
+.neLegal{min-height:100vh;padding:112px 24px 40px;background:radial-gradient(ellipse at 80% 0,rgba(181,255,76,.07),transparent 50%),#080a0a;color:#f5f6f4}
+.neLegalInner{max-width:900px;margin:0 auto;min-width:0}
+.neLegalBack{display:inline-block;margin-bottom:24px;color:#c8ff70;text-decoration:none}
+.neLegalCard{padding:clamp(24px,5vw,60px);border:1px solid #ffffff26;border-radius:24px;background:linear-gradient(135deg,#ffffff09,#ffffff03);overflow-wrap:anywhere}
+.neLegalCard h1{font-size:clamp(32px,5vw,52px);line-height:1.14;margin:14px 0 18px;letter-spacing:-.035em}
+.neLegalCard h2{font-size:22px;line-height:1.4;margin:36px 0 12px;letter-spacing:-.015em}
+.neLegalCard p,.neLegalCard li{font-size:16px;line-height:1.8;color:#c8ceca}
+.neLegalCard ul,.neLegalCard ol{padding-left:24px}
+.neLegalCard li+li{margin-top:10px}
+.neLegalCard a,.neLegalFooter a{color:#c8ff70;text-underline-offset:4px}
+.neLegalCard a:focus-visible,.neLegalFooter a:focus-visible,.neLegalBack:focus-visible{outline:2px solid #c8ff70;outline-offset:5px}
+.neLegalEyebrow{font-size:12px!important;letter-spacing:.15em;color:#c8ff70!important;text-transform:uppercase}
+.neLegalUpdated{font-size:14px!important;color:#99a39c!important}
+.neLegalCallout{padding:16px 20px;border-left:3px solid #c8ff70;background:#c8ff7009;border-radius:0 12px 12px 0}
+.neLegalFooter{padding:24px 4px;color:#99a39c;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+.neLegalFooter nav{display:flex;flex-wrap:wrap;gap:12px 24px}
+@media(max-width:600px){.neLegal{padding:92px 16px 24px}.neLegalCard{border-radius:18px}.neLegalCard h2{font-size:20px}}

@@ -320,6 +320,11 @@ export default function SocialConnections({ url, writable }: Props) {
         Hesabınıza platformanın rəsmi pəncərəsində daxil olun və icazə verin.
         Şifrəniz NEW ERA-ya ötürülmür. Bağlantı yalnız bu şirkətə aiddir.
       </p>
+      <p>
+        <a href="/privacy" target="_blank" rel="noopener noreferrer">Məxfilik siyasəti</a>
+        {" · "}
+        <a href="/data-deletion" target="_blank" rel="noopener noreferrer">Məlumatların silinməsi</a>
+      </p>
       {error && (
         <p role="alert" className="crmError">
           {error}

@@ -1,21 +1,38 @@
-.page { max-width: 1220px; margin: auto; padding: 32px 24px; color: #f4f4ec; background: #10110e; }
-.page a { color: #d2ff38; }
-.layout { display: grid; grid-template-columns: minmax(210px, 280px) 1fr; gap: 20px; }
-.layout > aside, .layout > section { background: #181a14; border: 1px solid #3c4130; border-radius: 14px; padding: 18px; min-width: 0; }
-.page label { display: grid; gap: 6px; }
-.page input, .page select, .page textarea, .page button { color: inherit; background: #20231a; border: 1px solid #4d533f; border-radius: 8px; padding: 9px; max-width: 100%; }
+.page { max-width: 1450px; margin: auto; padding: 8px 0 24px; color: #203846; }
+.page h1 { margin: 8px 0; font-size: clamp(26px, 3vw, 40px); }
+.page h2 { margin: 4px 0; }
+.page p, .page small { color: #4b6678; }
+.page a { color: #126568; text-decoration: underline; text-underline-offset: 3px; }
+.header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
+.header p { margin: 0; }
+.page .action { padding: 11px 16px; border-radius: 10px; background: #dcefea; color: #174d4e; font-weight: 700; text-decoration: none; }
+.setup, .layout > aside, .layout > section { background: rgba(255, 255, 255, .8); border: 1px solid #d3e1e9; border-radius: 14px; padding: 18px; min-width: 0; }
+.setup { margin-bottom: 18px; }
+.page summary { font-weight: 700; color: #254556; cursor: pointer; }
+.setup li { margin: 8px 0; }
+.keys { display: flex; flex-wrap: wrap; gap: 7px; }
+.keys code { padding: 5px 8px; background: #edf4f7; border-radius: 5px; overflow-wrap: anywhere; }
+.layout { display: grid; grid-template-columns: minmax(260px, 345px) minmax(0, 1fr); gap: 18px; }
+.page label { display: grid; gap: 6px; margin: 4px 0 8px; }
+.page input, .page select, .page textarea, .page button { color: #223f50; background: #f8fbfc; border: 1px solid #cddfe8; border-radius: 8px; padding: 9px; max-width: 100%; }
 .page button:not(:disabled) { cursor: pointer; }
-.page button:disabled { opacity: .55; }
-.contacts { display: grid; gap: 7px; max-height: 65vh; overflow: auto; }
-.contacts button { text-align: left; }
-.contacts button[aria-pressed="true"] { border-color: #d2ff38; }
-.contacts small { display: block; }
-.history { display: grid; gap: 10px; max-height: 44vh; min-height: 90px; overflow: auto; padding: 12px; }
-.history article { border-radius: 10px; background: #24271f; padding: 10px; max-width: 85%; }
-.history article[data-direction="OUT"] { justify-self: end; background: #303b1b; }
+.page button:disabled { opacity: .6; }
+.setup input { width: min(100%, 450px); }
+.contacts { display: grid; gap: 7px; max-height: 60vh; overflow: auto; }
+.contactRow { display: flex; align-items: center; gap: 8px; }
+.contactRow button { text-align: left; flex: 1; }
+.contacts button[aria-pressed="true"] { border-color: #65a9a6; background: #e9f5f2; }
+.contacts small, .bulk small { display: block; }
+.bulk { display: grid; gap: 8px; margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #edf5f8; }
+.bulk ul { margin: 0; padding-left: 18px; max-height: 120px; overflow: auto; }
+.history { display: grid; gap: 10px; max-height: 44vh; min-height: 90px; overflow: auto; padding: 12px; background: #f1f6f9; border-radius: 10px; }
+.history article { border-radius: 10px; background: #fff; padding: 10px; max-width: 85%; }
+.history article[data-direction="OUT"] { justify-self: end; background: #deefea; }
 .history p { white-space: pre-wrap; overflow-wrap: anywhere; margin: 4px 0; }
 .group { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; margin: 12px 0; }
+.group label { margin: 0; }
 .page textarea { display: block; width: 100%; min-height: 90px; margin: 10px 0; }
-.page details { margin-top: 15px; }
-.error { color: #ffb2ab; }
-@media (max-width: 650px) { .layout { grid-template-columns: 1fr; } .contacts { max-height: 220px; } }
+.page section details { margin-top: 15px; }
+.page .error, .page .notice { padding: 10px 13px; border-radius: 8px; color: #7c2d2d; background: #fceceb; }
+.page .notice { color: #65521d; background: #fff6dd; }
+@media (max-width: 800px) { .layout { grid-template-columns: 1fr; } .contacts { max-height: 240px; } }

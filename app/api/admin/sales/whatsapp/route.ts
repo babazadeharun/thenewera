@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { instagramAdmin, igBody, igResponse } from "@/lib/sales/instagram-http";
 import { CampaignError, reject } from "@/lib/sales/offer-policy";
-import { draftWhatsapp, inbox, phoneOf, sendWhatsapp, stages } from "@/lib/sales/whatsapp";
+import { draftWhatsapp, inbox, phoneOf, sendWhatsapp, stages, verifyWhatsappConnection } from "@/lib/sales/whatsapp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -21,12 +21,14 @@ async function handled(run: () => Promise<Response>) {
 
 export const GET = (req: Request) => handled(async () => {
   await instagramAdmin();
-  return igResponse(await inbox(phoneOf(new URL(req.url).searchParams.get("phone"))));
+  const params = new URL(req.url).searchParams;
+  return igResponse(await inbox(phoneOf(params.get("phone")), (params.get("deal") || "").slice(0, 100)));
 });
 
 export const POST = (req: Request) => handled(async () => {
   const user = await instagramAdmin();
   const b = await igBody(req);
+  if (b.action === "verify-connection") return igResponse({ connection: await verifyWhatsappConnection() });
   const phone = phoneOf(b.phone);
   if (!phone) reject("Düzgün telefon nömrəsi tələb olunur.");
   if (b.action === "draft") return igResponse({ draft: await draftWhatsapp(phone) });
@@ -37,6 +39,7 @@ export const POST = (req: Request) => handled(async () => {
       offerId: typeof b.offerId === "string" ? b.offerId : undefined,
       text: typeof b.text === "string" ? b.text : undefined,
     });
+    if (b.compact === true) return igResponse({ sent: true });
   } else if (b.action === "consent") {
     if (typeof b.note !== "string" || !b.note.trim() || b.note.length > 400) reject("Razılığın mənbəyini qeyd edin.");
     const consentNote = user.id + ": " + b.note.trim();

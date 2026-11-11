@@ -47,33 +47,61 @@ function recent(date: Date | null | undefined) {
   return Boolean(date && date.getTime() <= Date.now() && Date.now() - date.getTime() < 86_400_000);
 }
 
-export async function inbox(phone: string) {
-  const [clients, deals, contacts, messages] = await Promise.all([
+export async function inbox(requestedPhone: string, dealId = "") {
+  const [clients, deals] = await Promise.all([
     prisma.client.findMany({ where: { phone: { not: null } }, orderBy: { firstName: "asc" },
       select: { id: true, firstName: true, lastName: true, company: true, phone: true } }),
-    prisma.salesDeal.findMany({ select: { id: true, phone: true, title: true, clientId: true } }),
-    prisma.salesWhatsappContact.findMany({ orderBy: { lastInboundAt: "desc" } }),
-    phone ? prisma.salesWhatsappMessage.findMany({ where: { phone }, orderBy: { createdAt: "desc" }, take: 100 }) : [],
+    prisma.salesDeal.findMany({ select: { id: true, phone: true, title: true, contactName: true, clientId: true } }),
   ]);
-  const entries = new Map(contacts.map(c => [c.phone, { ...c, name: "+" + c.phone }]));
-  const add = (number: string, name: string) => {
+  const clientPhones = new Map(clients.map(c => [c.id, phoneOf(c.phone)]));
+  const dealPhone = (deal: typeof deals[number]) => phoneOf(deal.phone) || clientPhones.get(deal.clientId || "") || "";
+  const selectedDeal = dealId ? deals.find(deal => deal.id === dealId) : undefined;
+  const phone = requestedPhone || (selectedDeal ? dealPhone(selectedDeal) : "");
+  let contacts: Awaited<ReturnType<typeof prisma.salesWhatsappContact.findMany>> = [];
+  let messages: Awaited<ReturnType<typeof prisma.salesWhatsappMessage.findMany>> = [];
+  let databaseReady = true;
+  try {
+    [contacts, messages] = await Promise.all([
+      prisma.salesWhatsappContact.findMany({ orderBy: { lastInboundAt: "desc" } }),
+      phone ? prisma.salesWhatsappMessage.findMany({ where: { phone }, orderBy: { createdAt: "desc" }, take: 100 }) : [],
+    ]);
+  } catch (error) {
+    if (!["P2021", "P2022"].includes((error as { code?: string })?.code || "")) throw error;
+    databaseReady = false;
+  }
+  const entries = new Map(contacts.map(c => [c.phone, { ...c, name: "+" + c.phone, salesCrm: false }]));
+  const add = (number: string, name: string, salesCrm: boolean) => {
     if (!number) return;
     const previous = entries.get(number);
-    if (previous?.name && previous.name !== "+" + number) return;
+    const displayName = previous?.name && previous.name !== "+" + number ? previous.name : name;
     entries.set(number, { phone: number, stage: "NEW", consentAt: null, consentNote: null,
-      optedOutAt: null, lastInboundAt: null, followUpAt: null, ...previous, name });
+      optedOutAt: null, lastInboundAt: null, followUpAt: null, ...previous,
+      name: displayName || "+" + number, salesCrm: salesCrm || Boolean(previous?.salesCrm) });
   };
-  const clientPhones = new Map(clients.map(c => [c.id, phoneOf(c.phone)]));
-  for (const c of clients) add(phoneOf(c.phone), [c.firstName, c.lastName, c.company].filter(Boolean).join(" "));
-  for (const d of deals) add(phoneOf(d.phone) || clientPhones.get(d.clientId || "") || "", d.title);
-  const dealIds = phone ? deals.filter(d => (phoneOf(d.phone) || clientPhones.get(d.clientId || "")) === phone).map(d => d.id) : [];
+  for (const c of clients) add(phoneOf(c.phone), [c.firstName, c.lastName, c.company].filter(Boolean).join(" "), false);
+  for (const d of deals) add(dealPhone(d), d.contactName || d.title, true);
+  const dealIds = phone ? deals.filter(d => dealPhone(d) === phone).map(d => d.id) : [];
   const offers = dealIds.length ? await prisma.salesOffer.findMany({
     where: { dealId: { in: dealIds }, state: { in: liveOffers }, expiresAt: { gt: new Date() }, tokenHash: { not: null } },
     select: { id: true, title: true, recipientName: true }, orderBy: { updatedAt: "desc" },
   }) : [];
-  return { hasPublicProposal: Boolean(publicProposal()), aiConfigured: Boolean(process.env.SALES_WHATSAPP_AI_API_KEY && process.env.SALES_WHATSAPP_AI_MODEL),
+  return { databaseReady, missingDealPhone: Boolean(dealId && !phone), hasPublicProposal: Boolean(publicProposal()), aiConfigured: Boolean(process.env.SALES_WHATSAPP_AI_API_KEY && process.env.SALES_WHATSAPP_AI_MODEL),
     configured: ready(), template: whatsappConfig().template, contacts: [...entries.values()],
     selected: entries.get(phone), messages: messages.reverse(), offers, canReply: recent(entries.get(phone)?.lastInboundAt) };
+}
+
+export async function verifyWhatsappConnection() {
+  const cfg = whatsappConfig();
+  if (!ready(cfg)) reject("WhatsApp üçün bütün server ayarlarını tamamlayın.", 409);
+  const response = await fetch(`https://graph.facebook.com/${cfg.version}/${cfg.phoneId}?fields=display_phone_number,verified_name`, {
+    headers: { Authorization: "Bearer " + cfg.token },
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) reject("Meta nömrəyə giriş vermədi. Telefon ID-si, token və icazələri yoxlayın.", 422);
+  const number = await response.json() as { display_phone_number?: string; verified_name?: string };
+  if (!number.display_phone_number) reject("Meta nömrə məlumatını qaytarmadı.", 422);
+  return { number: number.display_phone_number, name: number.verified_name ?? "" };
 }
 
 export async function sendWhatsapp(phone: string, input: { offerId?: string; text?: string; requestKey: string }) {

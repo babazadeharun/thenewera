@@ -35,7 +35,7 @@ müştəri məlumatları yoxdur.
 
 - Layihənin mövcud yerləşdirmə prosesində Prisma miqrasiyasını tətbiq edin
   (`npx prisma migrate deploy`). Sonra mövcud `npm run build` ilə qurun.
-- Meta webhook ünvanı: `https://thenewera.space/api/sales-whatsapp/webhook`.
+- Meta webhook ünvanı: `https://www.thenewera.space/api/sales-whatsapp/webhook`.
   Meta ayarında eyni Verify Token-i istifadə edin, WhatsApp Business Account
   üçün `messages` sahəsinə abunə olun və tətbiqin həmin hesaba abunəsini yoxlayın.
 - **Admin → Satış → Onlayn təkliflər → WhatsApp satış paneli** bölməsini açın.
@@ -46,5 +46,9 @@ müştəri məlumatları yoxdur.
 - İlk canlı yoxlamanı razılıq verilmiş bir sınaq nömrəsində edin. Göndərişi,
   cavabın tarixçəyə düşməsini və oxunma statusunu yoxlayın.
 
-Bu versiyada təklif göndərişi kontakt üzrə fərdi düymə ilə başlayır. AI yalnız
-cavab layihəsi hazırlayır. Toplu kampaniya və avtonom mesaj göndərişi daxil deyil.
+Satış CRM-in başlığındakı WhatsApp satış paneli linkindən bütün satış
+əlaqələrinə keçmək mümkündür. Satış kartındakı WhatsApp-da aç linki seçilmiş
+müştərini açır. Fərdi onlayn təklifi kontakt üzrə göndərin. Ümumi təqdimat
+linki qurulubsa, WhatsApp panelində razılığı olan Satış CRM əlaqələrini
+işarələyib bir göndəriş başladın. Bu göndəriş panel açıqkən ardıcıl işləyir
+və hər əlaqənin nəticəsini göstərir. AI cavab layihəsi hazırlayır.

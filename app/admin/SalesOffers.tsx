@@ -245,7 +245,7 @@ export default function SalesOffers({ deals, services, onChanged }: Props) {
   }, [currentStep, detail?.id]);
   return (
     <section ref={sectionRef} className="salesOffers">
-      <InstagramChannelCard />
+      <a className="salesSecondary" href="/admin/sales-whatsapp">WhatsApp satış paneli</a><InstagramChannelCard />
       <div className="soHeading">
         <div>
           <h3>Onlayn təkliflər</h3>

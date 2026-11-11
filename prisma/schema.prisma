@@ -1834,3 +1834,28 @@ model MailSentCopy {
   updatedAt DateTime @updatedAt
   @@index([state, nextAttemptAt])
 }
+
+model SalesWhatsappContact {
+  phone String @id
+  consentNote String?
+  consentAt DateTime?
+  optedOutAt DateTime?
+  lastInboundAt DateTime?
+  stage String @default("NEW")
+  followUpAt DateTime?
+  messages SalesWhatsappMessage[]
+}
+
+model SalesWhatsappMessage {
+  id String @id @default(uuid())
+  phone String
+  providerId String? @unique
+  requestKey String? @unique
+  direction String
+  status String
+  body String @db.Text
+  createdAt DateTime @default(now())
+  contact SalesWhatsappContact @relation(fields: [phone], references: [phone], onDelete: Cascade)
+
+  @@index([phone, createdAt])
+}

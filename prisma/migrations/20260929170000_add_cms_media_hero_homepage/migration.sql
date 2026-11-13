@@ -1,72 +1,55 @@
--- Phase 1A CMS foundation: Media, Hero and HomepageSection.
--- Additive only. Existing models/data are preserved.
+-- Replay repair for the redundant CMS migration. Original SQL is archived.
+-- PostgreSQL/public only. This checks the exact foundation-stage catalog;
+-- later migrations legitimately add enum values and HomepageSection.eyebrow.
+DO $cms_guard$
+DECLARE
+ expected jsonb := $catalog${"Media":{"rls":false,"kind":"r","columns":[{"name":"id","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"filename","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"originalName","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"mimeType","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"size","type":"integer","default":null,"notnull":true,"identity":"","generated":""},{"name":"width","type":"integer","default":null,"notnull":false,"identity":"","generated":""},{"name":"height","type":"integer","default":null,"notnull":false,"identity":"","generated":""},{"name":"url","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"storageKey","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"category","type":"\"MediaCategory\"","default":"'GENERAL'::\"MediaCategory\"","notnull":true,"identity":"","generated":""},{"name":"alt","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"createdAt","type":"timestamp(3) without time zone","default":"CURRENT_TIMESTAMP","notnull":true,"identity":"","generated":""},{"name":"updatedAt","type":"timestamp(3) without time zone","default":null,"notnull":true,"identity":"","generated":""}],"indexes":{"Media_pkey":{"live":true,"ready":true,"valid":true,"unique":true,"definition":"CREATE UNIQUE INDEX \"Media_pkey\" ON public.\"Media\" USING btree (id)"},"Media_category_idx":{"live":true,"ready":true,"valid":true,"unique":false,"definition":"CREATE INDEX \"Media_category_idx\" ON public.\"Media\" USING btree (category)"},"Media_createdAt_idx":{"live":true,"ready":true,"valid":true,"unique":false,"definition":"CREATE INDEX \"Media_createdAt_idx\" ON public.\"Media\" USING btree (\"createdAt\")"}},"constraints":{"Media_pkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"PRIMARY KEY (id)"}},"persistence":"p"},"Hero":{"rls":false,"kind":"r","columns":[{"name":"id","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"title","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"description","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"ctaText","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"ctaUrl","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"overlay","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"desktopMediaId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"mobileMediaId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"videoMediaId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"active","type":"boolean","default":"true","notnull":true,"identity":"","generated":""},{"name":"displayOrder","type":"integer","default":"0","notnull":true,"identity":"","generated":""},{"name":"createdAt","type":"timestamp(3) without time zone","default":"CURRENT_TIMESTAMP","notnull":true,"identity":"","generated":""},{"name":"updatedAt","type":"timestamp(3) without time zone","default":null,"notnull":true,"identity":"","generated":""}],"indexes":{"Hero_pkey":{"live":true,"ready":true,"valid":true,"unique":true,"definition":"CREATE UNIQUE INDEX \"Hero_pkey\" ON public.\"Hero\" USING btree (id)"},"Hero_active_displayOrder_idx":{"live":true,"ready":true,"valid":true,"unique":false,"definition":"CREATE INDEX \"Hero_active_displayOrder_idx\" ON public.\"Hero\" USING btree (active, \"displayOrder\")"}},"constraints":{"Hero_pkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"PRIMARY KEY (id)"},"Hero_videoMediaId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"videoMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"},"Hero_mobileMediaId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"mobileMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"},"Hero_desktopMediaId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"desktopMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"}},"persistence":"p"},"HomepageSection":{"rls":false,"kind":"r","columns":[{"name":"id","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"key","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"title","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"description","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"imageId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"enabled","type":"boolean","default":"true","notnull":true,"identity":"","generated":""},{"name":"displayOrder","type":"integer","default":"0","notnull":true,"identity":"","generated":""},{"name":"createdAt","type":"timestamp(3) without time zone","default":"CURRENT_TIMESTAMP","notnull":true,"identity":"","generated":""},{"name":"updatedAt","type":"timestamp(3) without time zone","default":null,"notnull":true,"identity":"","generated":""}],"indexes":{"HomepageSection_pkey":{"live":true,"ready":true,"valid":true,"unique":true,"definition":"CREATE UNIQUE INDEX \"HomepageSection_pkey\" ON public.\"HomepageSection\" USING btree (id)"},"HomepageSection_key_key":{"live":true,"ready":true,"valid":true,"unique":true,"definition":"CREATE UNIQUE INDEX \"HomepageSection_key_key\" ON public.\"HomepageSection\" USING btree (key)"},"HomepageSection_enabled_displayOrder_idx":{"live":true,"ready":true,"valid":true,"unique":false,"definition":"CREATE INDEX \"HomepageSection_enabled_displayOrder_idx\" ON public.\"HomepageSection\" USING btree (enabled, \"displayOrder\")"}},"constraints":{"HomepageSection_pkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"PRIMARY KEY (id)"},"HomepageSection_imageId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"imageId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"}},"persistence":"p"},"SiteSetting":{"rls":false,"kind":"r","columns":[{"name":"id","type":"text","default":null,"notnull":true,"identity":"","generated":""},{"name":"heroImage","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"updatedAt","type":"timestamp(3) without time zone","default":null,"notnull":true,"identity":"","generated":""},{"name":"siteName","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"logoMediaId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"faviconMediaId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"seoTitle","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"seoDescription","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"socialImageMediaId","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"contactEmail","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"contactPhone","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"address","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"socialLinks","type":"text","default":null,"notnull":false,"identity":"","generated":""},{"name":"maintenanceMode","type":"boolean","default":"false","notnull":true,"identity":"","generated":""}],"indexes":{"SiteSetting_pkey":{"live":true,"ready":true,"valid":true,"unique":true,"definition":"CREATE UNIQUE INDEX \"SiteSetting_pkey\" ON public.\"SiteSetting\" USING btree (id)"}},"constraints":{"SiteSetting_pkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"PRIMARY KEY (id)"},"SiteSetting_logoMediaId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"logoMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"},"SiteSetting_faviconMediaId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"faviconMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"},"SiteSetting_socialImageMediaId_fkey":{"deferred":false,"validated":true,"deferrable":false,"definition":"FOREIGN KEY (\"socialImageMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"}},"persistence":"p"}}$catalog$::jsonb;
+ actual jsonb; object_name text; section text; member text; column_record jsonb;
+ actual_column jsonb; enum_kind "char"; labels jsonb;
+BEGIN
+ IF pg_catalog.current_schema() IS DISTINCT FROM 'public' THEN
+   RAISE EXCEPTION 'CMS schema: expected public as the intended current schema';
+ END IF;
+ PERFORM pg_catalog.set_config('search_path','pg_catalog,public',true);
+ SELECT t.typtype, jsonb_agg(e.enumlabel ORDER BY e.enumsortorder)
+ INTO enum_kind, labels FROM pg_catalog.pg_type t
+ JOIN pg_catalog.pg_namespace n ON n.oid=t.typnamespace
+ LEFT JOIN pg_catalog.pg_enum e ON e.enumtypid=t.oid
+ WHERE n.nspname='public' AND t.typname='MediaCategory' GROUP BY t.typtype;
+ IF enum_kind IS DISTINCT FROM 'e' OR labels IS DISTINCT FROM
+   '["HERO","CREATORS","PORTFOLIO","CLIENTS","SERVICES","BLOG","GENERAL"]'::jsonb THEN
+   RAISE EXCEPTION 'CMS public.MediaCategory: enum type or ordered labels differ from foundation';
+ END IF;
+ FOR object_name IN SELECT jsonb_object_keys(expected) LOOP
+ SELECT jsonb_build_object(
+ 'kind',c.relkind,'persistence',c.relpersistence,'rls',c.relrowsecurity,
+ 'columns',(SELECT jsonb_agg(jsonb_build_object('name',a.attname,'type',pg_catalog.format_type(a.atttypid,a.atttypmod),'notnull',a.attnotnull,'default',pg_catalog.pg_get_expr(d.adbin,d.adrelid),'identity',a.attidentity,'generated',a.attgenerated) ORDER BY a.attnum) FROM pg_catalog.pg_attribute a LEFT JOIN pg_catalog.pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attrelid=c.oid AND a.attnum>0 AND NOT a.attisdropped),
+ 'constraints',COALESCE((SELECT jsonb_object_agg(conname,jsonb_build_object('definition',pg_catalog.pg_get_constraintdef(oid),'validated',convalidated,'deferrable',condeferrable,'deferred',condeferred)) FROM pg_catalog.pg_constraint WHERE conrelid=c.oid),'{}'::jsonb),
+ 'indexes',COALESCE((SELECT jsonb_object_agg(ic.relname,jsonb_build_object('definition',pg_catalog.pg_get_indexdef(i.indexrelid),'valid',i.indisvalid,'ready',i.indisready,'live',i.indislive,'unique',i.indisunique)) FROM pg_catalog.pg_index i JOIN pg_catalog.pg_class ic ON ic.oid=i.indexrelid WHERE i.indrelid=c.oid),'{}'::jsonb)
+) INTO actual FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname=object_name;
 
-CREATE TYPE "MediaCategory" AS ENUM ('HERO', 'CREATORS', 'PORTFOLIO', 'CLIENTS', 'SERVICES', 'BLOG', 'GENERAL');
-
-CREATE TABLE "Media" (
-    "id" TEXT NOT NULL,
-    "filename" TEXT NOT NULL,
-    "originalName" TEXT NOT NULL,
-    "mimeType" TEXT NOT NULL,
-    "size" INTEGER NOT NULL,
-    "width" INTEGER,
-    "height" INTEGER,
-    "url" TEXT NOT NULL,
-    "storageKey" TEXT,
-    "category" "MediaCategory" NOT NULL DEFAULT 'GENERAL',
-    "alt" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Media_pkey" PRIMARY KEY ("id")
-);
-
-CREATE TABLE "Hero" (
-    "id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
-    "ctaText" TEXT,
-    "ctaUrl" TEXT,
-    "overlay" TEXT,
-    "desktopMediaId" TEXT,
-    "mobileMediaId" TEXT,
-    "videoMediaId" TEXT,
-    "active" BOOLEAN NOT NULL DEFAULT true,
-    "displayOrder" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Hero_pkey" PRIMARY KEY ("id")
-);
-
-CREATE TABLE "HomepageSection" (
-    "id" TEXT NOT NULL,
-    "key" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
-    "imageId" TEXT,
-    "enabled" BOOLEAN NOT NULL DEFAULT true,
-    "displayOrder" INTEGER NOT NULL DEFAULT 0,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "HomepageSection_pkey" PRIMARY KEY ("id")
-);
-
-CREATE UNIQUE INDEX "HomepageSection_key_key" ON "HomepageSection"("key");
-CREATE INDEX "Media_category_idx" ON "Media"("category");
-CREATE INDEX "Media_createdAt_idx" ON "Media"("createdAt");
-CREATE INDEX "Hero_active_displayOrder_idx" ON "Hero"("active", "displayOrder");
-CREATE INDEX "HomepageSection_enabled_displayOrder_idx" ON "HomepageSection"("enabled", "displayOrder");
-
-ALTER TABLE "Hero" ADD CONSTRAINT "Hero_desktopMediaId_fkey"
-    FOREIGN KEY ("desktopMediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
-ALTER TABLE "Hero" ADD CONSTRAINT "Hero_mobileMediaId_fkey"
-    FOREIGN KEY ("mobileMediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
-ALTER TABLE "Hero" ADD CONSTRAINT "Hero_videoMediaId_fkey"
-    FOREIGN KEY ("videoMediaId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
-ALTER TABLE "HomepageSection" ADD CONSTRAINT "HomepageSection_imageId_fkey"
-    FOREIGN KEY ("imageId") REFERENCES "Media"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ IF actual IS NULL THEN RAISE EXCEPTION 'CMS public.%: table missing',object_name; END IF;
+ FOREACH section IN ARRAY ARRAY['kind','persistence','rls'] LOOP
+  IF actual->section IS DISTINCT FROM expected->object_name->section THEN
+   RAISE EXCEPTION 'CMS public.%: table property % differs',object_name,section;
+  END IF;
+ END LOOP;
+ IF jsonb_array_length(actual->'columns') <> jsonb_array_length(expected->object_name->'columns') THEN
+   RAISE EXCEPTION 'CMS public.%: column count differs',object_name;
+ END IF;
+ FOR column_record IN SELECT value FROM jsonb_array_elements(expected->object_name->'columns') LOOP
+  SELECT value INTO actual_column FROM jsonb_array_elements(actual->'columns') WHERE value->>'name'=column_record->>'name';
+  IF actual_column IS DISTINCT FROM column_record THEN
+   RAISE EXCEPTION 'CMS public.%.%: column type, nullability, default, identity or generation differs',object_name,column_record->>'name';
+  END IF;
+ END LOOP;
+ FOREACH section IN ARRAY ARRAY['constraints','indexes'] LOOP
+  FOR member IN SELECT jsonb_object_keys((expected->object_name->section) || (actual->section)) LOOP
+   IF actual->section->member IS DISTINCT FROM expected->object_name->section->member THEN
+    RAISE EXCEPTION 'CMS public.%: % % differs or is missing',object_name,section,member;
+   END IF;
+  END LOOP;
+ END LOOP;
+ END LOOP;
+END
+$cms_guard$;

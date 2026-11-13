@@ -1,0 +1,47 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {options,identityFromUrl,validatePolicy,assertIdentity,temporarySchema,validateResponse,isClean,validateEvidence,sha256} from '../prisma-safety.mjs';
+const identity={database:'test_db',schema:'public',database_oid:'101',server_identifier:'123',server_address:'local-socket',server_port:0};
+const policy={version:1,container_id:'a'.repeat(64),endpoint:'127.0.0.1:5432',databases:{test_db:{...identity,purpose:'disposable-shadow',allow_reset:false}}};
+const result={history:null,failedMigrationNames:[],editedMigrationNames:[],hasMigrationsTable:true};
+const schema=`datasource db {\n provider="postgresql" // variable spacing\n url = env ( "DATABASE_URL" )\n}`;
+const opts={'--policy':'value','--shadow':'flag'};
+for(const args of [['--shdaow'],['--unknown'],['--policy'],['--shadow','--shadow'],['--policy','--shadow']])test('invalid arguments '+args.join(' '),()=>assert.throws(()=>options(args,opts)));
+test('correct mode selection',()=>{assert.equal(options(['--policy','x'],opts)['--shadow'],undefined);assert.equal(options(['--shadow','--policy','x'],opts)['--shadow'],true)});
+for(const url of [undefined,'not-a-url','postgresql://secret:password@production/db','postgresql://thenewera@localhost:5432/test_db?schema=public','postgresql://thenewera@127.0.0.1:5432/test_db','postgresql://thenewera@127.0.0.1:5432/test_db?schema=public&schema=other'])test('missing/unsupported URL '+String(url),()=>assert.throws(()=>identityFromUrl(url)));
+test('sanitized identity excludes credentials',()=>assert.deepEqual(identityFromUrl('postgresql://thenewera@127.0.0.1:5432/test_db?schema=public'),{database:'test_db',schema:'public',endpoint:'127.0.0.1:5432'}));
+test('missing policy target rejected',()=>assert.throws(()=>validatePolicy(policy,{database:'other',schema:'public'})));
+test('shadow requires reset authorization',()=>assert.throws(()=>validatePolicy(policy,{database:'test_db',schema:'public'},true)));
+for(const k of Object.keys(identity))test('identity mismatch '+k,()=>assert.throws(()=>assertIdentity(identity,{...identity,[k]:'wrong'})));
+test('temporary datasource routes explicit shadow independent of whitespace',()=>{const s=temporarySchema(schema,true);assert.match(s,/shadowDatabaseUrl = env\("SHADOW_DATABASE_URL"\)/);assert.equal((s.match(/datasource /g)||[]).length,1);assert.equal(temporarySchema(schema,false).includes('shadowDatabaseUrl'),false)});
+for(const source of ['',schema+'\n'+schema,schema.replace('provider="postgresql"','provider="mysql"'),schema.replace('url =','url = "x"\n url ='),schema.replace('// variable spacing','relationMode="prisma"')])test('ambiguous/unsupported datasource '+source.slice(0,30),()=>assert.throws(()=>temporarySchema(source,true)));
+for(const envelope of [{},{jsonrpc:'2.0',id:1,result:{}},{jsonrpc:'2.0',id:2,result},{jsonrpc:'2.0',id:1,result,error:{}},{jsonrpc:'2.0',id:1,result:{...result,failedMigrationNames:'no'}},{jsonrpc:'2.0',id:1,result:{...result,history:{diagnostic:'unknown'}}},{jsonrpc:'2.0',id:1,result:{...result,drift:{secret:'not printed'}}}])test('malformed/unsafe response '+JSON.stringify(envelope),()=>assert.throws(()=>validateResponse(envelope)));
+test('valid clean and actionable behind responses',()=>{assert.equal(isClean(validateResponse({jsonrpc:'2.0',id:1,result})),true);assert.equal(isClean(validateResponse({jsonrpc:'2.0',id:1,result:{...result,history:{diagnostic:'databaseIsBehind',unappliedMigrationNames:['example']}}})),false)});
+const counts={clients_without_workspace:0,owners_without_membership:0,account_fields_null:0};
+const evidence={version:1,reviewed:true,identity,checked_at:new Date().toISOString(),backup:{path:'/backup',sha256:'abc',restore_verified:true,restore_identity:{...identity,database:'restore',database_oid:'102'}},schema:{sha256:'schema',reference_identity:{...identity,database:'reference',database_oid:'103'}},backfill:{sha256:sha256(JSON.stringify(counts))}};
+test('valid explicit preflight evidence',()=>validateEvidence(evidence,identity,'abc','schema',counts));
+for(const mutate of [e=>delete e.backup,e=>e.reviewed=false,e=>e.identity.server_identifier='wrong',e=>e.backup.restore_verified=false,e=>e.backup.sha256='wrong',e=>e.schema.sha256='wrong',e=>e.checked_at='2000-01-01',e=>e.schema.reference_identity.database_oid='101',e=>e.backfill.sha256='wrong'])test('unsafe evidence rejected '+mutate.toString(),()=>{const e=structuredClone(evidence);mutate(e);assert.throws(()=>validateEvidence(e,identity,'abc','schema',counts))});
+test('missing backfill coverage rejected',()=>assert.throws(()=>validateEvidence(evidence,identity,'abc','schema',{...counts,clients_without_workspace:1})));
+import {assertSeparateTargets,validateReleaseHistory} from '../prisma-safety.mjs';
+import {readFileSync,readdirSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+test('actual database identity, not URL text, controls separation',()=>{assert.throws(()=>assertSeparateTargets(identity,{...identity,database:'alias'}));assert.doesNotThrow(()=>assertSeparateTargets(identity,{...identity,database_oid:'202'}))});
+const sql=readFileSync('prisma/migrations/reconcile-prisma-history.sql','utf8');
+const release=JSON.parse(sql.match(/\$release\$(.*?)\$release\$/s)[1]),legacy=JSON.parse(sql.match(/\$legacy\$(.*?)\$legacy\$/s)[1]);
+const ledger=Object.entries(release).map(([migration_name,checksum])=>({migration_name,checksum,finished_at:'2026-01-01',rolled_back_at:null}));
+test('release hashes match every active migration',()=>{assert.equal(Object.keys(release).length,20);for(const d of readdirSync('prisma/migrations',{withFileTypes:true}).filter(d=>d.isDirectory()))assert.equal(release[d.name],sha256(readFileSync(`prisma/migrations/${d.name}/migration.sql`)))});
+test('completed reviewed release is eligible',()=>validateReleaseHistory(ledger,release,legacy));
+for(const mutate of [rows=>rows.pop(),rows=>rows[0].checksum='unknown',rows=>rows[0].migration_name='other',rows=>rows[0].finished_at=null])test('unsafe ledger rejected '+mutate.toString(),()=>{const rows=structuredClone(ledger);mutate(rows);assert.throws(()=>validateReleaseHistory(rows,release,legacy))});
+test('actual CLI rejects typo and missing target without engine/database access',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'newera-cli-test-'));const file=join(dir,'policy.json');writeFileSync(file,JSON.stringify(policy));
+ try{for(const args of [['--shdaow'],['--policy',file]]){const r=spawnSync(process.execPath,['scripts/diagnose-prisma-history.mjs',...args],{encoding:'utf8',env:{...process.env,DATABASE_URL:''}});assert.equal(r.status,1);assert.equal(r.stdout,'');assert.match(r.stderr,/Invalid|DATABASE_URL/)}}
+ finally{rmSync(dir,{recursive:true,force:true})}
+});
+test('embedded foundation catalog matches separately reviewed snapshot',()=>{const guard=readFileSync('prisma/migrations/20260929170000_add_cms_media_hero_homepage/migration.sql','utf8');assert.deepEqual(JSON.parse(guard.match(/\$catalog\$(.*?)\$catalog\$/s)[1]),JSON.parse(readFileSync('prisma/migration-history/cms-foundation-catalog.json')))});
+test('unknown envelope fields and malformed backfill response rejected',()=>{assert.throws(()=>validateResponse({jsonrpc:'2.0',id:1,result,unexpected:true}));assert.throws(()=>validateEvidence(evidence,identity,'abc','schema',{}))});
+test('all original archives retain documented hashes',()=>{for(const m of JSON.parse(readFileSync('prisma/migration-history/manifest.json')))assert.equal(sha256(readFileSync('prisma/migration-history/'+m.archive)),m.sha256)});
+import {catalogHashExpression} from '../prisma-preflight.mjs';
+test('fingerprint includes validation flags and agrees with SQL guard',()=>{assert.ok(sql.includes(catalogHashExpression));assert.match(catalogHashExpression,/indisvalid/);assert.match(catalogHashExpression,/convalidated/)});
+test('unexpected credential-bearing arguments are never echoed',()=>{const r=spawnSync(process.execPath,['scripts/diagnose-prisma-history.mjs','postgresql://user:actual-secret@host/db'],{encoding:'utf8'});assert.equal(r.status,1);assert.equal((r.stdout+r.stderr).includes('actual-secret'),false)});

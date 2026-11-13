@@ -1,0 +1,567 @@
+{
+  "Media": {
+    "rls": false,
+    "kind": "r",
+    "columns": [
+      {
+        "name": "id",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "filename",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "originalName",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "mimeType",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "size",
+        "type": "integer",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "width",
+        "type": "integer",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "height",
+        "type": "integer",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "url",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "storageKey",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "category",
+        "type": "\"MediaCategory\"",
+        "default": "'GENERAL'::\"MediaCategory\"",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "alt",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "createdAt",
+        "type": "timestamp(3) without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "updatedAt",
+        "type": "timestamp(3) without time zone",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      }
+    ],
+    "indexes": {
+      "Media_pkey": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": true,
+        "definition": "CREATE UNIQUE INDEX \"Media_pkey\" ON public.\"Media\" USING btree (id)"
+      },
+      "Media_category_idx": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": false,
+        "definition": "CREATE INDEX \"Media_category_idx\" ON public.\"Media\" USING btree (category)"
+      },
+      "Media_createdAt_idx": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": false,
+        "definition": "CREATE INDEX \"Media_createdAt_idx\" ON public.\"Media\" USING btree (\"createdAt\")"
+      }
+    },
+    "constraints": {
+      "Media_pkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)"
+      }
+    },
+    "persistence": "p"
+  },
+  "Hero": {
+    "rls": false,
+    "kind": "r",
+    "columns": [
+      {
+        "name": "id",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "ctaText",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "ctaUrl",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "overlay",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "desktopMediaId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "mobileMediaId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "videoMediaId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "default": "true",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "displayOrder",
+        "type": "integer",
+        "default": "0",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "createdAt",
+        "type": "timestamp(3) without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "updatedAt",
+        "type": "timestamp(3) without time zone",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      }
+    ],
+    "indexes": {
+      "Hero_pkey": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": true,
+        "definition": "CREATE UNIQUE INDEX \"Hero_pkey\" ON public.\"Hero\" USING btree (id)"
+      },
+      "Hero_active_displayOrder_idx": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": false,
+        "definition": "CREATE INDEX \"Hero_active_displayOrder_idx\" ON public.\"Hero\" USING btree (active, \"displayOrder\")"
+      }
+    },
+    "constraints": {
+      "Hero_pkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)"
+      },
+      "Hero_videoMediaId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"videoMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      },
+      "Hero_mobileMediaId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"mobileMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      },
+      "Hero_desktopMediaId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"desktopMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      }
+    },
+    "persistence": "p"
+  },
+  "HomepageSection": {
+    "rls": false,
+    "kind": "r",
+    "columns": [
+      {
+        "name": "id",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "key",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "imageId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "enabled",
+        "type": "boolean",
+        "default": "true",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "displayOrder",
+        "type": "integer",
+        "default": "0",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "createdAt",
+        "type": "timestamp(3) without time zone",
+        "default": "CURRENT_TIMESTAMP",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "updatedAt",
+        "type": "timestamp(3) without time zone",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      }
+    ],
+    "indexes": {
+      "HomepageSection_pkey": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": true,
+        "definition": "CREATE UNIQUE INDEX \"HomepageSection_pkey\" ON public.\"HomepageSection\" USING btree (id)"
+      },
+      "HomepageSection_key_key": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": true,
+        "definition": "CREATE UNIQUE INDEX \"HomepageSection_key_key\" ON public.\"HomepageSection\" USING btree (key)"
+      },
+      "HomepageSection_enabled_displayOrder_idx": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": false,
+        "definition": "CREATE INDEX \"HomepageSection_enabled_displayOrder_idx\" ON public.\"HomepageSection\" USING btree (enabled, \"displayOrder\")"
+      }
+    },
+    "constraints": {
+      "HomepageSection_pkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)"
+      },
+      "HomepageSection_imageId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"imageId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      }
+    },
+    "persistence": "p"
+  },
+  "SiteSetting": {
+    "rls": false,
+    "kind": "r",
+    "columns": [
+      {
+        "name": "id",
+        "type": "text",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "heroImage",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "updatedAt",
+        "type": "timestamp(3) without time zone",
+        "default": null,
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "siteName",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "logoMediaId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "faviconMediaId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "seoTitle",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "seoDescription",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "socialImageMediaId",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "contactEmail",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "contactPhone",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "address",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "socialLinks",
+        "type": "text",
+        "default": null,
+        "notnull": false,
+        "identity": "",
+        "generated": ""
+      },
+      {
+        "name": "maintenanceMode",
+        "type": "boolean",
+        "default": "false",
+        "notnull": true,
+        "identity": "",
+        "generated": ""
+      }
+    ],
+    "indexes": {
+      "SiteSetting_pkey": {
+        "live": true,
+        "ready": true,
+        "valid": true,
+        "unique": true,
+        "definition": "CREATE UNIQUE INDEX \"SiteSetting_pkey\" ON public.\"SiteSetting\" USING btree (id)"
+      }
+    },
+    "constraints": {
+      "SiteSetting_pkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)"
+      },
+      "SiteSetting_logoMediaId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"logoMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      },
+      "SiteSetting_faviconMediaId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"faviconMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      },
+      "SiteSetting_socialImageMediaId_fkey": {
+        "deferred": false,
+        "validated": true,
+        "deferrable": false,
+        "definition": "FOREIGN KEY (\"socialImageMediaId\") REFERENCES \"Media\"(id) ON UPDATE CASCADE ON DELETE SET NULL"
+      }
+    },
+    "persistence": "p"
+  }
+}
